@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Щоденник 2026 🌿</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage: #7d9e7a;
+    --moss: #4a6741;
+    --cream: #f5f0e8;
+    --warm: #e8dcc8;
+    --terracotta: #c06b4a;
+    --text: #2a2a2a;
+    --light-text: #7a7068;
+  }
+
+  body {
+    background: var(--cream);
+    font-family: 'Jost', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(125,158,122,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(192,107,74,0.08) 0%, transparent 50%);
+  }
+
+  .container { max-width: 720px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .season-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--moss);
+  }
+
+  h1 em { font-style: italic; color: var(--terracotta); }
+
+  .subtitle {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--light-text);
+    font-weight: 300;
+  }
+
+  /* Month nav */
+  .month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .month-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--moss);
+    text-align: center;
+  }
+
+  .month-label span {
+    display: block;
+    font-size: 11px;
+    font-family: 'Jost', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-top: 2px;
+  }
+
+  .nav-btn {
+    background: white;
+    border: 1.5px solid var(--warm);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: var(--moss);
+    flex-shrink: 0;
+  }
+
+  .nav-btn:hover { background: var(--warm); }
+
+  /* Stats */
+  .stats {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+
+  .stat-box {
+    background: white;
+    border-radius: 14px;
+    padding: 10px 18px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--moss);
+    line-height: 1;
+  }
+
+  .stat-num.accent { color: var(--terracotta); }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* Day names */
+  .day-names {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  .day-name-cell {
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    font-weight: 500;
+    padding: 4px 0;
+  }
+
+  /* Calendar grid */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s ease 0.25s both;
+  }
+
+  .cal-cell {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cal-cell.empty {
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
+    border-color: transparent;
+  }
+
+  .cal-cell.today { border-color: var(--terracotta); }
+  .cal-cell.future { opacity: 0.4; cursor: default; }
+
+  .cal-cell:not(.empty):not(.future):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    border-color: var(--warm);
+  }
+
+  .cal-cell.has-photo .cell-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .cell-num {
+    position: absolute;
+    top: 5px;
+    left: 7px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    color: var(--moss);
+    font-weight: 700;
+    z-index: 2;
+    line-height: 1;
+  }
+
+  .cal-cell.has-photo .cell-num {
+    color: white;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  }
+
+  .cell-dot {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sage);
+    z-index: 2;
+  }
+
+  .cal-cell.has-photo .cell-dot { background: white; }
+
+  /* Recent entries */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-bottom: 14px;
+    font-weight: 500;
+    animation: fadeUp 0.5s ease 0.3s both;
+  }
+
+  .entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    animation: fadeUp 0.5s ease 0.35s both;
+  }
+
+  .entry-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    border: 1.5px solid transparent;
+    transition: all 0.22s;
+    display: flex;
+    gap: 0;
+  }
+
+  .entry-card:hover { box-shadow: 0 5px 18px rgba(0,0,0,0.09); border-color: var(--warm); }
+
+  .entry-photo-wrap {
+    width: 110px;
+    flex-shrink: 0;
+    background: var(--warm);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .entry-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .entry-no-photo {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--light-text);
+    opacity: 0.4;
+  }
+
+  .entry-body {
+    flex: 1;
+    padding: 16px 18px;
+    min-width: 0;
+  }
+
+  .entry-date {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .entry-note {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text);
+    word-break: break-word;
+  }
+
+  .entry-note.empty { color: #ccc; font-style: italic; }
+
+  .entry-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 4px 6px;
+    border-radius: 8px;
+    transition: all 0.15s;
+    color: var(--light-text);
+  }
+
+  .icon-btn:hover { background: var(--cream); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal {
+    background: var(--cream);
+    border-radius: 24px;
+    padding: 32px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.25s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-date {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--moss);
+    margin-bottom: 22px;
+  }
+
+  /* Photo upload */
+  .photo-upload-area {
+    width: 100%;
+    height: 180px;
+    border: 2px dashed var(--warm);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    background: white;
+  }
+
+  .photo-upload-area:hover { border-color: var(--sage); background: #f8faf7; }
+
+  .photo-upload-area img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .upload-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--light-text);
+    pointer-events: none;
+  }
+
+  .upload-hint .icon { font-size: 32px; }
+  .upload-hint p { font-size: 13px; }
+  .upload-hint small { font-size: 11px; color: #bbb; }
+
+  .photo-clear-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 14px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+
+  #photoInput { display: none; }
+
+  .modal-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 500;
+  }
+
+  .modal-textarea {
+    width: 100%;
+    border: 1.5px solid var(--warm);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    outline: none;
+    resize: none;
+    height: 110px;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+  }
+
+  .modal-textarea:focus { border-color: var(--sage); }
+  .modal-textarea::placeholder { color: #ccc; }
+
+  .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+
+  .modal-btn {
+    flex: 1;
+    padding: 13px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-btn.primary { background: var(--sage); color: white; }
+  .modal-btn.primary:hover { opacity: 0.88; }
+  .modal-btn.secondary { background: var(--warm); color: var(--light-text); }
+  .modal-btn.secondary:hover { background: #ddd0bb; }
+
+  .empty-entries {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--light-text);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--light-text);
+  }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="season-tag">📷 щоденник</div>
+    <h1>Мій <em>2026</em></h1>
+    <p class="subtitle">один день — одна фото — одна нотатка</p>
+  </header>
+
+  <div class="month-nav">
+    <button class="nav-btn" id="prevMonth">‹</button>
+    <div class="month-label" id="monthLabel"></div>
+    <button class="nav-btn" id="nextMonth">›</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-num accent" id="filledCount">0</div>
+      <div class="stat-label">днів заповнено</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="photoCount">0</div>
+      <div class="stat-label">фото</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="totalDays">0</div>
+      <div class="stat-label">днів у місяці</div>
+    </div>
+  </div>
+
+  <div class="day-names" id="dayNames"></div>
+  <div class="cal-grid" id="calGrid"></div>
+
+  <div class="section-label">Останні записи</div>
+  <div class="entries-list" id="entriesList"></div>
+
+  <footer>кожен день — маленька історія ✦</footer>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" style="display:none">
+  <div class="modal">
+    <div class="modal-date" id="modalDate"></div>
+    <h2 id="modalTitle">Що сталося сьогодні?</h2>
+
+    <div class="photo-upload-area" id="photoArea">
+      <input type="file" id="photoInput" accept="image/*">
+      <div class="upload-hint" id="uploadHint">
+        <div class="icon">📷</div>
+        <p>Додати фото</p>
+        <small>натисни або перетягни</small>
+      </div>
+      <button class="photo-clear-btn" id="photoClearBtn">✕</button>
+    </div>
+
+    <label class="modal-label">Нотатка дня</label>
+    <textarea class="modal-textarea" id="mNote" placeholder="Що відбулося? Що відчула? Що запам'яталось..."></textarea>
+
+    <div class="modal-btns">
+      <button class="modal-btn secondary" id="cancelBtn">Закрити</button>
+      <button class="modal-btn primary" id="saveBtn">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MONTHS_UK = ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+const MONTHS_GEN = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+const DAY_NAMES = ['Пн','Вт','Ср','Чт','Пт','Сб','Нд'];
+
+const today = new Date(); today.setHours(0,0,0,0);
+let viewYear = today.getFullYear();
+let viewMonth = today.getMonth();
+let currentKey = null;
+let modalPhoto = null; // base64
+
+function dateKey(y, m, d) { return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function getEntry(key) {
+  try { return JSON.parse(localStorage.getItem('diary_' + key) || 'null'); } catch { return null; }
+}
+function saveEntry(key, entry) {
+  localStorage.setItem('diary_' + key, JSON.stringify(entry));
+}
+function deleteEntry(key) { localStorage.removeItem('diary_' + key); }
+
+function getAllKeys() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('diary_')) keys.push(k.replace('diary_', ''));
+  }
+  return keys.sort().reverse();
+}
+
+function getMonthKeys(y, m) {
+  const prefix = `${y}-${String(m+1).padStart(2,'0')}-`;
+  return getAllKeys().filter(k => k.startsWith(prefix));
+}
+
+function daysInMonth(y, m) { return new Date(y, m+1, 0).getDate(); }
+function firstDayOfWeek(y, m) {
+  const d = new Date(y, m, 1).getDay();
+  return d === 0 ? 6 : d - 1; // Mon=0
+}
+
+function updateStats() {
+  const monthKeys = getMonthKeys(viewYear, viewMonth);
+  const withPhoto = monthKeys.filter(k => { const e = getEntry(k); return e && e.photo; });
+  document.getElementById('filledCount').textContent = monthKeys.length;
+  document.getElementById('photoCount').textContent = withPhoto.length;
+  document.getElementById('totalDays').textContent = daysInMonth(viewYear, viewMonth);
+}
+
+function renderCalendar() {
+  // Month label
+  document.getElementById('monthLabel').innerHTML =
+    `${MONTHS_UK[viewMonth]}<span>${viewYear}</span>`;
+
+  // Day names
+  const dn = document.getElementById('dayNames');
+  dn.innerHTML = DAY_NAMES.map(d => `<div class="day-name-cell">${d}</div>`).join('');
+
+  // Grid
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  const days = daysInMonth(viewYear, viewMonth);
+  const firstDay = firstDayOfWeek(viewYear, viewMonth);
+
+  // Empty cells
+  for (let i = 0; i < firstDay; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell empty';
+    grid.appendChild(cell);
+  }
+
+  for (let d = 1; d <= days; d++) {
+    const key = dateKey(viewYear, viewMonth, d);
+    const cellDate = new Date(viewYear, viewMonth, d);
+    const isToday = cellDate.getTime() === today.getTime();
+    const isFuture = cellDate > today;
+    const entry = getEntry(key);
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell' + (isToday ? ' today' : '') + (isFuture ? ' future' : '') + (entry ? ' has-entry' : '') + (entry && entry.photo ? ' has-photo' : '');
+
+    if (entry && entry.photo) {
+      const img = document.createElement('img');
+      img.className = 'cell-photo';
+      img.src = entry.photo;
+      cell.appendChild(img);
+    }
+
+    const num = document.createElement('div');
+    num.className = 'cell-num';
+    num.textContent = d;
+    cell.appendChild(num);
+
+    if (entry) {
+      const dot = document.createElement('div');
+      dot.className = 'cell-dot';
+      cell.appendChild(dot);
+    }
+
+    if (!isFuture) {
+      cell.addEventListener('click', () => openModal(key, d));
+    }
+
+    grid.appendChild(cell);
+  }
+
+  updateStats();
+}
+
+function renderEntries() {
+  const list = document.getElementById('entriesList');
+  const allKeys = getAllKeys().slice(0, 10);
+  list.innerHTML = '';
+
+  if (allKeys.length === 0) {
+    list.innerHTML = '<div class="empty-entries">Поки немає записів.<br>Натисни на день у календарі 🌿</div>';
+    return;
+  }
+
+  allKeys.forEach(key => {
+    const entry = getEntry(key);
+    if (!entry) return;
+
+    const [y, m, d] = key.split('-').map(Number);
+    const dateStr = `${d} ${MONTHS_GEN[m-1]} ${y}`;
+
+    const card = document.createElement('div');
+    card.className = 'entry-card';
+    card.innerHTML = `
+      <div class="entry-photo-wrap">
+        ${entry.photo
+          ? `<img class="entry-photo" src="${entry.photo}" alt="">`
+          : `<div class="entry-no-photo">📷</div>`}
+      </div>
+      <div class="entry-body">
+        <div class="entry-date">${dateStr}</div>
+        <div class="entry-note ${entry.note ? '' : 'empty'}">${entry.note || 'Нотатки немає'}</div>
+        <div class="entry-actions">
+          <button class="icon-btn edit-btn">✏️ редагувати</button>
+          <button class="icon-btn del-btn">🗑️</button>
+        </div>
+      </div>
+    `;
+
+    card.querySelector('.edit-btn').addEventListener('click', () => openModal(key, d));
+    card.querySelector('.del-btn').addEventListener('click', () => {
+      if (confirm('Видалити цей запис?')) { deleteEntry(key); render(); }
+    });
+
+    list.appendChild(card);
+  });
+}
+
+function render() { renderCalendar(); renderEntries(); }
+
+// Modal
+function openModal(key, day) {
+  currentKey = key;
+  const [y, m] = key.split('-').map(Number);
+  const entry = getEntry(key) || {};
+  modalPhoto = entry.photo || null;
+
+  document.getElementById('modalDate').textContent =
+    `${day} ${MONTHS_GEN[m-1]} ${y}`;
+  document.getElementById('modalTitle').textContent =
+    entry.note || entry.photo ? 'Редагувати день' : 'Що сталося сьогодні?';
+  document.getElementById('mNote').value = entry.note || '';
+
+  updatePhotoUI();
+  document.getElementById('modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('mNote').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  currentKey = null;
+  modalPhoto = null;
+}
+
+function updatePhotoUI() {
+  const area = document.getElementById('photoArea');
+  const hint = document.getElementById('uploadHint');
+  const clearBtn = document.getElementById('photoClearBtn');
+
+  // Remove existing preview img
+  const existing = area.querySelector('img.preview');
+  if (existing) existing.remove();
+
+  if (modalPhoto) {
+    const img = document.createElement('img');
+    img.className = 'preview';
+    img.src = modalPhoto;
+    area.appendChild(img);
+    hint.style.display = 'none';
+    clearBtn.style.display = 'flex';
+  } else {
+    hint.style.display = 'flex';
+    clearBtn.style.display = 'none';
+  }
+}
+
+document.getElementById('photoArea').addEventListener('click', (e) => {
+  if (e.target.id === 'photoClearBtn') return;
+  document.getElementById('photoInput').click();
+});
+
+document.getElementById('photoInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    modalPhoto = ev.target.result;
+    updatePhotoUI();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+document.getElementById('photoClearBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  modalPhoto = null;
+  updatePhotoUI();
+});
+
+// Drag & drop
+const photoArea = document.getElementById('photoArea');
+photoArea.addEventListener('dragover', e => { e.preventDefault(); photoArea.style.borderColor = 'var(--sage)'; });
+photoArea.addEventListener('dragleave', () => { photoArea.style.borderColor = ''; });
+photoArea.addEventListener('drop', e => {
+  e.preventDefault();
+  photoArea.style.borderColor = '';
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = ev => { modalPhoto = ev.target.result; updatePhotoUI(); };
+    reader.readAsDataURL(file);
+  }
+});
+
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const note = document.getElementById('mNote').value.trim();
+  if (!note && !modalPhoto) { closeModal(); return; }
+  saveEntry(currentKey, { note, photo: modalPhoto, updated: Date.now() });
+  closeModal();
+  render();
+});
+
+// Month nav
+document.getElementById('prevMonth').addEventListener('click', () => {
+  viewMonth--;
+  if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+  renderCalendar();
+});
+
+document.getElementById('nextMonth').addEventListener('click', () => {
+  viewMonth++;
+  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  renderCalendar();
+});
+
+render();
+</script>
+</body>
+</html>
