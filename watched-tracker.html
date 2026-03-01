@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Фільми та серіали 🎬</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage: #7d9e7a;
+    --moss: #4a6741;
+    --cream: #f5f0e8;
+    --warm: #e8dcc8;
+    --terracotta: #c06b4a;
+    --text: #2a2a2a;
+    --light-text: #7a7068;
+  }
+
+  body {
+    background: var(--cream);
+    font-family: 'Jost', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(125,158,122,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(192,107,74,0.08) 0%, transparent 50%);
+  }
+
+  .container { max-width: 680px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .season-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--moss);
+  }
+
+  h1 em { font-style: italic; color: var(--terracotta); }
+
+  .subtitle {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--light-text);
+    font-weight: 300;
+  }
+
+  /* Stats */
+  .stats {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 28px 0 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    background: white;
+    border-radius: 14px;
+    padding: 12px 22px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--moss);
+    line-height: 1;
+  }
+
+  .stat-num.accent { color: var(--terracotta); }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--warm);
+    background: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover { border-color: var(--sage); color: var(--sage); }
+  .filter-btn.active { background: var(--sage); border-color: var(--sage); color: white; }
+
+  .add-btn {
+    margin-left: auto;
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: none;
+    background: var(--terracotta);
+    color: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .add-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* Sort */
+  .sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+
+  .sort-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--light-text); }
+
+  .sort-select {
+    border: 1.5px solid var(--warm);
+    background: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* Cards list */
+  .cards-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    border: 1.5px solid transparent;
+    transition: all 0.22s ease;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .card:hover { box-shadow: 0 5px 18px rgba(0,0,0,0.09); border-color: var(--warm); }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .card-type {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .card-info { flex: 1; }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--moss);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .card-meta {
+    font-size: 11px;
+    color: var(--light-text);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 8px;
+    transition: all 0.15s;
+    color: var(--light-text);
+  }
+
+  .icon-btn:hover { background: var(--cream); }
+
+  /* Stars */
+  .stars {
+    display: flex;
+    gap: 3px;
+    margin-top: 10px;
+  }
+
+  .star {
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.15s;
+    color: var(--warm);
+    filter: grayscale(1);
+    line-height: 1;
+  }
+
+  .star.lit { color: #e8a020; filter: none; }
+  .star:hover { transform: scale(1.2); }
+
+  /* Comment */
+  .comment-wrap { margin-top: 10px; }
+
+  .comment-text {
+    font-size: 13px;
+    color: var(--light-text);
+    font-style: italic;
+    line-height: 1.5;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+
+  .comment-text:hover { background: var(--cream); }
+  .comment-text.empty { color: #bbb; font-style: normal; }
+
+  .comment-input {
+    width: 100%;
+    border: 1.5px solid var(--warm);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    resize: none;
+    background: var(--cream);
+    transition: border-color 0.2s;
+    display: none;
+  }
+
+  .comment-input:focus { border-color: var(--sage); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal {
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.25s ease;
+  }
+
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--moss);
+    margin-bottom: 20px;
+  }
+
+  .modal-field { margin-bottom: 14px; }
+
+  .modal-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-bottom: 6px;
+    display: block;
+    font-weight: 500;
+  }
+
+  .modal-input, .modal-select, .modal-textarea {
+    width: 100%;
+    border: 1.5px solid var(--warm);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--sage); }
+  .modal-textarea { resize: none; height: 80px; }
+
+  .modal-stars { display: flex; gap: 6px; margin-top: 4px; }
+
+  .modal-star {
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.15s;
+    color: var(--warm);
+    filter: grayscale(1);
+  }
+
+  .modal-star.lit { color: #e8a020; filter: none; }
+  .modal-star:hover { transform: scale(1.15); }
+
+  .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+
+  .modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-btn.primary { background: var(--sage); color: white; }
+  .modal-btn.primary:hover { opacity: 0.88; }
+  .modal-btn.secondary { background: var(--warm); color: var(--light-text); }
+  .modal-btn.secondary:hover { background: #ddd0bb; }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--light-text);
+  }
+
+  .empty-state .emoji { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; }
+
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--light-text);
+  }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="season-tag">🎬 2026</div>
+    <h1>Фільми<br>та <em>серіали</em></h1>
+    <p class="subtitle">відмічай, оцінюй, залишай враження</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat-box" style="animation-delay:0.05s">
+      <div class="stat-num" id="totalCount">0</div>
+      <div class="stat-label">всього</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.1s">
+      <div class="stat-num accent" id="filmCount">0</div>
+      <div class="stat-label">фільмів</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.15s">
+      <div class="stat-num" id="seriesCount">0</div>
+      <div class="stat-label">серіалів</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.2s">
+      <div class="stat-num accent" id="avgRating">—</div>
+      <div class="stat-label">середня ⭐</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="filter-btn active" data-filter="all">Всі</button>
+    <button class="filter-btn" data-filter="film">🎬 Фільми</button>
+    <button class="filter-btn" data-filter="series">📺 Серіали</button>
+    <button class="filter-btn" data-filter="5">⭐⭐⭐⭐⭐</button>
+    <button class="add-btn" id="addBtn">+ Додати</button>
+  </div>
+
+  <div class="sort-wrap">
+    <span class="sort-label">Сортувати:</span>
+    <select class="sort-select" id="sortSelect">
+      <option value="date">За датою</option>
+      <option value="rating">За оцінкою</option>
+      <option value="title">За назвою</option>
+    </select>
+  </div>
+
+  <div class="cards-list" id="cardsList"></div>
+
+  <footer>дивись з задоволенням ✦</footer>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" style="display:none">
+  <div class="modal">
+    <h2 id="modalTitle">Додати перегляд</h2>
+
+    <div class="modal-field">
+      <label class="modal-label">Назва</label>
+      <input class="modal-input" id="mTitle" placeholder="Назва фільму або серіалу">
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Тип</label>
+      <select class="modal-select" id="mType">
+        <option value="film">🎬 Фільм</option>
+        <option value="series">📺 Серіал</option>
+      </select>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Рік / жанр (необов'язково)</label>
+      <input class="modal-input" id="mMeta" placeholder="напр. 2023 · Драма">
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Оцінка</label>
+      <div class="modal-stars" id="modalStars">
+        <span class="modal-star" data-v="1">★</span>
+        <span class="modal-star" data-v="2">★</span>
+        <span class="modal-star" data-v="3">★</span>
+        <span class="modal-star" data-v="4">★</span>
+        <span class="modal-star" data-v="5">★</span>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Коментар</label>
+      <textarea class="modal-textarea" id="mComment" placeholder="Що сподобалось? Що відчула?"></textarea>
+    </div>
+
+    <div class="modal-btns">
+      <button class="modal-btn secondary" id="cancelBtn">Скасувати</button>
+      <button class="modal-btn primary" id="saveBtn">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem('watched2026') || '[]');
+let currentFilter = 'all';
+let currentSort = 'date';
+let modalRating = 0;
+let editingId = null;
+
+function save() { localStorage.setItem('watched2026', JSON.stringify(data)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+function updateStats() {
+  document.getElementById('totalCount').textContent = data.length;
+  document.getElementById('filmCount').textContent = data.filter(d => d.type === 'film').length;
+  document.getElementById('seriesCount').textContent = data.filter(d => d.type === 'series').length;
+  const rated = data.filter(d => d.rating > 0);
+  document.getElementById('avgRating').textContent = rated.length
+    ? (rated.reduce((s, d) => s + d.rating, 0) / rated.length).toFixed(1)
+    : '—';
+}
+
+function getFiltered() {
+  let list = [...data];
+  if (currentFilter === 'film') list = list.filter(d => d.type === 'film');
+  else if (currentFilter === 'series') list = list.filter(d => d.type === 'series');
+  else if (currentFilter === '5') list = list.filter(d => d.rating === 5);
+
+  if (currentSort === 'date') list.sort((a, b) => b.created - a.created);
+  else if (currentSort === 'rating') list.sort((a, b) => b.rating - a.rating);
+  else if (currentSort === 'title') list.sort((a, b) => a.title.localeCompare(b.title));
+
+  return list;
+}
+
+function renderStars(container, rating, id) {
+  container.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const s = document.createElement('span');
+    s.className = 'star' + (i <= rating ? ' lit' : '');
+    s.textContent = '★';
+    s.addEventListener('click', () => {
+      const item = data.find(d => d.id === id);
+      if (item) { item.rating = i; save(); render(); }
+    });
+    container.appendChild(s);
+  }
+}
+
+function render() {
+  updateStats();
+  const list = getFiltered();
+  const el = document.getElementById('cardsList');
+  el.innerHTML = '';
+
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">🎬</div><p>Поки нічого немає.<br>Додай свій перший перегляд!</p></div>`;
+    return;
+  }
+
+  list.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = (idx * 0.04) + 's';
+
+    const typeIcon = item.type === 'film' ? '🎬' : '📺';
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-type">${typeIcon}</div>
+        <div class="card-info">
+          <div class="card-title">${item.title}</div>
+          ${item.meta ? `<div class="card-meta">${item.meta}</div>` : ''}
+        </div>
+        <div class="card-actions">
+          <button class="icon-btn edit-btn" title="Редагувати">✏️</button>
+          <button class="icon-btn del-btn" title="Видалити">🗑️</button>
+        </div>
+      </div>
+      <div class="stars" id="stars-${item.id}"></div>
+      <div class="comment-wrap">
+        <div class="comment-text ${item.comment ? '' : 'empty'}" id="ct-${item.id}">${item.comment || '+ додати враження...'}</div>
+        <textarea class="comment-input" id="ci-${item.id}" placeholder="Що відчула?">${item.comment || ''}</textarea>
+      </div>
+    `;
+
+    // Stars
+    renderStars(card.querySelector(`#stars-${item.id}`), item.rating, item.id);
+
+    // Comment toggle
+    const ct = card.querySelector(`#ct-${item.id}`);
+    const ci = card.querySelector(`#ci-${item.id}`);
+    ct.addEventListener('click', () => { ct.style.display = 'none'; ci.style.display = 'block'; ci.focus(); });
+    ci.addEventListener('blur', () => {
+      const it = data.find(d => d.id === item.id);
+      if (it) { it.comment = ci.value.trim(); save(); }
+      ct.textContent = ci.value.trim() || '+ додати враження...';
+      ct.className = 'comment-text' + (ci.value.trim() ? '' : ' empty');
+      ct.style.display = '';
+      ci.style.display = 'none';
+    });
+
+    // Edit
+    card.querySelector('.edit-btn').addEventListener('click', () => openModal(item));
+
+    // Delete
+    card.querySelector('.del-btn').addEventListener('click', () => {
+      if (confirm(`Видалити "${item.title}"?`)) {
+        data = data.filter(d => d.id !== item.id);
+        save(); render();
+      }
+    });
+
+    el.appendChild(card);
+  });
+}
+
+// Modal
+function openModal(item = null) {
+  editingId = item ? item.id : null;
+  modalRating = item ? item.rating : 0;
+  document.getElementById('modalTitle').textContent = item ? 'Редагувати' : 'Додати перегляд';
+  document.getElementById('mTitle').value = item ? item.title : '';
+  document.getElementById('mType').value = item ? item.type : 'film';
+  document.getElementById('mMeta').value = item ? item.meta : '';
+  document.getElementById('mComment').value = item ? item.comment : '';
+  updateModalStars();
+  document.getElementById('modal').style.display = 'flex';
+  document.getElementById('mTitle').focus();
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  editingId = null;
+  modalRating = 0;
+}
+
+function updateModalStars() {
+  document.querySelectorAll('.modal-star').forEach(s => {
+    s.classList.toggle('lit', parseInt(s.dataset.v) <= modalRating);
+  });
+}
+
+document.querySelectorAll('.modal-star').forEach(s => {
+  s.addEventListener('click', () => { modalRating = parseInt(s.dataset.v); updateModalStars(); });
+});
+
+document.getElementById('addBtn').addEventListener('click', () => openModal());
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeModal(); });
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const title = document.getElementById('mTitle').value.trim();
+  if (!title) { document.getElementById('mTitle').focus(); return; }
+
+  if (editingId) {
+    const item = data.find(d => d.id === editingId);
+    if (item) {
+      item.title = title;
+      item.type = document.getElementById('mType').value;
+      item.meta = document.getElementById('mMeta').value.trim();
+      item.rating = modalRating;
+      item.comment = document.getElementById('mComment').value.trim();
+    }
+  } else {
+    data.unshift({
+      id: uid(),
+      title,
+      type: document.getElementById('mType').value,
+      meta: document.getElementById('mMeta').value.trim(),
+      rating: modalRating,
+      comment: document.getElementById('mComment').value.trim(),
+      created: Date.now(),
+    });
+  }
+
+  save(); closeModal(); render();
+});
+
+// Filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+// Sort
+document.getElementById('sortSelect').addEventListener('change', e => {
+  currentSort = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
