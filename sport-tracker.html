@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Спорт трекер 🏃</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage: #7d9e7a;
+    --moss: #4a6741;
+    --cream: #f5f0e8;
+    --warm: #e8dcc8;
+    --terracotta: #c06b4a;
+    --text: #2a2a2a;
+    --light-text: #7a7068;
+  }
+
+  body {
+    background: var(--cream);
+    font-family: 'Jost', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(125,158,122,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(192,107,74,0.08) 0%, transparent 50%);
+  }
+
+  .container { max-width: 580px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .season-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--moss);
+  }
+
+  h1 em { font-style: italic; color: var(--terracotta); }
+
+  .subtitle {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--light-text);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  /* Stats row */
+  .stats {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 28px 0 36px;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    background: white;
+    border-radius: 14px;
+    padding: 14px 22px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    min-width: 90px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--moss);
+    line-height: 1;
+  }
+
+  .stat-num.accent { color: var(--terracotta); }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* Week nav */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .week-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--moss);
+  }
+
+  .nav-btn {
+    background: white;
+    border: 1.5px solid var(--warm);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: var(--moss);
+  }
+
+  .nav-btn:hover { background: var(--warm); }
+
+  /* Days grid */
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+
+  .day-cell {
+    background: white;
+    border-radius: 12px;
+    padding: 10px 4px;
+    text-align: center;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+
+  .day-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.09); border-color: var(--warm); }
+
+  .day-cell.active {
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+
+  .day-cell.active .day-name,
+  .day-cell.active .day-num { color: white; }
+
+  .day-cell.active .day-icon { filter: grayscale(0); opacity: 1; }
+
+  .day-cell.today { border-color: var(--terracotta); }
+
+  .day-name {
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    font-weight: 500;
+  }
+
+  .day-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--moss);
+    margin: 4px 0;
+  }
+
+  .day-icon {
+    font-size: 14px;
+    opacity: 0.2;
+    filter: grayscale(1);
+    transition: all 0.2s;
+  }
+
+  /* Weekly goal indicator */
+  .week-goal {
+    background: white;
+    border-radius: 16px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    margin-bottom: 12px;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  .goal-dots {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--warm);
+    transition: all 0.25s;
+  }
+
+  .dot.filled { background: var(--sage); border-color: var(--sage); }
+  .dot.filled.bonus { background: var(--terracotta); border-color: var(--terracotta); }
+
+  .goal-text { flex: 1; font-size: 14px; color: var(--text); }
+  .goal-sub { font-size: 11px; color: var(--light-text); margin-top: 2px; }
+
+  /* History */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    padding: 4px 0 12px;
+    font-weight: 500;
+    animation: fadeUp 0.5s ease 0.25s both;
+  }
+
+  .history-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    animation: fadeUp 0.5s ease 0.3s both;
+  }
+
+  .hist-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: white;
+    border: 1.5px solid var(--warm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--light-text);
+    font-weight: 500;
+    cursor: default;
+    transition: all 0.2s;
+    title: '';
+  }
+
+  .hist-dot.done { background: var(--sage); border-color: var(--sage); color: white; }
+  .hist-dot.done.bonus { background: var(--terracotta); border-color: var(--terracotta); }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--light-text);
+    animation: fadeUp 0.7s ease 0.4s both;
+  }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="season-tag">🏃 весна 2026</div>
+    <h1>Спорт<br><em>2–3 рази</em> на тиждень</h1>
+    <p class="subtitle">натисни на день, коли тренувалась</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat-box" style="animation-delay:0.05s">
+      <div class="stat-num" id="totalCount">0</div>
+      <div class="stat-label">всього</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.1s">
+      <div class="stat-num accent" id="streakCount">0</div>
+      <div class="stat-label">тижнів ✓</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.15s">
+      <div class="stat-num" id="thisWeekCount">0</div>
+      <div class="stat-label">цей тиждень</div>
+    </div>
+  </div>
+
+  <div class="week-nav">
+    <button class="nav-btn" id="prevWeek">‹</button>
+    <div class="week-label" id="weekLabel"></div>
+    <button class="nav-btn" id="nextWeek">›</button>
+  </div>
+
+  <div class="days-grid" id="daysGrid"></div>
+
+  <div class="week-goal">
+    <div class="goal-dots" id="goalDots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div>
+      <div class="goal-text" id="goalText">Ціль тижня: 2–3 тренування</div>
+      <div class="goal-sub" id="goalSub">Продовжуй!</div>
+    </div>
+  </div>
+
+  <div class="section-label">Історія тренувань</div>
+  <div class="history-grid" id="historyGrid"></div>
+
+  <footer>рух — це життя ✦</footer>
+</div>
+
+<script>
+const DAY_NAMES = ['пн','вт','ср','чт','пт','сб','нд'];
+const MONTHS_UK = ['січень','лютий','березень','квітень','травень','червень','липень','серпень','вересень','жовтень','листопад','грудень'];
+
+let data = JSON.parse(localStorage.getItem('sport2026') || '{}');
+let currentWeekOffset = 0;
+
+function getMonday(d) {
+  const date = new Date(d);
+  const day = date.getDay() || 7;
+  date.setDate(date.getDate() - day + 1);
+  date.setHours(0,0,0,0);
+  return date;
+}
+
+function dateKey(d) {
+  return d.toISOString().slice(0, 10);
+}
+
+function save() {
+  localStorage.setItem('sport2026', JSON.stringify(data));
+}
+
+function getWeekDays(offset) {
+  const monday = getMonday(new Date());
+  monday.setDate(monday.getDate() + offset * 7);
+  return Array.from({length: 7}, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+}
+
+function countWeekSessions(days) {
+  return days.filter(d => data[dateKey(d)]).length;
+}
+
+function render() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = getWeekDays(currentWeekOffset);
+
+  // Week label
+  const start = days[0], end = days[6];
+  document.getElementById('weekLabel').textContent =
+    `${start.getDate()} ${MONTHS_UK[start.getMonth()]} – ${end.getDate()} ${MONTHS_UK[end.getMonth()]}`;
+
+  // Days grid
+  const grid = document.getElementById('daysGrid');
+  grid.innerHTML = '';
+  days.forEach(d => {
+    const key = dateKey(d);
+    const isToday = d.getTime() === today.getTime();
+    const cell = document.createElement('div');
+    cell.className = 'day-cell' + (data[key] ? ' active' : '') + (isToday ? ' today' : '');
+    cell.innerHTML = `
+      <div class="day-name">${DAY_NAMES[d.getDay() === 0 ? 6 : d.getDay() - 1]}</div>
+      <div class="day-num">${d.getDate()}</div>
+      <div class="day-icon">🏃</div>
+    `;
+    cell.addEventListener('click', () => {
+      data[key] = !data[key];
+      if (!data[key]) delete data[key];
+      save();
+      render();
+    });
+    grid.appendChild(cell);
+  });
+
+  // Week goal
+  const thisWeekCount = countWeekSessions(days);
+  const dots = document.getElementById('goalDots');
+  dots.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i < thisWeekCount ? ' filled' + (i >= 2 ? ' bonus' : '') : '');
+    dots.appendChild(dot);
+  }
+  document.getElementById('goalText').textContent =
+    thisWeekCount === 0 ? 'Ціль тижня: 2–3 тренування' :
+    thisWeekCount === 1 ? '1 тренування — гарний початок!' :
+    thisWeekCount === 2 ? '2 тренування — ціль виконана! 🎉' :
+    `${thisWeekCount} тренування — молодець! 💪`;
+  document.getElementById('goalSub').textContent =
+    thisWeekCount >= 2 ? 'Тиждень зараховано ✓' : `Ще ${2 - thisWeekCount} для виконання цілі`;
+
+  // Stats
+  const total = Object.keys(data).length;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('thisWeekCount').textContent = countWeekSessions(getWeekDays(0));
+
+  // Count consecutive weeks with >=2 sessions
+  let streak = 0;
+  for (let w = 0; w >= -52; w--) {
+    const wDays = getWeekDays(w);
+    const wCount = countWeekSessions(wDays);
+    if (wCount >= 2) streak++;
+    else if (w < 0) break;
+  }
+  document.getElementById('streakCount').textContent = streak;
+
+  // History — last 30 days
+  const hist = document.getElementById('historyGrid');
+  hist.innerHTML = '';
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = dateKey(d);
+    const div = document.createElement('div');
+    const weekSessions = countWeekSessions(getWeekDays(Math.floor((d - getMonday(today)) / (7*86400000))));
+    div.className = 'hist-dot' + (data[key] ? ' done' + (weekSessions >= 3 ? ' bonus' : '') : '');
+    div.textContent = d.getDate();
+    div.title = key;
+    hist.appendChild(div);
+  }
+}
+
+document.getElementById('prevWeek').addEventListener('click', () => { currentWeekOffset--; render(); });
+document.getElementById('nextWeek').addEventListener('click', () => { currentWeekOffset++; render(); });
+
+render();
+</script>
+</body>
+</html>
