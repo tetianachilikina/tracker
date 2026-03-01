@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idea Bank 💡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage: #7d9e7a;
+    --moss: #4a6741;
+    --cream: #f5f0e8;
+    --warm: #e8dcc8;
+    --terracotta: #c06b4a;
+    --text: #2a2a2a;
+    --light-text: #7a7068;
+    --cat-creative: #9b7fb6;
+    --cat-life: #7d9e7a;
+    --cat-content: #c06b4a;
+    --cat-biz: #5a8fa8;
+  }
+
+  body {
+    background: var(--cream);
+    font-family: 'Jost', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(125,158,122,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(192,107,74,0.08) 0%, transparent 50%);
+  }
+
+  .container { max-width: 700px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .season-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--moss);
+  }
+
+  h1 em { font-style: italic; color: var(--terracotta); }
+
+  .subtitle {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--light-text);
+    font-weight: 300;
+  }
+
+  /* Stats */
+  .stats {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 28px 0 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    background: white;
+    border-radius: 14px;
+    padding: 12px 20px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--moss);
+    line-height: 1;
+  }
+
+  .stat-num.accent { color: var(--terracotta); }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .filter-btn {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--warm);
+    background: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover { border-color: var(--sage); color: var(--sage); }
+  .filter-btn.active { background: var(--sage); border-color: var(--sage); color: white; }
+
+  .add-btn {
+    margin-left: auto;
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: none;
+    background: var(--terracotta);
+    color: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .add-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* Sort & search */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+
+  .search-input {
+    flex: 1;
+    border: 1.5px solid var(--warm);
+    background: white;
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--sage); }
+  .search-input::placeholder { color: #bbb; }
+
+  .sort-select {
+    border: 1.5px solid var(--warm);
+    background: white;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    flex-shrink: 0;
+  }
+
+  /* Cards */
+  .cards-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .idea-card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    border: 1.5px solid transparent;
+    border-left-width: 4px;
+    transition: all 0.22s ease;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .idea-card:hover { box-shadow: 0 5px 18px rgba(0,0,0,0.09); }
+  .idea-card.done { opacity: 0.6; }
+  .idea-card.done .idea-title { text-decoration: line-through; }
+
+  .idea-card[data-cat="creative"] { border-left-color: var(--cat-creative); }
+  .idea-card[data-cat="content"] { border-left-color: var(--cat-content); }
+  .idea-card[data-cat="life"] { border-left-color: var(--cat-life); }
+  .idea-card[data-cat="biz"] { border-left-color: var(--cat-biz); }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-main { flex: 1; min-width: 0; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .idea-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--moss);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .cat-badge {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .cat-badge.creative { background: #f0eaf6; color: var(--cat-creative); }
+  .cat-badge.content { background: #fdf0eb; color: var(--cat-content); }
+  .cat-badge.life { background: #edf4ec; color: var(--cat-life); }
+  .cat-badge.biz { background: #e8f2f6; color: var(--cat-biz); }
+
+  .priority-badge {
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .priority-badge.high { background: #fdecea; color: #c0392b; }
+  .priority-badge.mid { background: #fef9e7; color: #d4a017; }
+  .priority-badge.low { background: #f0f0f0; color: #888; }
+
+  .idea-notes {
+    font-size: 13px;
+    color: var(--light-text);
+    line-height: 1.5;
+    margin-top: 4px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    word-break: break-word;
+  }
+
+  .idea-notes:hover { background: var(--cream); }
+  .idea-notes.empty { color: #ccc; font-style: italic; }
+
+  .notes-input {
+    width: 100%;
+    border: 1.5px solid var(--warm);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    resize: none;
+    background: var(--cream);
+    transition: border-color 0.2s;
+    display: none;
+    margin-top: 4px;
+  }
+
+  .notes-input:focus { border-color: var(--sage); }
+
+  .card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 4px;
+    border-radius: 8px;
+    transition: all 0.15s;
+    color: var(--light-text);
+    line-height: 1;
+  }
+
+  .icon-btn:hover { background: var(--cream); }
+
+  .done-btn { font-size: 18px; }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal {
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.25s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--moss);
+    margin-bottom: 22px;
+  }
+
+  .modal-field { margin-bottom: 14px; }
+
+  .modal-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-bottom: 6px;
+    display: block;
+    font-weight: 500;
+  }
+
+  .modal-input, .modal-select, .modal-textarea {
+    width: 100%;
+    border: 1.5px solid var(--warm);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--sage); }
+  .modal-textarea { resize: none; height: 100px; }
+
+  .priority-options {
+    display: flex;
+    gap: 8px;
+  }
+
+  .priority-opt {
+    flex: 1;
+    padding: 9px;
+    border-radius: 10px;
+    border: 1.5px solid var(--warm);
+    background: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--light-text);
+  }
+
+  .priority-opt:hover { border-color: var(--sage); }
+  .priority-opt.selected.high { background: #fdecea; border-color: #c0392b; color: #c0392b; }
+  .priority-opt.selected.mid { background: #fef9e7; border-color: #d4a017; color: #d4a017; }
+  .priority-opt.selected.low { background: #f0f0f0; border-color: #888; color: #888; }
+
+  .modal-btns { display: flex; gap: 10px; margin-top: 22px; }
+
+  .modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-btn.primary { background: var(--sage); color: white; }
+  .modal-btn.primary:hover { opacity: 0.88; }
+  .modal-btn.secondary { background: var(--warm); color: var(--light-text); }
+  .modal-btn.secondary:hover { background: #ddd0bb; }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--light-text);
+  }
+
+  .empty-state .emoji { font-size: 44px; margin-bottom: 14px; }
+  .empty-state p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; }
+
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--light-text);
+  }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="season-tag">💡 2026</div>
+    <h1><em>Idea</em> Bank</h1>
+    <p class="subtitle">місце для всіх твоїх ідей</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat-box" style="animation-delay:0.05s">
+      <div class="stat-num" id="totalCount">0</div>
+      <div class="stat-label">всього</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.1s">
+      <div class="stat-num accent" id="highCount">0</div>
+      <div class="stat-label">🔥 пріоритет</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.15s">
+      <div class="stat-num" id="doneCount">0</div>
+      <div class="stat-label">реалізовано</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="filter-btn active" data-filter="all">Всі</button>
+    <button class="filter-btn" data-filter="creative">🎨 Творчість</button>
+    <button class="filter-btn" data-filter="content">🎬 Контент</button>
+    <button class="filter-btn" data-filter="life">🌿 Life</button>
+    <button class="filter-btn" data-filter="biz">💼 Бізнес</button>
+    <button class="filter-btn" data-filter="high">🔥 Топ</button>
+    <button class="add-btn" id="addBtn">+ Ідея</button>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-input" id="searchInput" placeholder="Пошук ідей...">
+    <select class="sort-select" id="sortSelect">
+      <option value="date">За датою</option>
+      <option value="priority">За пріоритетом</option>
+      <option value="title">За назвою</option>
+    </select>
+  </div>
+
+  <div class="cards-list" id="cardsList"></div>
+
+  <footer>ідеї чекають, щоб стати реальністю ✦</footer>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" style="display:none">
+  <div class="modal">
+    <h2 id="modalTitle">Нова ідея</h2>
+
+    <div class="modal-field">
+      <label class="modal-label">Ідея</label>
+      <input class="modal-input" id="mTitle" placeholder="Назва або суть ідеї">
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Категорія</label>
+      <select class="modal-select" id="mCat">
+        <option value="creative">🎨 Творчість</option>
+        <option value="content">🎬 Контент / відео</option>
+        <option value="life">🌿 Особисте / life</option>
+        <option value="biz">💼 Бізнес / проєкти</option>
+      </select>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Пріоритет</label>
+      <div class="priority-options">
+        <div class="priority-opt high" data-p="high">🔥 Топ</div>
+        <div class="priority-opt mid" data-p="mid">⚡ Середній</div>
+        <div class="priority-opt low" data-p="low">🌱 Колись</div>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Нотатки</label>
+      <textarea class="modal-textarea" id="mNotes" placeholder="Деталі, натхнення, як реалізувати..."></textarea>
+    </div>
+
+    <div class="modal-btns">
+      <button class="modal-btn secondary" id="cancelBtn">Скасувати</button>
+      <button class="modal-btn primary" id="saveBtn">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_LABELS = { creative: '🎨 Творчість', content: '🎬 Контент', life: '🌿 Life', biz: '💼 Бізнес' };
+const PRI_LABELS = { high: '🔥 Топ', mid: '⚡ Середній', low: '🌱 Колись' };
+const PRI_ORDER = { high: 0, mid: 1, low: 2 };
+
+let data = JSON.parse(localStorage.getItem('ideabank2026') || '[]');
+let currentFilter = 'all';
+let currentSort = 'date';
+let currentPriority = 'mid';
+let editingId = null;
+let searchQuery = '';
+
+function save() { localStorage.setItem('ideabank2026', JSON.stringify(data)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+function updateStats() {
+  document.getElementById('totalCount').textContent = data.filter(d => !d.done).length;
+  document.getElementById('highCount').textContent = data.filter(d => d.priority === 'high' && !d.done).length;
+  document.getElementById('doneCount').textContent = data.filter(d => d.done).length;
+}
+
+function getFiltered() {
+  let list = [...data];
+  const q = searchQuery.toLowerCase();
+  if (q) list = list.filter(d => d.title.toLowerCase().includes(q) || (d.notes || '').toLowerCase().includes(q));
+  if (currentFilter === 'high') list = list.filter(d => d.priority === 'high');
+  else if (currentFilter !== 'all') list = list.filter(d => d.cat === currentFilter);
+
+  if (currentSort === 'date') list.sort((a, b) => b.created - a.created);
+  else if (currentSort === 'priority') list.sort((a, b) => PRI_ORDER[a.priority] - PRI_ORDER[b.priority]);
+  else if (currentSort === 'title') list.sort((a, b) => a.title.localeCompare(b.title));
+
+  // done items always at bottom
+  list.sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0));
+  return list;
+}
+
+function render() {
+  updateStats();
+  const list = getFiltered();
+  const el = document.getElementById('cardsList');
+  el.innerHTML = '';
+
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">💡</div><p>Ідей поки немає.<br>Додай свою першу!</p></div>`;
+    return;
+  }
+
+  list.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'idea-card' + (item.done ? ' done' : '');
+    card.dataset.cat = item.cat;
+    card.style.animationDelay = (idx * 0.035) + 's';
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-main">
+          <div class="card-header">
+            <div class="idea-title">${item.title}</div>
+            <span class="cat-badge ${item.cat}">${CAT_LABELS[item.cat]}</span>
+            <span class="priority-badge ${item.priority}">${PRI_LABELS[item.priority]}</span>
+          </div>
+          <div class="idea-notes ${item.notes ? '' : 'empty'}" id="nt-${item.id}">${item.notes || '+ нотатки...'}</div>
+          <textarea class="notes-input" id="ni-${item.id}" placeholder="Деталі, натхнення...">${item.notes || ''}</textarea>
+        </div>
+        <div class="card-actions">
+          <button class="icon-btn done-btn" title="${item.done ? 'Відновити' : 'Реалізовано'}">${item.done ? '↩️' : '✅'}</button>
+          <button class="icon-btn edit-btn" title="Редагувати">✏️</button>
+          <button class="icon-btn del-btn" title="Видалити">🗑️</button>
+        </div>
+      </div>
+    `;
+
+    // Inline notes
+    const nt = card.querySelector(`#nt-${item.id}`);
+    const ni = card.querySelector(`#ni-${item.id}`);
+    nt.addEventListener('click', () => { nt.style.display = 'none'; ni.style.display = 'block'; ni.focus(); });
+    ni.addEventListener('blur', () => {
+      const it = data.find(d => d.id === item.id);
+      if (it) { it.notes = ni.value.trim(); save(); }
+      nt.textContent = ni.value.trim() || '+ нотатки...';
+      nt.className = 'idea-notes' + (ni.value.trim() ? '' : ' empty');
+      nt.style.display = '';
+      ni.style.display = 'none';
+    });
+
+    // Done
+    card.querySelector('.done-btn').addEventListener('click', () => {
+      const it = data.find(d => d.id === item.id);
+      if (it) { it.done = !it.done; save(); render(); }
+    });
+
+    // Edit
+    card.querySelector('.edit-btn').addEventListener('click', () => openModal(item));
+
+    // Delete
+    card.querySelector('.del-btn').addEventListener('click', () => {
+      if (confirm(`Видалити "${item.title}"?`)) {
+        data = data.filter(d => d.id !== item.id);
+        save(); render();
+      }
+    });
+
+    el.appendChild(card);
+  });
+}
+
+// Modal
+function openModal(item = null) {
+  editingId = item ? item.id : null;
+  currentPriority = item ? item.priority : 'mid';
+  document.getElementById('modalTitle').textContent = item ? 'Редагувати ідею' : 'Нова ідея';
+  document.getElementById('mTitle').value = item ? item.title : '';
+  document.getElementById('mCat').value = item ? item.cat : 'creative';
+  document.getElementById('mNotes').value = item ? (item.notes || '') : '';
+  updatePriorityUI();
+  document.getElementById('modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('mTitle').focus(), 50);
+}
+
+function closeModal() { document.getElementById('modal').style.display = 'none'; editingId = null; }
+
+function updatePriorityUI() {
+  document.querySelectorAll('.priority-opt').forEach(o => {
+    o.classList.toggle('selected', o.dataset.p === currentPriority);
+  });
+}
+
+document.querySelectorAll('.priority-opt').forEach(o => {
+  o.addEventListener('click', () => { currentPriority = o.dataset.p; updatePriorityUI(); });
+});
+
+document.getElementById('addBtn').addEventListener('click', () => openModal());
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const title = document.getElementById('mTitle').value.trim();
+  if (!title) { document.getElementById('mTitle').focus(); return; }
+
+  if (editingId) {
+    const item = data.find(d => d.id === editingId);
+    if (item) {
+      item.title = title;
+      item.cat = document.getElementById('mCat').value;
+      item.priority = currentPriority;
+      item.notes = document.getElementById('mNotes').value.trim();
+    }
+  } else {
+    data.unshift({
+      id: uid(),
+      title,
+      cat: document.getElementById('mCat').value,
+      priority: currentPriority,
+      notes: document.getElementById('mNotes').value.trim(),
+      done: false,
+      created: Date.now(),
+    });
+  }
+  save(); closeModal(); render();
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+document.getElementById('sortSelect').addEventListener('change', e => { currentSort = e.target.value; render(); });
+document.getElementById('searchInput').addEventListener('input', e => { searchQuery = e.target.value; render(); });
+
+render();
+</script>
+</body>
+</html>
