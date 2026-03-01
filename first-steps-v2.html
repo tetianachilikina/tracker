@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Перші кроки 🌱</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sage: #7d9e7a; --moss: #4a6741; --cream: #f5f0e8;
+    --warm: #e8dcc8; --terracotta: #c06b4a;
+    --text: #2a2a2a; --light-text: #7a7068;
+  }
+  body {
+    background: var(--cream); font-family: 'Jost', sans-serif;
+    color: var(--text); min-height: 100vh; padding: 40px 20px 60px;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(125,158,122,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(192,107,74,0.08) 0%, transparent 50%);
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 40px; animation: fadeDown 0.7s ease both; }
+  .season-tag { display: inline-block; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--sage); font-weight: 500; margin-bottom: 12px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 400; line-height: 1.15; color: var(--moss); }
+  h1 em { font-style: italic; color: var(--terracotta); }
+  .subtitle { margin-top: 10px; font-size: 13px; color: var(--light-text); font-weight: 300; line-height: 1.6; }
+
+  /* Year nav */
+  .year-nav { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 32px; animation: fadeUp 0.5s ease 0.1s both; }
+  .year-label { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--moss); }
+  .nav-btn { background: white; border: 1.5px solid var(--warm); border-radius: 50%; width: 38px; height: 38px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: var(--moss); }
+  .nav-btn:hover { background: var(--warm); }
+
+  /* Progress dots */
+  .progress-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; animation: fadeUp 0.5s ease 0.15s both; }
+  .prog-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--warm); transition: all 0.3s; }
+  .prog-dot.has-goals { background: var(--sage); }
+  .prog-dot.current { background: var(--terracotta); transform: scale(1.3); }
+
+  /* Month cards */
+  .months-list { display: flex; flex-direction: column; gap: 12px; animation: fadeUp 0.5s ease 0.2s both; }
+
+  .month-card { background: white; border-radius: 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); border: 1.5px solid transparent; overflow: hidden; transition: box-shadow 0.22s; }
+  .month-card:hover { box-shadow: 0 5px 20px rgba(0,0,0,0.09); }
+  .month-card.current { border-color: var(--terracotta); }
+  .month-card.has-goals { border-left: 4px solid var(--sage); }
+
+  .month-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; }
+  .month-left { display: flex; align-items: center; gap: 14px; }
+  .month-num { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--warm); line-height: 1; width: 32px; text-align: center; }
+  .month-card.has-goals .month-num { color: var(--sage); }
+  .month-card.current .month-num { color: var(--terracotta); }
+  .month-name-wrap .month-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--moss); }
+  .month-tag { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--light-text); margin-top: 2px; font-weight: 500; }
+  .month-card.current .month-tag { color: var(--terracotta); }
+  .month-right { display: flex; align-items: center; gap: 10px; }
+  .goal-count-badge { font-size: 11px; background: var(--cream); color: var(--light-text); padding: 3px 10px; border-radius: 10px; font-weight: 500; }
+  .month-card.has-goals .goal-count-badge { background: #edf4ec; color: var(--sage); }
+  .expand-icon { font-size: 14px; color: var(--light-text); transition: transform 0.25s ease; flex-shrink: 0; }
+  .month-card.open .expand-icon { transform: rotate(180deg); }
+
+  /* Month body */
+  .month-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--warm); }
+  .month-card.open .month-body { display: block; }
+
+  /* Goal cards inside month */
+  .goals-inside { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+
+  .goal-inside-card { background: var(--cream); border-radius: 14px; padding: 14px 16px; border: 1.5px solid transparent; transition: all 0.2s; }
+  .goal-inside-card:hover { border-color: var(--warm); }
+  .goal-inside-card.done { opacity: 0.6; }
+  .goal-inside-card.done .goal-inside-title { text-decoration: line-through; color: var(--light-text); }
+
+  .goal-inside-top { display: flex; align-items: center; gap: 10px; }
+  .goal-inside-title-input {
+    flex: 1; border: none; background: transparent; font-family: 'Playfair Display', serif;
+    font-size: 0.95rem; color: var(--moss); font-weight: 700; outline: none;
+    padding: 2px 0;
+  }
+  .goal-inside-title-input::placeholder { color: #bbb; font-weight: 400; }
+  .goal-inside-title { flex: 1; font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--moss); font-weight: 700; }
+
+  .goal-inside-actions { display: flex; gap: 2px; flex-shrink: 0; }
+  .icon-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 3px 5px; border-radius: 8px; transition: all 0.15s; color: var(--light-text); }
+  .icon-btn:hover { background: var(--warm); }
+
+  .goal-inside-steps {
+    margin-top: 10px;
+    width: 100%; border: 1.5px solid var(--warm); border-radius: 10px;
+    padding: 10px 12px; font-family: 'Jost', sans-serif; font-size: 13px;
+    color: var(--text); background: white; outline: none; resize: none;
+    min-height: 80px; line-height: 1.6; transition: border-color 0.2s, min-height 0.2s;
+  }
+  .goal-inside-steps:focus { border-color: var(--sage); min-height: 110px; }
+  .goal-inside-steps::placeholder { color: #bbb; font-style: italic; }
+
+  .goal-saved { font-size: 10px; color: var(--sage); letter-spacing: 1px; margin-top: 6px; opacity: 0; transition: opacity 0.3s; text-align: right; }
+  .goal-saved.show { opacity: 1; }
+
+  /* Add goal btn */
+  .add-goal-btn {
+    margin-top: 12px; width: 100%; padding: 11px;
+    border: 1.5px dashed var(--warm); border-radius: 12px;
+    background: transparent; font-family: 'Jost', sans-serif;
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--light-text); cursor: pointer; transition: all 0.2s;
+  }
+  .add-goal-btn:hover { border-color: var(--sage); color: var(--sage); background: #f8faf7; }
+
+  footer { text-align: center; margin-top: 48px; font-family: 'Playfair Display', serif; font-style: italic; font-size: 14px; color: var(--light-text); }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="season-tag">🌱 перші кроки</div>
+    <h1>Які <em>перші кроки</em><br>я зроблю?</h1>
+    <p class="subtitle">Щомісяця — свої цілі і конкретні дії</p>
+  </header>
+
+  <div class="year-nav">
+    <button class="nav-btn" id="prevYear">‹</button>
+    <div class="year-label" id="yearLabel"></div>
+    <button class="nav-btn" id="nextYear">›</button>
+  </div>
+
+  <div class="progress-row" id="progressRow"></div>
+  <div class="months-list" id="monthsList"></div>
+
+  <footer>крок за кроком — і гори зрушуються ✦</footer>
+</div>
+
+<script>
+const MONTHS = ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+
+const today = new Date();
+let viewYear = today.getFullYear();
+
+function storageKey(year, month) { return `steps2_${year}_${month}`; }
+
+function getGoals(year, month) {
+  try { return JSON.parse(localStorage.getItem(storageKey(year, month)) || '[]'); }
+  catch { return []; }
+}
+
+function saveGoals(year, month, goals) {
+  localStorage.setItem(storageKey(year, month), JSON.stringify(goals));
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+let saveTimers = {};
+
+function renderProgressRow() {
+  const pr = document.getElementById('progressRow');
+  pr.innerHTML = '';
+  for (let m = 0; m < 12; m++) {
+    const goals = getGoals(viewYear, m);
+    const isCurrent = viewYear === today.getFullYear() && m === today.getMonth();
+    const dot = document.createElement('div');
+    dot.className = 'prog-dot' + (goals.length > 0 ? ' has-goals' : '') + (isCurrent ? ' current' : '');
+    dot.title = MONTHS[m];
+    pr.appendChild(dot);
+  }
+}
+
+function buildGoalCard(goal, year, month, onUpdate) {
+  const card = document.createElement('div');
+  card.className = 'goal-inside-card' + (goal.done ? ' done' : '');
+  card.dataset.id = goal.id;
+
+  card.innerHTML = `
+    <div class="goal-inside-top">
+      <input class="goal-inside-title-input" value="${goal.title}" placeholder="Назва цілі...">
+      <div class="goal-inside-actions">
+        <button class="icon-btn done-btn" title="${goal.done ? 'Відновити' : 'Виконано'}">${goal.done ? '↩️' : '✅'}</button>
+        <button class="icon-btn del-btn" title="Видалити">🗑️</button>
+      </div>
+    </div>
+    <textarea class="goal-inside-steps" placeholder="Які перші кроки? Що зроблю вже цього місяця...">${goal.steps || ''}</textarea>
+    <div class="goal-saved" id="saved-${goal.id}">✓ збережено</div>
+  `;
+
+  const titleInput = card.querySelector('.goal-inside-title-input');
+  const stepsTA = card.querySelector('.goal-inside-steps');
+  const savedEl = card.querySelector(`#saved-${goal.id}`);
+
+  function triggerSave() {
+    goal.title = titleInput.value;
+    goal.steps = stepsTA.value;
+    clearTimeout(saveTimers[goal.id]);
+    saveTimers[goal.id] = setTimeout(() => {
+      onUpdate();
+      savedEl.classList.add('show');
+      setTimeout(() => savedEl.classList.remove('show'), 2000);
+    }, 700);
+  }
+
+  titleInput.addEventListener('input', triggerSave);
+  stepsTA.addEventListener('input', triggerSave);
+
+  card.querySelector('.done-btn').addEventListener('click', () => {
+    goal.done = !goal.done;
+    onUpdate();
+    card.className = 'goal-inside-card' + (goal.done ? ' done' : '');
+    card.querySelector('.done-btn').textContent = goal.done ? '↩️' : '✅';
+    card.querySelector('.done-btn').title = goal.done ? 'Відновити' : 'Виконано';
+  });
+
+  card.querySelector('.del-btn').addEventListener('click', () => {
+    if (confirm('Видалити цю ціль?')) {
+      card.remove();
+      onUpdate(goal.id);
+      renderProgressRow();
+    }
+  });
+
+  return card;
+}
+
+function renderMonth(m) {
+  const goals = getGoals(viewYear, m);
+  const isCurrent = viewYear === today.getFullYear() && m === today.getMonth();
+  const isPast = viewYear < today.getFullYear() || (viewYear === today.getFullYear() && m < today.getMonth());
+
+  const card = document.createElement('div');
+  card.className = 'month-card'
+    + (isCurrent ? ' current' : '')
+    + (goals.length > 0 ? ' has-goals' : '');
+  if (isCurrent) card.classList.add('open');
+
+  card.innerHTML = `
+    <div class="month-header">
+      <div class="month-left">
+        <div class="month-num">${String(m+1).padStart(2,'0')}</div>
+        <div class="month-name-wrap">
+          <div class="month-name">${MONTHS[m]}</div>
+          <div class="month-tag">${isCurrent ? '● зараз' : isPast ? 'минулий' : 'попереду'}</div>
+        </div>
+      </div>
+      <div class="month-right">
+        <div class="goal-count-badge">${goals.length > 0 ? goals.length + ' ' + (goals.length === 1 ? 'ціль' : 'цілі') : 'немає цілей'}</div>
+        <div class="expand-icon">⌄</div>
+      </div>
+    </div>
+    <div class="month-body">
+      <div class="goals-inside" id="goals-${m}"></div>
+      <button class="add-goal-btn" id="add-${m}">+ Додати ціль</button>
+    </div>
+  `;
+
+  card.querySelector('.month-header').addEventListener('click', () => {
+    card.classList.toggle('open');
+  });
+
+  const goalsContainer = card.querySelector(`#goals-${m}`);
+  let localGoals = [...goals];
+
+  function onUpdate(deletedId) {
+    if (deletedId) {
+      localGoals = localGoals.filter(g => g.id !== deletedId);
+    }
+    saveGoals(viewYear, m, localGoals);
+    // Update badge
+    card.querySelector('.goal-count-badge').textContent =
+      localGoals.length > 0 ? localGoals.length + ' ' + (localGoals.length === 1 ? 'ціль' : 'цілі') : 'немає цілей';
+    card.className = 'month-card'
+      + (isCurrent ? ' current' : '')
+      + (localGoals.length > 0 ? ' has-goals' : '')
+      + (card.classList.contains('open') ? ' open' : '');
+    renderProgressRow();
+  }
+
+  localGoals.forEach(goal => {
+    goalsContainer.appendChild(buildGoalCard(goal, viewYear, m, onUpdate));
+  });
+
+  card.querySelector(`#add-${m}`).addEventListener('click', () => {
+    const newGoal = { id: uid(), title: '', steps: '', done: false };
+    localGoals.push(newGoal);
+    saveGoals(viewYear, m, localGoals);
+    onUpdate();
+    const newCard = buildGoalCard(newGoal, viewYear, m, onUpdate);
+    goalsContainer.appendChild(newCard);
+    newCard.querySelector('.goal-inside-title-input').focus();
+    if (!card.classList.contains('open')) card.classList.add('open');
+  });
+
+  return card;
+}
+
+function render() {
+  document.getElementById('yearLabel').textContent = viewYear;
+  renderProgressRow();
+
+  const list = document.getElementById('monthsList');
+  list.innerHTML = '';
+  for (let m = 0; m < 12; m++) {
+    list.appendChild(renderMonth(m));
+  }
+}
+
+document.getElementById('prevYear').addEventListener('click', () => { viewYear--; render(); });
+document.getElementById('nextYear').addEventListener('click', () => { viewYear++; render(); });
+
+render();
+</script>
+</body>
+</html>
