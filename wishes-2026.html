@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 бажань на рік 🌿</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage: #7d9e7a;
+    --moss: #4a6741;
+    --cream: #f5f0e8;
+    --warm: #e8dcc8;
+    --terracotta: #c06b4a;
+    --text: #2a2a2a;
+    --light-text: #7a7068;
+  }
+
+  body {
+    background: var(--cream);
+    font-family: 'Jost', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(125,158,122,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(192,107,74,0.08) 0%, transparent 50%);
+  }
+
+  .container { max-width: 640px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .season-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--moss);
+  }
+
+  h1 em { font-style: italic; color: var(--terracotta); }
+
+  .subtitle {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--light-text);
+    font-weight: 300;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    margin: 28px auto 0;
+    max-width: 300px;
+  }
+
+  .progress-bar-bg {
+    height: 6px;
+    background: var(--warm);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sage), var(--terracotta));
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .progress-label {
+    text-align: center;
+    font-size: 12px;
+    color: var(--light-text);
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* Stats */
+  .stats {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 28px 0 36px;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    background: white;
+    border-radius: 14px;
+    padding: 12px 20px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--moss);
+    line-height: 1;
+  }
+
+  .stat-num.accent { color: var(--terracotta); }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* Filter tabs */
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--warm);
+    background: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover { border-color: var(--sage); color: var(--sage); }
+  .filter-btn.active { background: var(--sage); border-color: var(--sage); color: white; }
+
+  /* Category sections */
+  .category-section { margin-bottom: 28px; animation: fadeUp 0.5s ease both; }
+
+  .category-title {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--light-text);
+    margin-bottom: 10px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .category-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--warm);
+  }
+
+  /* Goal cards */
+  .goals-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .goal-card {
+    background: white;
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    transition: all 0.22s ease;
+    user-select: none;
+  }
+
+  .goal-card:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(0,0,0,0.08); border-color: var(--warm); }
+
+  .goal-card.done { background: #f8faf7; border-color: rgba(125,158,122,0.25); }
+  .goal-card.done .goal-text { text-decoration: line-through; color: var(--light-text); }
+
+  .checkbox {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--warm);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.22s ease;
+    background: white;
+  }
+
+  .goal-card.done .checkbox { background: var(--sage); border-color: var(--sage); }
+
+  .checkmark { opacity: 0; transform: scale(0); transition: all 0.2s ease; color: white; font-size: 12px; }
+  .goal-card.done .checkmark { opacity: 1; transform: scale(1); }
+
+  .goal-text { font-size: 14px; font-weight: 400; line-height: 1.35; transition: all 0.22s ease; flex: 1; }
+
+  .goal-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    color: var(--warm);
+    flex-shrink: 0;
+    width: 24px;
+    text-align: right;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--light-text);
+  }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="season-tag">✨ 2026</div>
+    <h1>100 бажань<br>на <em>рік</em></h1>
+    <p class="subtitle">натисни, щоб відмітити виконане</p>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <div class="progress-label" id="progressLabel">0 / 100 виконано</div>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat-box" style="animation-delay:0.05s">
+      <div class="stat-num accent" id="doneCount">0</div>
+      <div class="stat-label">виконано</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.1s">
+      <div class="stat-num" id="leftCount">0</div>
+      <div class="stat-label">залишилось</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.15s">
+      <div class="stat-num" id="pctCount">0%</div>
+      <div class="stat-label">прогрес</div>
+    </div>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div id="mainContent"></div>
+
+  <footer>мрій велико, дій щодня ✦</footer>
+</div>
+
+<script>
+const categories = [
+  {
+    id: 'sport',
+    label: '🏃 Здоров\'я та тіло',
+    items: [
+      'Регулярно займатися спортом',
+      'Добре харчуватися',
+      'Чиста шкіра обличчя',
+      'Регулярно доглядати за своїм тілом',
+      'Видалити непотрібні родимки',
+      'Позайматися спортом у дівчачому просторі',
+      'Лягати раніше, вставати раніше',
+      'Прогулянки в середині дня',
+      'Більше часу проводити на вулиці у будній день',
+      'Більше часу на свіжому повітрі',
+    ]
+  },
+  {
+    id: 'books',
+    label: '📚 Книжки та читання',
+    items: [
+      'Прочитати 50 книжок',
+      'Заробляти гроші на книжках',
+      'Набрати підписників на акаунт клубу',
+      'Створити книжкову офлайн подію для французів',
+      'Зібрати гроші на книжковий блокнот на Ulule',
+      'Роздрукувати книжковий щоденник',
+      'Багато нових книжок',
+      'Читати зранку',
+      'Продовжувати вести клуб',
+    ]
+  },
+  {
+    id: 'creative',
+    label: '🎨 Творчість',
+    items: [
+      'Спробувати щось нове творче — мозаїка чи щось таке',
+      'Навчитися шити',
+      'Час на в\'язання та шиття',
+      'Час на десерти',
+      'Пошити чохол для книги',
+      'Зв\'язати собі шапку і шарф',
+      'Гарний щоденник-скрапбук за рік',
+      'Створювати дизайн',
+      'Вишиванка',
+      'Журнал про сумо або мерч на цю тему',
+      'Почати писати книгу',
+      'Написати повноцінне оповідання',
+      'Тексти в Substack',
+    ]
+  },
+  {
+    id: 'content',
+    label: '🎬 Контент та онлайн',
+    items: [
+      'Блог на YouTube',
+      'Навчитися знімати на камеру і монтувати',
+      'Освоїти базу монтажу відео/аудіо',
+      'Присутність в інтернеті',
+      'Викладати фото в інстаграм',
+      'Свій Telegram або Threads',
+      'Свій сайт',
+      'Публічність',
+      'З кимось посотрудничати у своєму особистому проєкті',
+      'Айпад',
+    ]
+  },
+  {
+    id: 'money',
+    label: '💶 Фінанси та бізнес',
+    items: [
+      'Пасивний дохід',
+      'Дохід 2к на місяць',
+      'Монетизувати Міро',
+      'Відкрити свій бізнес і бути підприємицею',
+      'Мати своїх клієнтів з французької мови',
+      'Продавати успішно свої продукти',
+      'Інвестувати гроші',
+      'Купити квартиру/дім',
+      'Адвент-календар Papier',
+    ]
+  },
+  {
+    id: 'travel',
+    label: '✈️ Подорожі',
+    items: [
+      'Поїхати в Ірландію',
+      'Поїхати в Японію',
+      'Поїхати в Грузію',
+      'Дім у селі влітку',
+    ]
+  },
+  {
+    id: 'learn',
+    label: '🇫🇷 Навчання та мови',
+    items: [
+      'Отримати C2 по французькій мові',
+      'Покращити рівень англійської',
+      'Здати на права',
+      'Навчити Марка читати українською',
+      'Пройти курс або воркшоп для себе',
+      'Розширити кругозір',
+    ]
+  },
+  {
+    id: 'home',
+    label: '🏠 Дім та побут',
+    items: [
+      'Чистий дім',
+      'Готувати їжу вдома',
+      'Чиста та охайна кімната Марка',
+      'Нові рушники та постіль',
+      'Картини на стінах',
+      'Рослини вдома',
+      'Персидський килим',
+      'Зручний стілець для роботи',
+      'Новий чайник',
+      'Новий диван',
+      'Переробити кімнату Марка',
+      'Новий принтер',
+    ]
+  },
+  {
+    id: 'style',
+    label: '👗 Стиль та образ',
+    items: [
+      'Бути стильною',
+      'Охайніше виглядати повсякденно',
+      'Стильно сміливо одягатися і почувати себе собою',
+      'Кулончик з серцем',
+    ]
+  },
+  {
+    id: 'life',
+    label: '💛 Життя та відносини',
+    items: [
+      'Мати домашню тварину',
+      'Мати справжніх друзів',
+      'Тематичне свято, може день народження',
+      'Вихідні без роботи',
+      'Вихідні — відпочинок',
+      'Частіше деконнект і менше залежності від телефону',
+      'Робити щось для України',
+      'Відсвяткувати своє весілля так, щоб мені сподобалось',
+      'Сходити на виставу в театр La Criée',
+      'Сходити на концерт',
+      'Зробити фотосесію родиною',
+      'Декілька фотосесій справжньої себе',
+      'Постріляти',
+      'Сходити на урок театру',
+      'Побувати хоч на одній цікавій офлайн події',
+      'Створити захід про Україну в Марселі',
+      'Волонтерство',
+      'Проводити більше часу з Марком',
+      'Більше часу приділяти відносинам',
+      'Новий спосіб дозвілля',
+      'Отримати документи',
+      'Отримати документи французькі',
+    ]
+  },
+];
+
+let savedData = JSON.parse(localStorage.getItem('wishes2026') || '{}');
+
+function getKey(text) { return text.toLowerCase().trim(); }
+
+function save() { localStorage.setItem('wishes2026', JSON.stringify(savedData)); }
+
+let currentFilter = 'all';
+
+function getTotalCount() {
+  let total = 0;
+  categories.forEach(c => total += c.items.length);
+  return total;
+}
+
+function getDoneCount() {
+  let done = 0;
+  categories.forEach(c => c.items.forEach(item => { if (savedData[getKey(item)]) done++; }));
+  return done;
+}
+
+function render() {
+  const total = getTotalCount();
+  const done = getDoneCount();
+  const pct = Math.round(done / total * 100);
+
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${done} / ${total} виконано`;
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('leftCount').textContent = total - done;
+  document.getElementById('pctCount').textContent = pct + '%';
+
+  // Filters
+  const filtersEl = document.getElementById('filters');
+  filtersEl.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn' + (currentFilter === 'all' ? ' active' : '');
+  allBtn.textContent = 'Всі';
+  allBtn.addEventListener('click', () => { currentFilter = 'all'; render(); });
+  filtersEl.appendChild(allBtn);
+
+  const doneBtn = document.createElement('button');
+  doneBtn.className = 'filter-btn' + (currentFilter === 'done' ? ' active' : '');
+  doneBtn.textContent = '✓ Виконані';
+  doneBtn.addEventListener('click', () => { currentFilter = 'done'; render(); });
+  filtersEl.appendChild(doneBtn);
+
+  const leftBtn = document.createElement('button');
+  leftBtn.className = 'filter-btn' + (currentFilter === 'left' ? ' active' : '');
+  leftBtn.textContent = 'В процесі';
+  leftBtn.addEventListener('click', () => { currentFilter = 'left'; render(); });
+  filtersEl.appendChild(leftBtn);
+
+  // Content
+  const content = document.getElementById('mainContent');
+  content.innerHTML = '';
+  let globalNum = 1;
+
+  categories.forEach((cat, ci) => {
+    const visibleItems = cat.items.filter(item => {
+      const isDone = !!savedData[getKey(item)];
+      if (currentFilter === 'done') return isDone;
+      if (currentFilter === 'left') return !isDone;
+      return true;
+    });
+    if (visibleItems.length === 0) { globalNum += cat.items.length; return; }
+
+    const section = document.createElement('div');
+    section.className = 'category-section';
+    section.style.animationDelay = (ci * 0.04) + 's';
+
+    const title = document.createElement('div');
+    title.className = 'category-title';
+    title.textContent = cat.label;
+    section.appendChild(title);
+
+    const list = document.createElement('div');
+    list.className = 'goals-list';
+
+    cat.items.forEach((item, ii) => {
+      const num = globalNum++;
+      const show = currentFilter === 'all' || (currentFilter === 'done' && savedData[getKey(item)]) || (currentFilter === 'left' && !savedData[getKey(item)]);
+      if (!show) return;
+
+      const card = document.createElement('div');
+      const isDone = !!savedData[getKey(item)];
+      card.className = 'goal-card' + (isDone ? ' done' : '');
+
+      card.innerHTML = `
+        <div class="goal-num">${num}</div>
+        <div class="checkbox"><span class="checkmark">✓</span></div>
+        <div class="goal-text">${item}</div>
+      `;
+
+      card.addEventListener('click', () => {
+        const k = getKey(item);
+        savedData[k] = !savedData[k];
+        save();
+        render();
+      });
+
+      list.appendChild(card);
+    });
+
+    section.appendChild(list);
+    content.appendChild(section);
+  });
+}
+
+// Count all items for global numbering fix
+function renderFixed() {
+  // Recalculate global nums correctly
+  render();
+}
+
+renderFixed();
+</script>
+</body>
+</html>
