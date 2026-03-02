@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Décrire une personne</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#faf7f2;--ink:#1a1208;--rose:#c9656a;--sage:#6a9c7a;--gold:#d4a843;--muted:#8a7d6e;--card:#fff9f3;--border:#e8ddd0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;padding:2rem 1rem}
+  header{text-align:center;margin-bottom:2.5rem}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:-1px}
+  h1 em{color:var(--rose);font-style:italic}
+  header p{color:var(--muted);margin-top:.4rem;font-weight:300}
+  .tabs{display:flex;gap:.5rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap}
+  .tb{background:none;border:2px solid var(--border);border-radius:50px;padding:.5rem 1.3rem;font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;color:var(--muted);transition:all .2s}
+  .tb.active{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tb:hover:not(.active){border-color:var(--ink);color:var(--ink)}
+  .sec{display:none}.sec.active{display:block}
+  .pbar{height:4px;background:var(--border);border-radius:2px;margin-bottom:1.2rem;overflow:hidden}
+  .pfill{height:100%;background:var(--rose);border-radius:2px;transition:width .4s}
+  .btn{padding:.6rem 1.6rem;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s}
+  .bp{background:var(--ink);color:#fff}.bp:hover{background:#333}
+  .bo{background:none;border:2px solid var(--border);color:var(--ink)}.bo:hover{border-color:var(--ink)}
+  .br{background:var(--rose);color:#fff}
+  /* flashcard */
+  .fca{max-width:480px;margin:0 auto;text-align:center}
+  .ctr{font-size:.85rem;color:var(--muted);margin-bottom:.8rem}
+  .card{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:3rem 2rem;cursor:pointer;user-select:none;min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.06);transition:transform .15s,box-shadow .15s}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.1)}
+  .fw{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:700}
+  .fh{font-size:.8rem;color:var(--muted);margin-top:1.2rem}
+  .bk{display:none;text-align:center}
+  .card.fl .bk{display:block}.card.fl .fh{display:none}
+  .tr{font-size:1.5rem;font-weight:500;color:var(--rose);margin-bottom:.6rem}
+  .ex{font-style:italic;color:var(--muted);font-size:.92rem;border-top:1px solid var(--border);padding-top:.7rem;margin-top:.7rem}
+  .nav{display:flex;gap:.8rem;justify-content:center;margin-top:1.2rem}
+  /* match */
+  .mg{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;max-width:680px;margin:0 auto}
+  .mc{display:flex;flex-direction:column;gap:.5rem}
+  .mi{background:var(--card);border:2px solid var(--border);border-radius:11px;padding:.8rem 1rem;cursor:pointer;font-size:.9rem;transition:all .2s;text-align:center}
+  .mi:hover{border-color:var(--gold)}
+  .mi.sel{border-color:var(--rose);background:#fdf0f0}
+  .mi.mat{border-color:var(--sage);background:#eef7f0;color:var(--sage);pointer-events:none}
+  .mi.wr{border-color:var(--rose);animation:sh .3s}
+  @keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  /* fill */
+  .wb{display:flex;flex-wrap:wrap;gap:.5rem;max-width:640px;margin:0 auto 1.2rem;background:var(--card);border:2px dashed var(--border);border-radius:13px;padding:.9rem}
+  .wc{background:#fff;border:1.5px solid var(--border);border-radius:50px;padding:.3rem .85rem;font-size:.85rem;cursor:pointer;transition:all .2s}
+  .wc:hover{border-color:var(--rose);color:var(--rose)}
+  .wc.used{opacity:.3;pointer-events:none}
+  .el{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:.9rem}
+  .ei{background:var(--card);border:2px solid var(--border);border-radius:13px;padding:1.1rem 1.4rem;font-size:.97rem;line-height:1.8}
+  .hl{font-style:italic;color:var(--muted);font-size:.83rem;margin-bottom:.3rem}
+  .ei input{border:none;border-bottom:2px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:.97rem;color:var(--ink);width:150px;padding:0 3px;outline:none;transition:border-color .2s}
+  .ei input:focus{border-bottom-color:var(--rose)}
+  .ei input.ok{border-bottom-color:var(--sage);color:var(--sage)}
+  .ei input.no{border-bottom-color:var(--rose);color:var(--rose)}
+  /* quiz */
+  .qa{max-width:540px;margin:0 auto}
+  .qq{font-family:'Playfair Display',serif;font-size:1.45rem;margin-bottom:1.3rem;text-align:center;min-height:56px}
+  .qq em{color:var(--rose);font-style:normal}
+  .qo{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.2rem}
+  .qb{background:var(--card);border:2px solid var(--border);border-radius:13px;padding:.9rem;cursor:pointer;font-size:.9rem;text-align:center;transition:all .2s;font-family:'DM Sans',sans-serif}
+  .qb:hover:not(:disabled){border-color:var(--gold);transform:translateY(-1px)}
+  .qb.ok2{border-color:var(--sage);background:#eef7f0;color:var(--sage)}
+  .qb.no2{border-color:var(--rose);background:#fdf0f0;color:var(--rose)}
+  .qb:disabled{cursor:default}
+  .qf{text-align:center;font-size:1rem;min-height:26px;font-weight:500}
+  .qf.g{color:var(--sage)}.qf.b{color:var(--rose)}
+  .rb{text-align:center;background:var(--card);border:2px solid var(--border);border-radius:18px;padding:2.5rem 2rem;max-width:380px;margin:0 auto}
+  .bn{font-family:'Playfair Display',serif;font-size:4.5rem;font-weight:700;color:var(--rose);line-height:1}
+  .rb p{color:var(--muted);margin-top:.8rem}
+  .stit{text-align:center;font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:1.3rem;color:var(--muted)}
+  .ar{display:flex;gap:.7rem;justify-content:center;margin-top:1.3rem;flex-wrap:wrap}
+  .sc{text-align:center;font-size:.88rem;color:var(--muted);margin-top:.4rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Décrire une <em>personne</em></h1>
+  <p>Vocabulaire français — adjectifs &amp; expressions</p>
+</header>
+<div class="tabs">
+  <button class="tb active" onclick="showTab('fc',this)">🃏 Картки</button>
+  <button class="tb" onclick="showTab('mt',this)">🔗 З'єднати</button>
+  <button class="tb" onclick="showTab('fb',this)">✏️ Вставити слово</button>
+  <button class="tb" onclick="showTab('qz',this)">🎯 Тест</button>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="sec active" id="sec-fc">
+  <div class="fca">
+    <div class="ctr" id="ctr">Картка 1 / 30</div>
+    <div class="pbar"><div class="pfill" id="pfill" style="width:3%"></div></div>
+    <div class="card" id="card" onclick="flip()">
+      <div class="fw" id="cfw"></div>
+      <div class="fh">👆 Натисни, щоб побачити переклад</div>
+      <div class="bk">
+        <div class="tr" id="ctr2"></div>
+        <div class="ex" id="cex"></div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn bo" onclick="prev()">← Назад</button>
+      <button class="btn bp" onclick="next()">Далі →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MATCH -->
+<div class="sec" id="sec-mt">
+  <p class="stit">З'єднай французьке слово з перекладом</p>
+  <div class="mg"><div class="mc" id="ml"></div><div class="mc" id="mr"></div></div>
+  <div class="ar"><div id="ms" class="sc"></div></div>
+  <div class="ar"><button class="btn bo" onclick="initM()">🔄 Нові слова</button></div>
+</div>
+
+<!-- FILL -->
+<div class="sec" id="sec-fb">
+  <p class="stit">Вибери слово з банку</p>
+  <div class="wb" id="wb"></div>
+  <div class="el" id="el"></div>
+  <div class="ar">
+    <button class="btn bp" onclick="chkFill()">Перевірити</button>
+    <button class="btn bo" onclick="initFill()">🔄 Нові речення</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="sec" id="sec-qz">
+  <div class="qa">
+    <div class="pbar"><div class="pfill" id="qp" style="width:0%"></div></div>
+    <div class="sc" id="qctr">Питання 1 / 10</div><br>
+    <div class="qq" id="qq"></div>
+    <div class="qo" id="qo"></div>
+    <div class="qf" id="qf"></div>
+    <div id="qr" style="display:none">
+      <div class="rb">
+        <div class="bn" id="qsn"></div>
+        <p id="qsm"></p>
+        <div class="ar"><button class="btn br" onclick="initQ()">🔄 Ще раз</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const V=[
+  {f:"sympathique",u:"приємний, милий",e:"Il est sympathique avec tout le monde."},
+  {f:"sociable",u:"товариський",e:"Elle est très sociable et a beaucoup d'amis."},
+  {f:"chaleureux / chaleureuse",u:"теплий, привітний",e:"C'est quelqu'un de chaleureux."},
+  {f:"tolérant / tolérante",u:"толерантний",e:"Mon voisin est tolérant."},
+  {f:"patient / patiente",u:"терплячий",e:"La professeure est très patiente."},
+  {f:"honnête",u:"чесний",e:"C'est quelqu'un d'honnête."},
+  {f:"franc / franche",u:"відвертий",e:"Mon meilleur ami est franc."},
+  {f:"généreux / généreuse",u:"щедрий",e:"Il est généreux avec ses amis."},
+  {f:"gentil / gentille",u:"добрий, ніжний",e:"Ma copine est très gentille."},
+  {f:"doux / douce",u:"ніжний, м'який",e:"Elle a un caractère doux."},
+  {f:"sensible",u:"чутливий",e:"C'est quelqu'un de très sensible."},
+  {f:"bon / bonne",u:"добрий",e:"C'est une bonne personne."},
+  {f:"cultivé / cultivée",u:"освічений",e:"Il est très cultivé."},
+  {f:"modeste",u:"скромний",e:"Elle est modeste malgré son talent."},
+  {f:"travailleur / travailleuse",u:"працьовитий",e:"Mon petit ami est très travailleur."},
+  {f:"intelligent / intelligente",u:"розумний",e:"C'est quelqu'un d'intelligent."},
+  {f:"sérieux / sérieuse",u:"серйозний",e:"Il est sérieux dans ses études."},
+  {f:"intéressant / intéressante",u:"цікавий",e:"Ma meilleure amie est très intéressante."},
+  {f:"charmant / charmante",u:"чарівний",e:"Elle est charmante et souriante."},
+  {f:"courageux / courageuse",u:"сміливий",e:"C'est quelqu'un de courageux."},
+  {f:"introverti(e)",u:"інтроверт / інтровертка",e:"Je suis un peu introvertie."},
+  {f:"extraverti(e)",u:"екстраверт / екстравертка",e:"Mon copain est très extraverti."},
+  {f:"parler fort",u:"говорити голосно",e:"Il aime bien parler fort."},
+  {f:"rire avec ses amis",u:"сміятися з друзями",e:"J'aime rire avec mes amis."},
+  {f:"se fâcher",u:"сердитися",e:"Elle ne se fâche jamais."},
+  {f:"copain / copine",u:"друг / подруга",e:"C'est mon copain de classe."},
+  {f:"petit ami / petite amie",u:"хлопець / дівчина",e:"J'ai une petite amie sympa."},
+  {f:"meilleur(e) ami(e)",u:"найкращий друг / подруга",e:"Ma meilleure amie est chaleureuse."},
+  {f:"animal de compagnie",u:"домашня тварина",e:"J'aime bien les animaux de compagnie."},
+  {f:"un chat / un chien",u:"кіт / собака",e:"J'ai un chien de race géante."},
+];
+
+// FLASHCARD
+let fi=0;
+function rc(){
+  const w=V[fi];
+  document.getElementById('card').classList.remove('fl');
+  document.getElementById('cfw').textContent=w.f;
+  document.getElementById('ctr2').textContent=w.u;
+  document.getElementById('cex').textContent=w.e;
+  document.getElementById('ctr').textContent='Картка '+(fi+1)+' / '+V.length;
+  document.getElementById('pfill').style.width=((fi+1)/V.length*100)+'%';
+}
+function flip(){document.getElementById('card').classList.toggle('fl');}
+function next(){fi=(fi+1)%V.length;rc();}
+function prev(){fi=(fi-1+V.length)%V.length;rc();}
+rc();
+
+// MATCH
+let sel=null,ms=0,mt=0;
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+function initM(){
+  sel=null;ms=0;
+  const sub=sh(V).slice(0,8);mt=sub.length;
+  const L=sh(sub),R=sh(sub);
+  document.getElementById('ml').innerHTML='';
+  document.getElementById('mr').innerHTML='';
+  document.getElementById('ms').textContent='';
+  L.forEach(w=>{const e=document.createElement('div');e.className='mi';e.textContent=w.f;e.dataset.k=w.f;e.dataset.s='L';e.onclick=()=>hm(e);document.getElementById('ml').appendChild(e);});
+  R.forEach(w=>{const e=document.createElement('div');e.className='mi';e.textContent=w.u;e.dataset.k=w.f;e.dataset.s='R';e.onclick=()=>hm(e);document.getElementById('mr').appendChild(e);});
+}
+function hm(el){
+  if(el.classList.contains('mat'))return;
+  if(!sel){sel=el;el.classList.add('sel');return;}
+  if(sel===el){el.classList.remove('sel');sel=null;return;}
+  if(sel.dataset.s===el.dataset.s){sel.classList.remove('sel');sel=el;el.classList.add('sel');return;}
+  if(sel.dataset.k===el.dataset.k){
+    sel.classList.remove('sel');sel.classList.add('mat');el.classList.add('mat');
+    ms++;document.getElementById('ms').textContent='✅ '+ms+' / '+mt;
+    if(ms===mt)setTimeout(()=>{document.getElementById('ms').textContent='🎉 Всі пари знайдено!';},300);
+  }else{
+    const p=sel;p.classList.remove('sel');el.classList.add('wr');p.classList.add('wr');
+    setTimeout(()=>{el.classList.remove('wr');p.classList.remove('wr');},600);
+  }
+  sel=null;
+}
+initM();
+
+// FILL
+const FS=[
+  {s:"Mon meilleur ami est très ___. Il aide toujours les autres.",a:"généreux",h:"(щедрий)"},
+  {s:"Elle est ___. Elle parle avec tout le monde.",a:"sociable",h:"(товариська)"},
+  {s:"C'est quelqu'un de ___. Il dit toujours la vérité.",a:"honnête",h:"(чесний)"},
+  {s:"Ma copine est ___. Elle ne se fâche jamais.",a:"patiente",h:"(терпляча)"},
+  {s:"Il est très ___. Il lit beaucoup de livres.",a:"cultivé",h:"(освічений)"},
+  {s:"Ma petite amie est ___. Elle a beaucoup de courage.",a:"courageuse",h:"(смілива)"},
+  {s:"C'est quelqu'un de ___. Il travaille dur tous les jours.",a:"travailleur",h:"(працьовитий)"},
+  {s:"Elle est ___. Elle n'aime pas parler de ses succès.",a:"modeste",h:"(скромна)"},
+  {s:"Mon voisin est très ___. Il partage tout avec ses amis.",a:"gentil",h:"(добрий)"},
+  {s:"C'est quelqu'un de ___. Elle comprend bien les autres.",a:"sensible",h:"(чутлива)"},
+];
+let lf=null;
+document.addEventListener('focusin',e=>{if(e.target.tagName==='INPUT')lf=e.target;});
+function initFill(){
+  lf=null;
+  const sub=sh(FS).slice(0,5);
+  const extra=sh(FS.filter(x=>!sub.includes(x))).slice(0,3).map(x=>x.a);
+  const bank=sh([...sub.map(x=>x.a),...extra]);
+  const wb=document.getElementById('wb');
+  const el=document.getElementById('el');
+  wb.innerHTML='<span style="font-size:.8rem;color:var(--muted);width:100%;display:block;margin-bottom:.4rem">🗃 Банк слів:</span>';
+  el.innerHTML='';
+  bank.forEach(w=>{
+    const c=document.createElement('div');c.className='wc';c.textContent=w;
+    c.onclick=()=>{if(lf)lf.value=w;};
+    wb.appendChild(c);
+  });
+  sub.forEach((s,i)=>{
+    const p=s.s.split('___');
+    const d=document.createElement('div');d.className='ei';
+    d.innerHTML='<div class="hl">'+s.h+'</div><div>'+p[0]+'<input type="text" id="fi'+i+'" data-a="'+s.a+'" placeholder="___">'+p[1]+'</div>';
+    el.appendChild(d);
+  });
+}
+function chkFill(){
+  document.querySelectorAll('#el input').forEach(inp=>{
+    inp.classList.remove('ok','no');
+    inp.classList.add(inp.value.trim().toLowerCase()===inp.dataset.a?'ok':'no');
+  });
+}
+initFill();
+
+// QUIZ
+let qi=[],qidx=0,qc=0,qa=false;
+function initQ(){
+  qi=sh(V).slice(0,10);qidx=0;qc=0;
+  document.getElementById('qr').style.display='none';
+  document.getElementById('qo').style.display='grid';
+  document.getElementById('qq').style.display='block';
+  rq();
+}
+function rq(){
+  qa=false;
+  const w=qi[qidx];const d=Math.random()>.5;
+  document.getElementById('qctr').textContent='Питання '+(qidx+1)+' / 10';
+  document.getElementById('qp').style.width=(qidx/10*100)+'%';
+  document.getElementById('qf').textContent='';
+  document.getElementById('qf').className='qf';
+  if(d){
+    document.getElementById('qq').innerHTML='<em>'+w.f+'</em>';
+    const ot=sh(V.filter(v=>v.f!==w.f)).slice(0,3).map(v=>v.u);
+    ro(sh([w.u,...ot]),w.u);
+  }else{
+    document.getElementById('qq').innerHTML='<em>'+w.u+'</em>';
+    const ot=sh(V.filter(v=>v.f!==w.f)).slice(0,3).map(v=>v.f);
+    ro(sh([w.f,...ot]),w.f);
+  }
+}
+function ro(opts,correct){
+  const con=document.getElementById('qo');con.innerHTML='';
+  opts.forEach(opt=>{
+    const b=document.createElement('button');b.className='qb';b.textContent=opt;
+    b.onclick=()=>{
+      if(qa)return;qa=true;
+      con.querySelectorAll('.qb').forEach(x=>{x.disabled=true;if(x.textContent===correct)x.classList.add('ok2');});
+      if(opt===correct){b.classList.add('ok2');qc++;document.getElementById('qf').textContent='✅ Правильно!';document.getElementById('qf').className='qf g';}
+      else{b.classList.add('no2');document.getElementById('qf').textContent='❌ Правильна відповідь: '+correct;document.getElementById('qf').className='qf b';}
+      setTimeout(()=>{qidx++;qidx<10?rq():sqr();},1400);
+    };
+    con.appendChild(b);
+  });
+}
+function sqr(){
+  document.getElementById('qo').style.display='none';
+  document.getElementById('qq').style.display='none';
+  document.getElementById('qf').textContent='';
+  document.getElementById('qp').style.width='100%';
+  document.getElementById('qr').style.display='block';
+  document.getElementById('qsn').textContent=qc+'/10';
+  const msgs=['📚 Треба ще попрацювати!','📚 Треба ще попрацювати!','📚 Треба ще попрацювати!','🙂 Непогано, продовжуй!','🙂 Непогано, продовжуй!','😊 Pas mal!','😊 Pas mal!','👏 Très bien!','👏 Très bien!','🌟 Excellent!','🎉 Parfait! Ти — зірка!'];
+  document.getElementById('qsm').textContent=msgs[qc];
+}
+initQ();
+
+function showTab(t,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+t).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
