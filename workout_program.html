@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Програма тренувань v3</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0d0d0d;
+        --card: #161616;
+        --accent: #e8c97e;
+        --text: #f0ece4;
+        --muted: #888;
+        --pink: #e8847e;
+        --green: #7ec9a0;
+        --blue: #7eb8e8;
+        --purple: #b07ee8;
+        --border: #2a2a2a;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        min-height: 100vh;
+        padding: 0 0 80px;
+      }
+
+      /* ── HERO ── */
+      .hero {
+        background: linear-gradient(135deg, #1a1208 0%, #0d0d0d 60%);
+        border-bottom: 1px solid var(--border);
+        padding: 48px 24px 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(
+          ellipse,
+          rgba(232, 201, 126, 0.12) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .hero-tag {
+        display: inline-block;
+        background: rgba(232, 201, 126, 0.12);
+        border: 1px solid rgba(232, 201, 126, 0.3);
+        color: var(--accent);
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 5px 14px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+      }
+      .hero h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 6vw, 3.2rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 14px;
+      }
+      .hero h1 span {
+        color: var(--accent);
+      }
+      .hero p {
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 300;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 28px;
+        margin-top: 32px;
+        flex-wrap: wrap;
+      }
+      .stat {
+        text-align: center;
+      }
+      .stat-num {
+        font-family: "Playfair Display", serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        color: var(--accent);
+        display: block;
+      }
+      .stat-label {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      /* ── CONTAINER ── */
+      .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+
+      /* ── CHANGES BANNER ── */
+      .changes-banner {
+        background: rgba(232, 201, 126, 0.05);
+        border: 1px solid rgba(232, 201, 126, 0.2);
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-top: 28px;
+      }
+      .changes-title {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      .change-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 12.5px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin-bottom: 7px;
+      }
+      .change-item:last-child {
+        margin-bottom: 0;
+      }
+      .change-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+        flex-shrink: 0;
+        margin-top: 6px;
+      }
+
+      /* ── SECTION LABEL ── */
+      .section-label {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 24px 0 12px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ── REST BANNER ── */
+      .rest-banner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .rest-pill {
+        background: rgba(126, 184, 232, 0.07);
+        border: 1px solid rgba(126, 184, 232, 0.18);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .rest-pill strong {
+        color: var(--blue);
+        display: block;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+      .rest-pill span {
+        color: var(--muted);
+      }
+
+      /* ── WARMUP CARD ── */
+      .warmup-card {
+        background: linear-gradient(
+          135deg,
+          rgba(126, 184, 232, 0.09),
+          rgba(126, 184, 232, 0.03)
+        );
+        border: 1px solid rgba(126, 184, 232, 0.22);
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .warmup-icon {
+        font-size: 26px;
+      }
+      .warmup-text {
+        flex: 1;
+      }
+      .warmup-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--blue);
+      }
+      .warmup-desc {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 3px;
+        line-height: 1.5;
+      }
+      .warmup-time {
+        font-family: "Playfair Display", serif;
+        font-size: 1.4rem;
+        color: var(--blue);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      /* ── EXERCISE CARD ── */
+      .exercise-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        transition: border-color 0.2s;
+        cursor: pointer;
+      }
+      .exercise-card:hover {
+        border-color: rgba(232, 201, 126, 0.28);
+      }
+
+      .exercise-main {
+        display: flex;
+      }
+
+      /* GIF placeholder — user fills in src */
+      .exercise-thumb {
+        width: 100px;
+        min-height: 100px;
+        object-fit: cover;
+        flex-shrink: 0;
+        background: #1c1c1c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: #444;
+        text-align: center;
+        letter-spacing: 0.3px;
+      }
+      .exercise-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .exercise-info {
+        padding: 13px 15px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .exercise-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 2px;
+      }
+
+      .exercise-num {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .exercise-num.green {
+        color: var(--green);
+      }
+
+      .muscle-tag {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .muscle-tag.gold {
+        background: rgba(232, 201, 126, 0.1);
+        color: var(--accent);
+      }
+      .muscle-tag.green {
+        background: rgba(126, 201, 160, 0.1);
+        color: var(--green);
+      }
+      .muscle-tag.pink {
+        background: rgba(232, 132, 126, 0.1);
+        color: var(--pink);
+      }
+
+      .exercise-name {
+        font-family: "Playfair Display", serif;
+        font-size: 0.97rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 3px;
+      }
+      .exercise-en {
+        font-size: 10.5px;
+        color: #555;
+        font-style: italic;
+        margin-bottom: 6px;
+      }
+      .exercise-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin-bottom: 9px;
+      }
+
+      .exercise-sets {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .set-pill {
+        padding: 3px 8px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .pill-gold {
+        background: rgba(232, 201, 126, 0.1);
+        color: var(--accent);
+      }
+      .pill-green {
+        background: rgba(126, 201, 160, 0.1);
+        color: var(--green);
+      }
+      .pill-warn {
+        background: rgba(232, 132, 126, 0.1);
+        color: var(--pink);
+      }
+
+      .expand-hint {
+        font-size: 10px;
+        color: #444;
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .chevron {
+        display: inline-block;
+        transition: transform 0.22s;
+      }
+      .chevron.open {
+        transform: rotate(180deg);
+      }
+
+      /* collapsible visual */
+      .exercise-visual {
+        display: none;
+        border-top: 1px solid var(--border);
+        padding: 12px 15px;
+        background: rgba(0, 0, 0, 0.12);
+        flex-direction: column;
+        gap: 10px;
+      }
+      .exercise-visual.open {
+        display: flex;
+      }
+      .exercise-visual img {
+        width: 100%;
+        max-height: 240px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: #1a1a1a;
+      }
+      .visual-note {
+        font-size: 11.5px;
+        color: var(--muted);
+        line-height: 1.5;
+        background: rgba(255, 255, 255, 0.025);
+        border-radius: 8px;
+        padding: 8px 11px;
+      }
+
+      /* ── CARDIO FINISHER ── */
+      .cardio-card {
+        background: linear-gradient(
+          135deg,
+          rgba(126, 201, 160, 0.08),
+          rgba(126, 201, 160, 0.03)
+        );
+        border: 1px solid rgba(126, 201, 160, 0.2);
+        border-radius: 14px;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+      .cardio-icon {
+        font-size: 26px;
+      }
+      .cardio-text {
+        flex: 1;
+      }
+      .cardio-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--green);
+      }
+      .cardio-desc {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .cardio-time {
+        font-family: "Playfair Display", serif;
+        font-size: 1.4rem;
+        color: var(--green);
+        font-weight: 700;
+      }
+
+      /* ── PREHAB BLOCK ── */
+      .prehab-block {
+        background: linear-gradient(
+          135deg,
+          rgba(176, 126, 232, 0.07),
+          rgba(176, 126, 232, 0.02)
+        );
+        border: 1px solid rgba(176, 126, 232, 0.22);
+        border-radius: 16px;
+        padding: 18px 18px 14px;
+        margin-bottom: 12px;
+      }
+      .prehab-heading {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--purple);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .prehab-subtext {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 14px;
+        line-height: 1.5;
+      }
+
+      .prehab-item {
+        background: rgba(176, 126, 232, 0.06);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .prehab-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .prehab-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 13px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .prehab-header:hover {
+        background: rgba(176, 126, 232, 0.05);
+      }
+
+      .prehab-name {
+        font-size: 13px;
+        font-weight: 600;
+        flex: 1;
+      }
+      .prehab-en {
+        font-size: 10px;
+        color: #555;
+        font-style: italic;
+      }
+
+      .prehab-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+        flex-shrink: 0;
+      }
+      .prehab-sets-pill {
+        font-size: 11px;
+        color: var(--purple);
+        font-weight: 600;
+        background: rgba(176, 126, 232, 0.1);
+        padding: 2px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+      }
+      .prehab-muscle {
+        font-size: 10px;
+        color: #555;
+      }
+
+      .prehab-chevron {
+        font-size: 10px;
+        color: var(--muted);
+        transition: transform 0.22s;
+        margin-left: 4px;
+      }
+      .prehab-chevron.open {
+        transform: rotate(180deg);
+      }
+
+      .prehab-visual {
+        display: none;
+        padding: 0 13px 13px;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .prehab-visual.open {
+        display: flex;
+      }
+      .prehab-visual img {
+        width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: #1a1a1a;
+      }
+      .prehab-desc {
+        font-size: 11.5px;
+        color: var(--muted);
+        line-height: 1.5;
+        padding: 7px 10px;
+        background: rgba(0, 0, 0, 0.18);
+        border-radius: 8px;
+      }
+
+      /* ── FLOOR / SIMPLE CARD ── */
+      .floor-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        padding: 14px 18px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+      }
+      .floor-emoji {
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+      .floor-info {
+        flex: 1;
+      }
+      .floor-name {
+        font-weight: 600;
+        font-size: 13.5px;
+        margin-bottom: 3px;
+      }
+      .floor-en {
+        font-size: 10px;
+        color: #555;
+        font-style: italic;
+        margin-bottom: 4px;
+      }
+      .floor-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .floor-muscle {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        align-self: flex-start;
+        margin-top: 2px;
+      }
+
+      /* ── TIP / KNEE BOX ── */
+      .tip-box {
+        background: rgba(232, 201, 126, 0.05);
+        border: 1px solid rgba(232, 201, 126, 0.18);
+        border-left: 3px solid var(--accent);
+        border-radius: 10px;
+        padding: 11px 15px;
+        font-size: 12.5px;
+        color: #c0a860;
+        margin-bottom: 12px;
+        line-height: 1.5;
+      }
+      .tip-box strong {
+        color: var(--accent);
+      }
+
+      .knee-warning {
+        background: rgba(232, 132, 126, 0.05);
+        border: 1px solid rgba(232, 132, 126, 0.2);
+        border-left: 3px solid var(--pink);
+        border-radius: 10px;
+        padding: 11px 15px;
+        font-size: 12.5px;
+        color: #c4706a;
+        margin-bottom: 18px;
+        line-height: 1.5;
+      }
+      .knee-warning strong {
+        color: var(--pink);
+      }
+
+      /* ── PILATES ── */
+      .pilates-card {
+        background: linear-gradient(
+          135deg,
+          rgba(232, 132, 126, 0.07),
+          rgba(232, 132, 126, 0.02)
+        );
+        border: 1px solid rgba(232, 132, 126, 0.18);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 12px;
+      }
+      .pilates-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .pilates-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+      .pilates-items {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .pilates-item {
+        background: rgba(232, 132, 126, 0.07);
+        border-radius: 10px;
+        padding: 9px 11px;
+        font-size: 12.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .pilates-item span:first-child {
+        font-size: 15px;
+      }
+
+      /* ── WEEK SCHEDULE ── */
+      .week-schedule {
+        margin-top: 36px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+      }
+      .schedule-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 12px;
+        border-radius: 10px;
+        margin-bottom: 7px;
+        font-size: 13.5px;
+      }
+      .schedule-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 32px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      @media (max-width: 480px) {
+        .exercise-thumb {
+          width: 85px;
+          min-height: 90px;
+        }
+        .exercise-name {
+          font-size: 0.9rem;
+        }
+        .pilates-items {
+          grid-template-columns: 1fr;
+        }
+        .rest-banner {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ══════════════ HERO ══════════════ -->
+    <div class="hero">
+      <div class="hero-tag">✨ Програма v3 — фінальна</div>
+      <h1>Тренування<br /><span>до літа</span> 🌊</h1>
+      <p>
+        Повне тіло · Живіт · Сідниці<br />3 місяці · 3 тренування на тиждень
+      </p>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-num">2×</span><span class="stat-label">Зал</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">1×</span
+          ><span class="stat-label">Пілатес</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">15–20</span
+          ><span class="stat-label">Повторів</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">3міс</span
+          ><span class="stat-label">До літа</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- REST TIME GUIDE -->
+      <div class="section-label" style="margin-top: 28px">
+        ⏱ Відпочинок — орієнтир
+      </div>
+      <div class="rest-banner">
+        <div class="rest-pill">
+          <strong>Між підходами</strong>
+          <span
+            >45–60 секунд. Достатньо для відновлення, але пульс залишається
+            підвищеним — це підтримує жироспалення.</span
+          >
+        </div>
+        <div class="rest-pill">
+          <strong>Між вправами</strong>
+          <span
+            >60–90 секунд. Трохи більше часу, щоб перейти до тренажера і
+            налаштувати вагу.</span
+          >
+        </div>
+      </div>
+      <div class="tip-box" style="margin-top: 10px">
+        <strong>💡 Порада:</strong> Якщо наприкінці підходу ще є сили зробити 5+
+        зайвих повторів — збільш вагу. Останні 2–3 повтори мають бути
+        відчутними.
+      </div>
+
+      <!-- ══════════════════════════════════════════
+       ДЕНЬ 1 і 2 — ЗАЛ (ОДНА ПРОГРАМА)
+  ══════════════════════════════════════════ -->
+      <div style="margin-top: 10px">
+        <div
+          style="
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+          ">
+          <div
+            style="
+              width: 48px;
+              height: 48px;
+              border-radius: 12px;
+              background: rgba(232, 201, 126, 0.13);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 22px;
+              flex-shrink: 0;
+            ">
+            💪
+          </div>
+          <div>
+            <div
+              style="
+                font-family: 'Playfair Display', serif;
+                font-size: 1.25rem;
+                font-weight: 700;
+              ">
+              Зал — Понеділок та П'ятниця
+            </div>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 2px">
+              Однакова програма обидва дні · ~70 хвилин
+            </div>
+          </div>
+          <div
+            style="
+              margin-left: auto;
+              padding: 4px 12px;
+              border-radius: 20px;
+              font-size: 11px;
+              font-weight: 600;
+              background: rgba(232, 201, 126, 0.13);
+              color: var(--accent);
+            ">
+            Зал
+          </div>
+        </div>
+
+        <div class="knee-warning">
+          <strong>⚠️ Коліна:</strong> Жим ніг — ноги вище і ширше на платформі,
+          не доводь до повного випрямлення. При болі під час будь-якої вправи —
+          зупинись. Преабілітація в кінці тренування обов'язкова.
+        </div>
+
+        <!-- WARMUP -->
+        <div class="section-label">🔥 Розминка</div>
+        <div class="warmup-card">
+          <div class="warmup-icon">🚴‍♀️</div>
+          <div class="warmup-text">
+            <div class="warmup-title">Велосипед або еліпс — легкий темп</div>
+            <div class="warmup-desc">
+              Без напруги. Мета — підняти пульс до ~110–120 уд/хв і розігріти
+              суглоби перед навантаженням. Не пропускай — особливо важливо для
+              колін.
+            </div>
+          </div>
+          <div class="warmup-time">7 хв</div>
+        </div>
+
+        <!-- UPPER BODY -->
+        <div class="section-label">Верх тіла</div>
+
+        <!-- 1. Lat pulldown -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num">Вправа 01</div>
+                <div class="muscle-tag gold">Спина · Біцепс</div>
+              </div>
+              <div class="exercise-name">Тяга верхнього блоку</div>
+              <div class="exercise-en">Lat Pulldown</div>
+              <div class="exercise-desc">
+                Сидиш, тягнеш ручку зверху вниз до підборіддя. Лопатки вниз і
+                назад перед початком — не тягни плечима. Формує спину і
+                підкреслює талію.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-gold">3 підходи</span>
+                <span class="set-pill pill-gold">15–20 разів</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://blog.goodlifefitness.com/media/3636/latpull-downs_female-1.gif?quality=100"
+              alt="Lat Pulldown" />
+            <div class="visual-note">
+              Лопатки вниз і назад перед тягою. Лікті ведеш до ребер. Повільне
+              повернення вгору — 2–3 секунди.
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Dumbbell bench press -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num">Вправа 02</div>
+                <div class="muscle-tag gold">Груди · Трицепс</div>
+              </div>
+              <div class="exercise-name">Жим гантелей лежачи</div>
+              <div class="exercise-en">Dumbbell Bench Press</div>
+              <div class="exercise-desc">
+                Лягаєш на лаву, береш дві гантелі, штовхаєш вгору і повільно
+                опускаєш. Лікті під кутом 45° — не розводь широко.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-gold">3 підходи</span>
+                <span class="set-pill pill-gold">15–20 разів</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://cdn.shopify.com/s/files/1/2074/9385/files/Workout7_1024x1024.gif?v=1633548308"
+              alt="Dumbbell Bench Press" />
+            <div class="visual-note">
+              Легка вага — форма важливіша за кілограми. Повільне опускання (3
+              сек). Не блокуй лікті вгорі.
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Seated cable row -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num">Вправа 03</div>
+                <div class="muscle-tag gold">Спина · Постава</div>
+              </div>
+              <div class="exercise-name">Горизонтальна тяга</div>
+              <div class="exercise-en">Seated Cable Row</div>
+              <div class="exercise-desc">
+                Сидиш, тягнеш ручки до живота. Спина рівна — не нахиляйся
+                вперед-назад. Стискаєш лопатки в кінці руху.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-gold">3 підходи</span>
+                <span class="set-pill pill-gold">15–20 разів</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://www.strengthlog.com/wp-content/uploads/2020/03/cable-row-seated-narrow-grip.gif"
+              alt="Seated Cable Row" />
+            <div class="visual-note">
+              Тягнеш лікті вздовж тіла. Корпус нерухомий — рух тільки руками.
+              Видих при тязі.
+            </div>
+          </div>
+        </div>
+
+        <!-- LOWER BODY -->
+        <div class="section-label">Низ тіла — сідниці і стегна</div>
+
+        <!-- 4. Leg press -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num green">Вправа 04</div>
+                <div class="muscle-tag green">Сідниці · Стегна</div>
+              </div>
+              <div class="exercise-name">Жим платформи ногами</div>
+              <div class="exercise-en">Leg Press</div>
+              <div class="exercise-desc">
+                Ноги <strong>вище і ширше</strong> на платформі — так більше
+                сідниць, менше колін. Не доводь до повного випрямлення — залишай
+                легкий згин.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-green">4 підходи</span>
+                <span class="set-pill pill-green">15–20 разів</span>
+                <span class="set-pill pill-warn">⚠️ неглибоко</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2025/11/leg-press.gif?fit=800%2C800&ssl=1"
+              alt="Leg Press" />
+            <div class="visual-note">
+              Ноги широко, носки назовні. Опускай до ~90° у коліні — не глибше.
+              Рівний видих при натисканні.
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Cable kickback -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num green">Вправа 05</div>
+                <div class="muscle-tag green">Сідниці (глибоко)</div>
+              </div>
+              <div class="exercise-name">Відведення ноги назад на тросі</div>
+              <div class="exercise-en">Cable Glute Kickback</div>
+              <div class="exercise-desc">
+                Манжета на щиколотці, стоїш обличчям до тренажера. Відводиш ногу
+                назад і вгору — відразу відчуєш сідницю. Корпус нерухомий.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-green">3 підходи</span>
+                <span class="set-pill pill-green">15–20 разів</span>
+                <span class="set-pill pill-green">кожна нога</span>
+                <span class="set-pill pill-warn">✓ коліна ОК</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://media.post.rvohealth.io/wp-content/uploads/sites/2/2022/05/GRT-02.01.CableMachineGluteKickbacks.gif"
+              alt="Cable Glute Kickback" />
+            <div class="visual-note">
+              Акцент на стисненні сідниці у верхній точці — 1 секунда. Невелика
+              амплітуда краще за широкий помах із закрученим тазом.
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Glute bridge -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num green">Вправа 06</div>
+                <div class="muscle-tag green">Сідниці · Задня стегна</div>
+              </div>
+              <div class="exercise-name">Ягодичний міст</div>
+              <div class="exercise-en">Glute Bridge</div>
+              <div class="exercise-desc">
+                На килимку. Лягаєш на спину, ноги зігнуті. Піднімаєш таз вгору,
+                <strong>стискаєш сідниці</strong> нагорі 2 сек. Резинка вище
+                колін — підсилює ефект.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-green">4 підходи</span>
+                <span class="set-pill pill-green">15–20 разів</span>
+                <span class="set-pill pill-warn">✓ коліна ОК</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2025/09/glutebridge.gif?resize=700%2C700&ssl=1"
+              alt="Glute Bridge" />
+            <div class="visual-note">
+              Плечі на підлозі весь час. Коли 20 разів стають легкими — клади
+              гантель 5–8 кг на таз. Пауза 2 сек нагорі — не поспішай.
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Side leg raise / cable abduction -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num green">Вправа 07</div>
+                <div class="muscle-tag green">Зовнішні стегна · Сідниці</div>
+              </div>
+              <div class="exercise-name">
+                Відведення ноги в сторону на тросі
+              </div>
+              <div class="exercise-en">Cable Hip Abduction</div>
+              <div class="exercise-desc">
+                Манжета на щиколотці, стоїш боком до тренажера. Відводиш пряму
+                ногу в сторону. Зовнішня частина сідниць і стегон.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-green">3 підходи</span>
+                <span class="set-pill pill-green">15–20 разів</span>
+                <span class="set-pill pill-green">кожна нога</span>
+                <span class="set-pill pill-warn">✓ коліна ОК</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://www.strengthlog.com/wp-content/uploads/2025/04/cable-hip-abduction.gif"
+              alt="Cable Hip Abduction" />
+            <div class="visual-note">
+              Тримайся за стійку для рівноваги. Нога пряма, корпус нерухомий.
+              Акцент на зовнішній сідниці — саме вона формує округлість.
+            </div>
+          </div>
+        </div>
+
+        <!-- ABS -->
+        <div class="section-label">Живіт</div>
+
+        <!-- 8. Cable crunch -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num">Abs 01</div>
+                <div class="muscle-tag pink">Верх живота</div>
+              </div>
+              <div class="exercise-name">Кранч на тросі</div>
+              <div class="exercise-en">Cable Crunch</div>
+              <div class="exercise-desc">
+                Стаєш на коліна біля тросу, тримаєш мотузку за головою,
+                скручуєшся вниз животом. Таз нерухомий — рухається тільки
+                хребет.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-gold">3 підходи</span>
+                <span class="set-pill pill-gold">15–20 разів</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2020/03/cable-crunch.gif?w=700&ssl=1"
+              alt="Cable Crunch" />
+            <div class="visual-note">
+              Видих при скрученні. Повільне повернення вгору. Відчуваєш
+              скорочення у верхньому животі — не тягнеш руками.
+            </div>
+          </div>
+        </div>
+
+        <!-- 9. Hanging knee raise -->
+        <div class="exercise-card" onclick="toggleEx(this)">
+          <div class="exercise-main">
+            <div class="exercise-thumb">GIF</div>
+            <div class="exercise-info">
+              <div class="exercise-top">
+                <div class="exercise-num">Abs 02</div>
+                <div class="muscle-tag pink">Низ живота</div>
+              </div>
+              <div class="exercise-name">Підйом колін у кріслі</div>
+              <div class="exercise-en">Captain's Chair Knee Raise</div>
+              <div class="exercise-desc">
+                Спираєшся на лікті в кріслі, піднімаєш коліна до живота.
+                Найкраще для нижнього відділу живота. Не розгойдуйся.
+              </div>
+              <div class="exercise-sets">
+                <span class="set-pill pill-gold">3 підходи</span>
+                <span class="set-pill pill-gold">15–20 разів</span>
+                <div class="expand-hint">Техніка <i class="chevron">▾</i></div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-visual">
+            <img
+              src="https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2025/10/captains-chair-knee-raises.gif?fit=800%2C800&ssl=1"
+              alt="Captain's Chair Knee Raise" />
+            <div class="visual-note">
+              Повільне опускання ніг — 2–3 сек. Якщо важко — підіймай по черзі
+              одне коліно. Видих нагорі.
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. Plank -->
+        <div class="floor-card">
+          <div class="floor-emoji">⏱️</div>
+          <div class="floor-info">
+            <div class="floor-name">Планка</div>
+            <div class="floor-en">Plank</div>
+            <div class="floor-desc">
+              На передпліччях і носочках, тіло пряме як дошка.
+              <strong>3 підходи × 40 секунд.</strong> Відпочинок між підходами —
+              45 сек.
+            </div>
+          </div>
+          <div class="floor-muscle muscle-tag pink" style="align-self: center">
+            Кор · Живіт
+          </div>
+        </div>
+
+        <!-- CARDIO FINISHER -->
+        <div class="section-label">💚 Кардіо — фінішер</div>
+        <div class="cardio-card">
+          <div class="cardio-icon">🚴‍♀️</div>
+          <div class="cardio-text">
+            <div class="cardio-title">Велосипед або еліпс</div>
+            <div class="cardio-desc">
+              Помірний темп. М'язи вже виснажені — жир горить ефективніше ніж на
+              початку тренування.
+            </div>
+          </div>
+          <div class="cardio-time">12 хв</div>
+        </div>
+
+        <!-- PREHAB -->
+        <div class="section-label">🦵 Преабілітація колін — наприкінці</div>
+
+        <div class="prehab-block">
+          <div class="prehab-heading">Зміцнення коліна</div>
+          <div class="prehab-subtext">
+            3 вправи · 1–3 підходи · 20 повторів · без болю. Робиш після кардіо,
+            коли м'язи вже розігріті. Відпочинок між підходами — 30–45 сек.
+          </div>
+
+          <!-- TKE -->
+          <div class="prehab-item">
+            <div class="prehab-header" onclick="togglePrehab(this)">
+              <div>
+                <div class="prehab-name">Розгинання коліна з резинкою</div>
+                <div class="prehab-en">Terminal Knee Extension (TKE)</div>
+              </div>
+              <div class="prehab-meta">
+                <div class="prehab-sets-pill">1–3 × 20</div>
+                <div class="prehab-muscle">VMO · внутрішній чотириголовий</div>
+              </div>
+              <div class="prehab-chevron">▾</div>
+            </div>
+            <div class="prehab-visual">
+              <img
+                src="https://i.pinimg.com/originals/e7/2f/fe/e72ffe514adc68e19fee293dedb33c3a.gif"
+                alt="TKE" />
+              <div class="prehab-desc">
+                Резинка за щиколотку ззаду. Стоячи, повільно випрямляєш коліно
+                проти опору резинки. Головний стабілізатор коліна — зміцнює VMO.
+                Ніякого болю!
+              </div>
+            </div>
+          </div>
+
+          <!-- Clamshell -->
+          <div class="prehab-item">
+            <div class="prehab-header" onclick="togglePrehab(this)">
+              <div>
+                <div class="prehab-name">Черепашка з резинкою</div>
+                <div class="prehab-en">Clamshell</div>
+              </div>
+              <div class="prehab-meta">
+                <div class="prehab-sets-pill">1–3 × 20</div>
+                <div class="prehab-muscle">Сідничний середній м'яз</div>
+              </div>
+              <div class="prehab-chevron">▾</div>
+            </div>
+            <div class="prehab-visual">
+              <img
+                src="https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUybnI3dzU0bGM2dGx4ZGJmbjV3MTR1OWZ4NHh4MGw4YzFvNDIwb2xqZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7Ec2YRXmldWu0VMRbH/source.gif"
+                alt="Clamshell" />
+              <div class="prehab-desc">
+                Лягаєш на бік, ноги зігнуті, резинка вище колін. Піднімаєш
+                верхнє коліно вгору, не перевертаючи тазу. Зміцнює glute medius
+                → зменшує завал коліна всередину при ходьбі та присіданнях.
+              </div>
+            </div>
+          </div>
+
+          <!-- Straight leg raise -->
+          <div class="prehab-item">
+            <div class="prehab-header" onclick="togglePrehab(this)">
+              <div>
+                <div class="prehab-name">Підйом прямої ноги лежачи</div>
+                <div class="prehab-en">Straight Leg Raise</div>
+              </div>
+              <div class="prehab-meta">
+                <div class="prehab-sets-pill">1–3 × 20</div>
+                <div class="prehab-muscle">
+                  Чотириголовий · без навантаження на суглоб
+                </div>
+              </div>
+              <div class="prehab-chevron">▾</div>
+            </div>
+            <div class="prehab-visual">
+              <img
+                src="https://static.wixstatic.com/media/77c79d_978608eadcce47bdb2db8941330455e0~mv2.gif"
+                alt="Straight Leg Raise" />
+              <div class="prehab-desc">
+                Лежиш на спині. Одна нога зігнута, інша пряма. Піднімаєш пряму
+                ногу до рівня зігнутого коліна і повільно опускаєш. Активує
+                чотириголовий без стресу на суглоб — ідеально при болях.
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /prehab-block -->
+
+        <div class="tip-box">
+          <strong>💡 Резинка:</strong> Купи фітнес-резинку (~150 грн у
+          спортмагазині) — використовуй під час мосту, черепашки і TKE. Ефект
+          посилюється вдвічі.
+        </div>
+      </div>
+      <!-- /gym days -->
+
+      <!-- ══════════════════════════════════════════
+       ДЕНЬ 3 — ПІЛАТЕС (СЕРЕДА)
+  ══════════════════════════════════════════ -->
+      <div style="margin-top: 44px">
+        <div
+          style="
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+          ">
+          <div
+            style="
+              width: 48px;
+              height: 48px;
+              border-radius: 12px;
+              background: rgba(232, 132, 126, 0.13);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 22px;
+              flex-shrink: 0;
+            ">
+            🧘
+          </div>
+          <div>
+            <div
+              style="
+                font-family: 'Playfair Display', serif;
+                font-size: 1.25rem;
+                font-weight: 700;
+              ">
+              День 3 — Пілатес вдома
+            </div>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 2px">
+              Середа · ~60 хвилин
+            </div>
+          </div>
+          <div
+            style="
+              margin-left: auto;
+              padding: 4px 12px;
+              border-radius: 20px;
+              font-size: 11px;
+              font-weight: 600;
+              background: rgba(232, 132, 126, 0.13);
+              color: var(--pink);
+            ">
+            Вдома
+          </div>
+        </div>
+
+        <div class="pilates-card">
+          <div class="pilates-header">
+            <span style="font-size: 22px">🎯</span>
+            <div class="pilates-title">Що дає тобі пілатес</div>
+          </div>
+          <div class="pilates-items">
+            <div class="pilates-item">
+              <span>🫁</span><span>Плоский живіт</span>
+            </div>
+            <div class="pilates-item">
+              <span>🍑</span><span>Пружні сідниці</span>
+            </div>
+            <div class="pilates-item">
+              <span>🦵</span><span>Реабілітація колін</span>
+            </div>
+            <div class="pilates-item">
+              <span>🧍‍♀️</span><span>Красива постава</span>
+            </div>
+            <div class="pilates-item">
+              <span>💪</span><span>Відновлення після залу</span>
+            </div>
+            <div class="pilates-item">
+              <span>🧘</span><span>Розтяжка і гнучкість</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <strong>💬 Скажи інструктору:</strong> «У мене проблемні коліна, хочу
+          фокус на животі та сідницях» — він одразу адаптує заняття під тебе.
+        </div>
+        <div
+          class="tip-box"
+          style="border-left-color: var(--blue); color: #7eb0d4">
+          <strong style="color: var(--blue)">📱 Якщо немає інструктора:</strong>
+          YouTube — <strong>Move with Nicole</strong> або
+          <strong>Pilates Anytime</strong>. Шукай «beginner pilates full body»
+          або «pilates for knee pain».
+        </div>
+      </div>
+
+      <!-- WEEK SCHEDULE -->
+      <div class="week-schedule">
+        <div class="section-label" style="margin-top: 0">Розклад тижня</div>
+        <div class="schedule-row" style="background: rgba(232, 201, 126, 0.06)">
+          <span style="font-size: 18px">💪</span>
+          <div style="flex: 1">
+            <strong>Понеділок</strong> — Зал: Верх + Низ + Живіт + Преабілітація
+          </div>
+          <span style="color: var(--accent); font-size: 12px; font-weight: 600"
+            >~70 хв</span
+          >
+        </div>
+        <div class="schedule-row" style="background: rgba(232, 132, 126, 0.06)">
+          <span style="font-size: 18px">🧘</span>
+          <div style="flex: 1"><strong>Середа</strong> — Пілатес вдома</div>
+          <span style="color: var(--pink); font-size: 12px; font-weight: 600"
+            >~60 хв</span
+          >
+        </div>
+        <div class="schedule-row" style="background: rgba(232, 201, 126, 0.06)">
+          <span style="font-size: 18px">💪</span>
+          <div style="flex: 1">
+            <strong>П'ятниця</strong> — Зал: та ж програма (Верх + Низ + Живіт +
+            Преабілітація)
+          </div>
+          <span style="color: var(--accent); font-size: 12px; font-weight: 600"
+            >~70 хв</span
+          >
+        </div>
+        <div class="schedule-row" style="background: rgba(255, 255, 255, 0.03)">
+          <span style="font-size: 18px">🚶‍♀️</span>
+          <div style="flex: 1; color: var(--muted)">
+            <strong>Вихідні</strong> — Прогулянка 30–40 хв по рівній дорозі
+          </div>
+          <span style="color: var(--muted); font-size: 12px">бажано</span>
+        </div>
+      </div>
+
+      <div class="footer">
+        За 3 місяці при стабільності — помітний рельєф живота і сідниць 🌊<br />
+        <span style="color: var(--accent)"
+          >Головне — регулярність, а не ідеальність!</span
+        >
+      </div>
+    </div>
+    <!-- /container -->
+
+    <script>
+      function toggleEx(card) {
+        const visual = card.querySelector(".exercise-visual");
+        const chevron = card.querySelector(".chevron");
+        const open = visual.classList.toggle("open");
+        if (chevron) chevron.classList.toggle("open", open);
+      }
+
+      function togglePrehab(header) {
+        const item = header.parentElement;
+        const visual = item.querySelector(".prehab-visual");
+        const chevron = header.querySelector(".prehab-chevron");
+        const open = visual.classList.toggle("open");
+        chevron.classList.toggle("open", open);
+      }
+    </script>
+  </body>
+</html>
