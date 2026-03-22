@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verbes Modaux — Форми</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0c14; --surface:#16142a; --card:#1e1b33;
+  --border:rgba(255,255,255,0.08);
+  --accent:#e8b86d; --purple:#7c6af5;
+  --green:#4ecb8d; --red:#f05a7e;
+  --text:#f0ece4; --muted:#7a7493;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 55% 45% at 20% 15%,rgba(124,106,245,.13) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 80% 85%,rgba(232,184,109,.07) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;width:100%;max-width:660px;padding:36px 20px 60px;}
+
+header{text-align:center;margin-bottom:30px;}
+.flag{font-size:28px;margin-bottom:10px;display:block;animation:bob 3s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+h1{font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,40px);font-weight:700;letter-spacing:-.5px;}
+h1 em{color:var(--accent);font-style:italic;}
+.sub{color:var(--muted);font-size:13px;margin-top:6px;text-transform:uppercase;letter-spacing:.06em;}
+
+/* MODE TABS */
+.mode-tabs{display:flex;background:var(--surface);border-radius:12px;padding:4px;gap:4px;margin-bottom:20px;}
+.mt{flex:1;padding:9px 8px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.mt.on{background:var(--card);color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,.35);}
+
+/* VERB FILTER */
+.verb-filter{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:24px;}
+.vf-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;}
+.vf-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+.vf-btn.on{background:var(--purple);border-color:var(--purple);color:#fff;}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 32px 24px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--accent));border-radius:20px 20px 0 0;}
+
+.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.scores{display:flex;gap:16px;}
+.sc{text-align:center;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+.sc strong{display:block;font-size:26px;font-weight:700;color:var(--text);line-height:1.1;}
+.sc.g strong{color:var(--green);}.sc.r strong{color:var(--red);}
+.streak{font-size:13px;color:var(--accent);font-weight:600;opacity:0;transition:opacity .3s;}
+.streak.show{opacity:1;}
+
+.prog-bar{width:100%;height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:24px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--accent));border-radius:99px;transition:width .5s ease;}
+
+.q-label{display:inline-flex;align-items:center;gap:6px;background:rgba(124,106,245,.13);color:var(--purple);border:1px solid rgba(124,106,245,.3);font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+.pronoun-row{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;}
+.pronoun{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,34px);font-style:italic;color:var(--accent);}
+.infinitif{font-size:14px;color:var(--muted);}
+
+.sentence{font-family:'Playfair Display',serif;font-size:clamp(16px,2.8vw,21px);line-height:1.5;margin-bottom:5px;}
+.blank{display:inline-block;min-width:80px;border-bottom:2px solid var(--purple);color:var(--purple);text-align:center;font-weight:700;padding:0 4px;}
+.transl{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:22px;}
+
+/* ENDINGS MODE: radical prefix shown */
+.radical-prefix{font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,28px);font-style:italic;color:var(--text);margin-bottom:16px;text-align:center;}
+.radical-prefix span{color:var(--accent);}
+.radical-prefix .plus{color:var(--muted);font-size:18px;margin:0 6px;}
+
+.input-row{display:flex;gap:10px;margin-bottom:16px;}
+.form-input{flex:1;background:var(--surface);border:1.5px solid var(--border);color:var(--text);font-family:'Playfair Display',serif;font-size:22px;font-style:italic;padding:12px 18px;border-radius:10px;outline:none;transition:border-color .2s;text-align:center;}
+.form-input:focus{border-color:var(--purple);}
+.form-input.ok{border-color:var(--green);background:rgba(78,203,141,.08);color:var(--green);}
+.form-input.err{border-color:var(--red);background:rgba(240,90,126,.08);color:var(--red);}
+.check-btn{background:linear-gradient(135deg,var(--purple),#9b8af7);border:none;color:#fff;padding:12px 22px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.check-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,106,245,.4);}
+
+.feedback{min-height:42px;padding:10px 14px;border-radius:10px;font-size:14px;display:flex;align-items:center;gap:10px;margin-bottom:14px;opacity:0;transition:opacity .3s;}
+.feedback.show{opacity:1;}
+.feedback.ok{background:rgba(78,203,141,.1);border:1px solid rgba(78,203,141,.25);color:var(--green);}
+.feedback.err{background:rgba(240,90,126,.1);border:1px solid rgba(240,90,126,.25);color:var(--red);}
+.feedback .ico{font-size:20px;}
+.feedback .msg strong{display:block;font-size:15px;margin-bottom:2px;}
+
+/* HINT BOX — radical only */
+.hint-box{display:none;margin-bottom:14px;background:rgba(232,184,109,.07);border:1px solid rgba(232,184,109,.22);border-left:3px solid var(--accent);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--accent);line-height:1.5;}
+.hint-box.show{display:block;}
+.hint-box .hlabel{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:3px;}
+.hint-box .hval{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;}
+
+.bottom-row{display:flex;align-items:center;justify-content:space-between;}
+.left-btns{display:flex;gap:8px;}
+.skip-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.skip-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+.hint-btn{background:transparent;border:1px solid rgba(232,184,109,.3);color:var(--accent);padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.hint-btn:hover{background:rgba(232,184,109,.08);}
+.next-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 20px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:none;}
+.next-btn.show{display:block;}
+.next-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+
+.result{text-align:center;padding:20px 0;}
+.result .big{font-size:64px;margin-bottom:14px;}
+.result h2{font-family:'Playfair Display',serif;font-size:28px;margin-bottom:8px;}
+.result .pts{font-size:52px;font-weight:700;color:var(--accent);margin:16px 0 4px;}
+.result .pct{color:var(--muted);font-size:14px;margin-bottom:28px;}
+.result .restart{background:linear-gradient(135deg,var(--purple),#9b8af7);border:none;color:#fff;padding:12px 28px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;}
+.result .restart:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,106,245,.4);}
+
+@media(max-width:480px){
+  .card{padding:20px 16px 18px;}
+  .input-row{flex-direction:column;}
+  .check-btn{width:100%;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="flag">🇫🇷</span>
+    <h1>Verbes <em>Modaux</em></h1>
+    <p class="sub">Тренажер форм дієслів</p>
+  </header>
+
+  <!-- MODE TABS -->
+  <div class="mode-tabs">
+    <button class="mt on" onclick="setMode('full')">✏️ Повна форма</button>
+    <button class="mt" onclick="setMode('ending')">🔡 Закінчення</button>
+  </div>
+
+  <!-- VERB FILTER -->
+  <div class="verb-filter" id="vf">
+    <button class="vf-btn on" data-v="all">Усі</button>
+    <button class="vf-btn" data-v="pouvoir">pouvoir</button>
+    <button class="vf-btn" data-v="devoir">devoir</button>
+    <button class="vf-btn" data-v="vouloir">vouloir</button>
+    <button class="vf-btn" data-v="savoir">savoir</button>
+    <button class="vf-btn" data-v="falloir">falloir</button>
+  </div>
+
+  <div class="card" id="card"></div>
+</div>
+
+<script>
+// ── CONJUGATION ───────────────────────────────────────────────
+const CONJ = {
+  pouvoir: { je:'peux',  tu:'peux',  'il/elle':'peut',    nous:'pouvons', vous:'pouvez', 'ils/elles':'peuvent' },
+  devoir:  { je:'dois',  tu:'dois',  'il/elle':'doit',    nous:'devons',  vous:'devez',  'ils/elles':'doivent' },
+  vouloir: { je:'veux',  tu:'veux',  'il/elle':'veut',    nous:'voulons', vous:'voulez', 'ils/elles':'veulent' },
+  savoir:  { je:'sais',  tu:'sais',  'il/elle':'sait',    nous:'savons',  vous:'savez',  'ils/elles':'savent'  },
+  falloir: { il:'faut' }
+};
+
+const MEANING = { pouvoir:'могти', devoir:'мусити', vouloir:'хотіти', savoir:'знати/вміти', falloir:'треба' };
+
+// Radical only (no ending shown)
+const RADICAL = {
+  pouvoir: { je:'peu-', tu:'peu-', 'il/elle':'peu-', nous:'pouv-', vous:'pouv-', 'ils/elles':'peuv-' },
+  devoir:  { je:'doi-', tu:'doi-', 'il/elle':'doi-', nous:'dev-',  vous:'dev-',  'ils/elles':'doiv-' },
+  vouloir: { je:'veu-', tu:'veu-', 'il/elle':'veu-', nous:'voul-', vous:'voul-', 'ils/elles':'veul-' },
+  savoir:  { je:'sai-', tu:'sai-', 'il/elle':'sai-', nous:'sav-',  vous:'sav-',  'ils/elles':'sav-'  },
+  falloir: { il:'fau-' }
+};
+
+// Radical + ending split (for endings mode)
+const SPLIT = {
+  pouvoir: { je:['peu','x'],   tu:['peu','x'],   'il/elle':['peu','t'],    nous:['pouv','ons'], vous:['pouv','ez'], 'ils/elles':['peuv','ent'] },
+  devoir:  { je:['doi','s'],   tu:['doi','s'],   'il/elle':['doi','t'],    nous:['dev','ons'],  vous:['dev','ez'],  'ils/elles':['doiv','ent'] },
+  vouloir: { je:['veu','x'],   tu:['veu','x'],   'il/elle':['veu','t'],    nous:['voul','ons'], vous:['voul','ez'], 'ils/elles':['veul','ent'] },
+  savoir:  { je:['sai','s'],   tu:['sai','s'],   'il/elle':['sai','t'],    nous:['sav','ons'],  vous:['sav','ez'],  'ils/elles':['sav','ent']  },
+  falloir: { il:['fau','t'] }
+};
+
+const TMPL = [
+  {verb:'pouvoir',pro:'je',        fr:'___ venir demain.',                    uk:'Я можу прийти завтра.'},
+  {verb:'pouvoir',pro:'tu',        fr:'Tu ___ ouvrir la fenêtre ?',           uk:'Ти можеш відкрити вікно?'},
+  {verb:'pouvoir',pro:'il/elle',   fr:'Il ___ rester ici.',                   uk:'Він може залишитися тут.'},
+  {verb:'pouvoir',pro:'nous',      fr:'Nous ___ parler français.',            uk:'Ми можемо говорити французькою.'},
+  {verb:'pouvoir',pro:'vous',      fr:'Vous ___ utiliser un dico.',           uk:'Ви можете скористатися словником.'},
+  {verb:'pouvoir',pro:'ils/elles', fr:'Ils ___ partir maintenant.',           uk:'Вони можуть піти зараз.'},
+  {verb:'pouvoir',pro:'je',        fr:'Je ne ___ pas dormir.',                uk:'Я не можу спати.'},
+  {verb:'pouvoir',pro:'vous',      fr:'Vous ___ répéter, s\'il vous plaît ?', uk:'Ви можете повторити, будь ласка?'},
+
+  {verb:'devoir', pro:'je',        fr:'___ travailler ce soir.',              uk:'Я мушу працювати сьогодні ввечері.'},
+  {verb:'devoir', pro:'tu',        fr:'Tu ___ rentrer avant minuit.',         uk:'Ти повинен повернутися до півночі.'},
+  {verb:'devoir', pro:'il/elle',   fr:'Elle ___ aller à l\'hôpital.',        uk:'Вона мусить піти до лікарні.'},
+  {verb:'devoir', pro:'nous',      fr:'Nous ___ partir à midi.',              uk:'Ми мусимо відправитися опівдні.'},
+  {verb:'devoir', pro:'vous',      fr:'Vous ___ rester calmes.',              uk:'Ви повинні залишатися спокійними.'},
+  {verb:'devoir', pro:'ils/elles', fr:'Ils ___ finir avant vendredi.',        uk:'Вони повинні закінчити до п\'ятниці.'},
+  {verb:'devoir', pro:'tu',        fr:'Tu ___ manger plus.',                  uk:'Ти повинен більше їсти.'},
+  {verb:'devoir', pro:'je',        fr:'Je ___ appeler ma mère.',              uk:'Я мушу зателефонувати мамі.'},
+
+  {verb:'vouloir',pro:'je',        fr:'___ un café, s\'il vous plaît.',       uk:'Я хочу каву, будь ласка.'},
+  {verb:'vouloir',pro:'tu',        fr:'Tu ___ venir avec nous ?',             uk:'Ти хочеш піти з нами?'},
+  {verb:'vouloir',pro:'il/elle',   fr:'Il ___ acheter une voiture.',          uk:'Він хоче купити машину.'},
+  {verb:'vouloir',pro:'nous',      fr:'Nous ___ voyager ensemble.',           uk:'Ми хочемо подорожувати разом.'},
+  {verb:'vouloir',pro:'vous',      fr:'Vous ___ manger quoi ?',               uk:'Що ви хочете їсти?'},
+  {verb:'vouloir',pro:'ils/elles', fr:'Elles ___ apprendre le piano.',        uk:'Вони хочуть навчитися гри на піаніно.'},
+  {verb:'vouloir',pro:'je',        fr:'Je ne ___ pas partir.',                uk:'Я не хочу йти.'},
+  {verb:'vouloir',pro:'tu',        fr:'Tu ___ du thé ?',                      uk:'Ти хочеш чаю?'},
+
+  {verb:'savoir', pro:'je',        fr:'Je ne ___ pas nager.',                 uk:'Я не вмію плавати.'},
+  {verb:'savoir', pro:'tu',        fr:'Tu ___ où il habite ?',                uk:'Ти знаєш, де він живе?'},
+  {verb:'savoir', pro:'il/elle',   fr:'Elle ___ jouer du piano.',             uk:'Вона вміє грати на піаніно.'},
+  {verb:'savoir', pro:'nous',      fr:'Nous ___ la réponse.',                 uk:'Ми знаємо відповідь.'},
+  {verb:'savoir', pro:'vous',      fr:'Vous ___ cuisiner ?',                  uk:'Ви вмієте готувати?'},
+  {verb:'savoir', pro:'ils/elles', fr:'Ils ___ parler trois langues.',        uk:'Вони вміють говорити трьома мовами.'},
+  {verb:'savoir', pro:'je',        fr:'Je ___ son adresse.',                  uk:'Я знаю її адресу.'},
+  {verb:'savoir', pro:'tu',        fr:'Tu ___ conduire ?',                    uk:'Ти вмієш водити?'},
+
+  {verb:'falloir',pro:'il',        fr:'Il ___ étudier tous les jours.',       uk:'Треба вчитися щодня.'},
+  {verb:'falloir',pro:'il',        fr:'Il ___ du courage pour ça.',           uk:'Для цього потрібна мужність.'},
+  {verb:'falloir',pro:'il',        fr:'Il ___ manger des légumes.',           uk:'Треба їсти овочі.'},
+  {verb:'falloir',pro:'il',        fr:'Il ___ partir maintenant.',            uk:'Треба йти зараз.'},
+  {verb:'falloir',pro:'il',        fr:'Il ___ être prudent.',                 uk:'Треба бути обережним.'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────
+let mode='full', filter='all';
+let pool=[], idx=0, correct=0, wrong=0, streak=0, answered=false;
+
+// ── EVENTS ───────────────────────────────────────────────────
+document.getElementById('vf').addEventListener('click',e=>{
+  const b=e.target.closest('.vf-btn'); if(!b)return;
+  filter=b.dataset.v;
+  document.querySelectorAll('.vf-btn').forEach(x=>x.classList.toggle('on',x===b));
+  start();
+});
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mt').forEach((b,i)=>b.classList.toggle('on',['full','ending'][i]===m));
+  start();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function proFr(p){return{je:'Je','il/elle':'Il','ils/elles':'Ils'}[p]||cap(p);}
+function proLabel(p){return p==='il/elle'?'il / elle':p==='ils/elles'?'ils / elles':p;}
+
+// ── START ─────────────────────────────────────────────────────
+function start(){
+  pool=shuffle(filter==='all'?TMPL:TMPL.filter(t=>t.verb===filter));
+  idx=0;correct=0;wrong=0;streak=0;answered=false;
+  render();
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function render(){
+  if(idx>=pool.length){renderResult();return;}
+  const q=pool[idx];
+  const ans=CONJ[q.verb][q.pro];
+  const pct=(idx/pool.length*100).toFixed(0);
+
+  // sentence with blank
+  let raw=q.fr, display;
+  if(raw.startsWith('___')){
+    display=`<span style="color:var(--muted);font-style:italic">${proFr(q.pro)}</span> <span class="blank" id="bs">___</span>${raw.slice(3)}`;
+  } else {
+    display=raw.replace('___','<span class="blank" id="bs">___</span>');
+  }
+
+  const rad  = RADICAL[q.verb][q.pro];        // e.g. "peu-"
+  const split= SPLIT[q.verb][q.pro];          // e.g. ["peu","x"]
+  const radical = split[0];                   // "peu"
+  const ending  = split[1];                   // "x"
+
+  let questionBlock='';
+  let placeholder='';
+  let hintContent='';
+
+  if(mode==='full'){
+    // Ask for the complete form; hint = radical only
+    questionBlock=`
+      <div class="pronoun-row">
+        <span class="pronoun">${proLabel(q.pro)}</span>
+        <span class="infinitif">+ ${q.verb}</span>
+      </div>
+      <div class="sentence">${display}</div>
+      <div class="transl">🇺🇦 ${q.uk}</div>`;
+    placeholder='повна форма…';
+    hintContent=`<div class="hlabel">radical</div><div class="hval">${rad}</div>`;
+  } else {
+    // Endings mode: show radical, student types ending only
+    questionBlock=`
+      <div class="pronoun-row">
+        <span class="pronoun">${proLabel(q.pro)}</span>
+        <span class="infinitif">+ ${q.verb}</span>
+      </div>
+      <div class="sentence">${display}</div>
+      <div class="transl">🇺🇦 ${q.uk}</div>
+      <div class="radical-prefix">
+        <span>${radical}</span><span class="plus">+</span><span class="blank" style="min-width:60px">?</span>
+      </div>`;
+    placeholder='закінчення…';
+    hintContent=`<div class="hlabel">підказка</div><div class="hval">це не -er/-ir/-re дієслово, форма нерегулярна</div>`;
+  }
+
+  document.getElementById('card').innerHTML=`
+    <div class="top-row">
+      <div class="scores">
+        <div class="sc g"><strong id="sok">${correct}</strong>вірно</div>
+        <div class="sc r"><strong id="ser">${wrong}</strong>помилок</div>
+      </div>
+      <span class="streak ${streak>=3?'show':''}" id="stk">${streak>=3?'🔥 '+streak+' поспіль':''}</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+
+    <div class="q-label">${q.verb} — ${MEANING[q.verb]}</div>
+    ${questionBlock}
+
+    <div class="input-row">
+      <input class="form-input" id="fi" type="text" placeholder="${placeholder}"
+        autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')check()">
+      <button class="check-btn" onclick="check()">✓</button>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <div class="hint-box" id="ht">${hintContent}</div>
+    <div class="bottom-row">
+      <div class="left-btns">
+        <button class="skip-btn" onclick="skip()">Пропустити</button>
+        <button class="hint-btn" id="hb" onclick="toggleHint()">💡 Підказка</button>
+      </div>
+      <button class="next-btn" id="nb" onclick="next()">Далі →</button>
+    </div>
+  `;
+  setTimeout(()=>document.getElementById('fi')?.focus(),40);
+}
+
+// ── TOGGLE HINT ───────────────────────────────────────────────
+function toggleHint(){
+  const ht=document.getElementById('ht');
+  const hb=document.getElementById('hb');
+  const open=ht.classList.toggle('show');
+  hb.textContent=open?'🙈 Сховати':'💡 Підказка';
+}
+
+// ── CHECK ─────────────────────────────────────────────────────
+function check(){
+  if(answered)return;
+  const q=pool[idx];
+  const split=SPLIT[q.verb][q.pro];
+  const fullAns=CONJ[q.verb][q.pro];
+  const expectAns = mode==='ending' ? split[1] : fullAns;
+
+  const inp=document.getElementById('fi');
+  const val=inp.value.trim().toLowerCase().normalize('NFC');
+  answered=true; inp.disabled=true;
+
+  // fill in blank with full answer
+  const bs=document.getElementById('bs'); if(bs)bs.textContent=fullAns;
+
+  const fb=document.getElementById('fb');
+  if(val===expectAns.normalize('NFC')){
+    inp.classList.add('ok'); correct++; streak++;
+    const extra = mode==='ending' ? ` → <em>${split[0]}${split[1]}</em>` : '';
+    fb.className='feedback show ok';
+    fb.innerHTML=`<span class="ico">✅</span><div class="msg"><strong>Правильно!</strong>${streak>=3?'🔥 Серія '+streak+'!':''}${extra}</div>`;
+  } else {
+    inp.classList.add('err'); wrong++; streak=0;
+    const shown = mode==='ending'
+      ? `закінчення: <em>-${split[1]}</em> → ${split[0]}<em>${split[1]}</em>`
+      : `<em>${fullAns}</em>`;
+    fb.className='feedback show err';
+    fb.innerHTML=`<span class="ico">❌</span><div class="msg"><strong>Неправильно</strong>Правильно: ${shown}</div>`;
+  }
+  document.getElementById('sok').textContent=correct;
+  document.getElementById('ser').textContent=wrong;
+  if(streak>=3){const s=document.getElementById('stk');s.className='streak show';s.textContent='🔥 '+streak+' поспіль';}
+  document.getElementById('nb').classList.add('show');
+}
+
+// ── SKIP ──────────────────────────────────────────────────────
+function skip(){
+  if(answered)return;
+  const q=pool[idx];
+  const split=SPLIT[q.verb][q.pro];
+  const fullAns=CONJ[q.verb][q.pro];
+  answered=true; streak=0;
+  const inp=document.getElementById('fi'); inp.disabled=true;
+  const bs=document.getElementById('bs'); if(bs)bs.textContent=fullAns;
+  const shown = mode==='ending'
+    ? `закінчення: <em>-${split[1]}</em> → ${split[0]}<em>${split[1]}</em>`
+    : `<em>${fullAns}</em>`;
+  const fb=document.getElementById('fb');
+  fb.className='feedback show err';
+  fb.innerHTML=`<span class="ico">💡</span><div class="msg"><strong>Відповідь:</strong> ${shown}</div>`;
+  document.getElementById('nb').classList.add('show');
+}
+
+function next(){idx++;answered=false;render();}
+
+// ── RESULT ────────────────────────────────────────────────────
+function renderResult(){
+  const t=pool.length, pct=Math.round(correct/t*100);
+  const e=pct>=85?'🏆':pct>=60?'👍':'💪';
+  const m=pct>=85?'Excellent!':pct>=60?'Добре!':'Треба більше практики!';
+  document.getElementById('card').innerHTML=`
+    <div class="result">
+      <div class="big">${e}</div>
+      <h2>${m}</h2>
+      <div class="pts">${correct} / ${t}</div>
+      <div class="pct">${pct}% правильних відповідей</div>
+      <button class="restart" onclick="start()">Ще раз</button>
+    </div>`;
+}
+
+start();
+</script>
+</body>
+</html>
