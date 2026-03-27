@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imparfait ou Conditionnel ?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: #f5f0e8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  /* header */
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    text-align: center;
+    color: #1a1410;
+    margin-bottom: 6px;
+  }
+  h1 em { color: #c0392b; font-style: italic; }
+  h1 span { color: #2980b9; }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(26,20,16,0.5);
+    margin: 14px 0 20px;
+    text-transform: uppercase;
+  }
+
+  .score-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: #d4a017;
+    vertical-align: middle;
+  }
+
+  /* card */
+  .card {
+    background: #fffdf8;
+    border: 1.5px solid rgba(26,20,16,0.12);
+    border-radius: 10px;
+    padding: 48px 32px 36px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(26,20,16,0.07);
+    position: relative;
+  }
+
+  .verb {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 10vw, 56px);
+    font-style: italic;
+    color: #1a1410;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+  }
+
+  .verb.pop { animation: pop .25s ease; }
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.07)} 100%{transform:scale(1)} }
+
+  .verb.shake { animation: shake .35s ease; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-10px)}
+    40%{transform:translateX(10px)}
+    60%{transform:translateX(-6px)}
+    80%{transform:translateX(6px)}
+  }
+
+  .infinitif {
+    font-size: 12px;
+    color: rgba(26,20,16,0.4);
+    letter-spacing: 1px;
+    margin-bottom: 36px;
+  }
+
+  .btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    padding: 20px 10px;
+    border: 2px solid;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .16s ease;
+    background: transparent;
+  }
+
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: scale(.96); }
+
+  .btn-imp { border-color: #c0392b; color: #c0392b; }
+  .btn-cond { border-color: #2980b9; color: #2980b9; }
+
+  .btn.correct { background: #27ae60 !important; border-color: #27ae60 !important; color: #fff !important; }
+  .btn.wrong   { background: #e74c3c !important; border-color: #e74c3c !important; color: #fff !important; }
+  .btn.dim     { opacity: .25; pointer-events: none; }
+  .btn:disabled { pointer-events: none; }
+
+  /* feedback */
+  .feedback {
+    font-size: 13px;
+    min-height: 20px;
+    color: rgba(26,20,16,0.6);
+    transition: opacity .2s;
+    opacity: 0;
+  }
+  .feedback.show { opacity: 1; }
+  .feedback.ok  { color: #27ae60; }
+  .feedback.nope { color: #e74c3c; }
+
+  /* next */
+  .btn-next {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    padding: 13px;
+    background: #1a1410;
+    color: #f5f0e8;
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: all .2s;
+  }
+  .btn-next.show { opacity: 1; pointer-events: all; }
+  .btn-next:hover { background: #d4a017; color: #1a1410; }
+
+  /* progress dots */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+  .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: rgba(26,20,16,0.12);
+    transition: background .3s;
+  }
+  .dot.ok   { background: #27ae60; }
+  .dot.nope { background: #e74c3c; }
+  .dot.curr { background: #d4a017; }
+
+  /* end */
+  .end {
+    display: none;
+    text-align: center;
+    padding: 20px;
+  }
+  .end.show { display: block; }
+  .end-emoji { font-size: 64px; margin-bottom: 12px; }
+  .end-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    color: #d4a017;
+  }
+  .end-msg {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: #1a1410;
+    margin: 8px 0 24px;
+  }
+  .btn-restart {
+    padding: 14px 36px;
+    background: #1a1410;
+    color: #f5f0e8;
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .btn-restart:hover { background: #d4a017; color: #1a1410; }
+
+  .confetti {
+    position: fixed;
+    width: 8px; height: 8px;
+    border-radius: 1px;
+    pointer-events: none;
+    animation: fall 2s ease forwards;
+    z-index: 99;
+  }
+  @keyframes fall {
+    0%  { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100%{ transform: translateY(100vh) rotate(540deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><em>Imparfait</em> ou <span>Conditionnel</span> ?</h1>
+
+  <div class="top-bar">
+    <span>Score : <span class="score-val" id="score">0</span></span>
+    <span id="qnum">1 / 20</span>
+  </div>
+
+  <div class="card" id="card">
+    <div class="verb" id="verb"></div>
+    <div class="infinitif" id="inf"></div>
+
+    <div class="btns">
+      <button class="btn btn-imp" id="btn-imp" onclick="answer('imparfait')">Imparfait</button>
+      <button class="btn btn-cond" id="btn-cond" onclick="answer('conditionnel')">Conditionnel</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next" id="btn-next" onclick="next()">→ suivant</button>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+  <div class="end" id="end">
+    <div class="end-emoji" id="end-emoji">🏆</div>
+    <div class="end-score" id="end-score"></div>
+    <div class="end-msg" id="end-msg"></div>
+    <button class="btn-restart" onclick="restart()">↺ Rejouer</button>
+  </div>
+</div>
+
+<script>
+const all = [
+  { verb:"mangeait",       inf:"manger",     ans:"imparfait"    },
+  { verb:"ferais",         inf:"faire",      ans:"conditionnel" },
+  { verb:"parlaient",      inf:"parler",     ans:"imparfait"    },
+  { verb:"voudrais",       inf:"vouloir",    ans:"conditionnel" },
+  { verb:"finissais",      inf:"finir",      ans:"imparfait"    },
+  { verb:"serait",         inf:"être",       ans:"conditionnel" },
+  { verb:"avait",          inf:"avoir",      ans:"imparfait"    },
+  { verb:"pourrions",      inf:"pouvoir",    ans:"conditionnel" },
+  { verb:"venait",         inf:"venir",      ans:"imparfait"    },
+  { verb:"dirais",         inf:"dire",       ans:"conditionnel" },
+  { verb:"dormions",       inf:"dormir",     ans:"imparfait"    },
+  { verb:"sauriez",        inf:"savoir",     ans:"conditionnel" },
+  { verb:"écrivait",       inf:"écrire",     ans:"imparfait"    },
+  { verb:"iraient",        inf:"aller",      ans:"conditionnel" },
+  { verb:"croyais",        inf:"croire",     ans:"imparfait"    },
+  { verb:"viendrais",      inf:"venir",      ans:"conditionnel" },
+  { verb:"chantaient",     inf:"chanter",    ans:"imparfait"    },
+  { verb:"prendrions",     inf:"prendre",    ans:"conditionnel" },
+  { verb:"lisait",         inf:"lire",       ans:"imparfait"    },
+  { verb:"aurais",         inf:"avoir",      ans:"conditionnel" },
+  { verb:"jouions",        inf:"jouer",      ans:"imparfait"    },
+  { verb:"devrait",        inf:"devoir",     ans:"conditionnel" },
+  { verb:"regardait",      inf:"regarder",   ans:"imparfait"    },
+  { verb:"pourrait",       inf:"pouvoir",    ans:"conditionnel" },
+  { verb:"nageais",        inf:"nager",      ans:"imparfait"    },
+  { verb:"voudraient",     inf:"vouloir",    ans:"conditionnel" },
+  { verb:"portaient",      inf:"porter",     ans:"imparfait"    },
+  { verb:"aimerais",       inf:"aimer",      ans:"conditionnel" },
+  { verb:"habitait",       inf:"habiter",    ans:"imparfait"    },
+  { verb:"recevrais",      inf:"recevoir",   ans:"conditionnel" },
+];
+
+let questions, current, score, results;
+
+function shuffle(a) { return [...a].sort(() => Math.random()-.5); }
+
+function start() {
+  questions = shuffle(all).slice(0, 20);
+  current = 0; score = 0; results = [];
+
+  document.getElementById('end').classList.remove('show');
+  document.getElementById('card').style.display = '';
+
+  buildDots();
+  show();
+}
+
+function buildDots() {
+  const d = document.getElementById('dots');
+  d.innerHTML = '';
+  questions.forEach((_, i) => {
+    const el = document.createElement('div');
+    el.className = 'dot' + (i === 0 ? ' curr' : '');
+    el.id = 'dot-' + i;
+    d.appendChild(el);
+  });
+}
+
+function show() {
+  const q = questions[current];
+  document.getElementById('verb').textContent = q.verb;
+  document.getElementById('inf').textContent = '(' + q.inf + ')';
+  document.getElementById('qnum').textContent = (current+1) + ' / ' + questions.length;
+
+  document.getElementById('btn-imp').className = 'btn btn-imp';
+  document.getElementById('btn-cond').className = 'btn btn-cond';
+  document.getElementById('btn-imp').disabled = false;
+  document.getElementById('btn-cond').disabled = false;
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('btn-next').className = 'btn-next';
+}
+
+function answer(choice) {
+  const q = questions[current];
+  const ok = choice === q.ans;
+  if (ok) score++;
+
+  const btnImp  = document.getElementById('btn-imp');
+  const btnCond = document.getElementById('btn-cond');
+  const fb      = document.getElementById('feedback');
+  const verb    = document.getElementById('verb');
+
+  // correct button green, wrong button red, other dim
+  if (q.ans === 'imparfait') {
+    btnImp.className = 'btn btn-imp correct';
+    btnCond.className = ok ? 'btn btn-cond dim' : 'btn btn-cond wrong';
+  } else {
+    btnCond.className = 'btn btn-cond correct';
+    btnImp.className = ok ? 'btn btn-imp dim' : 'btn btn-imp wrong';
+  }
+  btnImp.disabled = true;
+  btnCond.disabled = true;
+
+  if (ok) {
+    fb.className = 'feedback ok show';
+    fb.textContent = '✓ Bravo !';
+    verb.classList.add('pop');
+    setTimeout(() => verb.classList.remove('pop'), 300);
+    confetti();
+  } else {
+    fb.className = 'feedback nope show';
+    fb.textContent = '✗  C\'est ' + (q.ans === 'imparfait' ? 'l\'imparfait' : 'le conditionnel');
+    verb.classList.add('shake');
+    setTimeout(() => verb.classList.remove('shake'), 400);
+  }
+
+  results.push(ok);
+  document.getElementById('dot-'+current).className = 'dot ' + (ok ? 'ok' : 'nope');
+  document.getElementById('score').textContent = score;
+  document.getElementById('btn-next').className = 'btn-next show';
+}
+
+function next() {
+  current++;
+  if (current >= questions.length) return finish();
+  if (current + 1 < questions.length)
+    document.getElementById('dot-'+(current)).className = 'dot curr';
+  show();
+}
+
+function finish() {
+  document.getElementById('card').style.display = 'none';
+  const end = document.getElementById('end');
+  end.classList.add('show');
+  const pct = score / questions.length;
+  document.getElementById('end-score').textContent = score + '/' + questions.length;
+  let emoji, msg;
+  if (pct === 1)       { emoji='🏆'; msg='Parfait ! Tu es imbattable !'; }
+  else if (pct >= .8)  { emoji='🥇'; msg='Excellent ! Très bien joué !'; }
+  else if (pct >= .6)  { emoji='🥈'; msg='Bien ! Continue à pratiquer !'; }
+  else                 { emoji='📚'; msg='Encore un effort, tu vas y arriver !'; }
+  document.getElementById('end-emoji').textContent = emoji;
+  document.getElementById('end-msg').textContent = msg;
+  if (pct >= .8) for (let i=0;i<25;i++) setTimeout(confetti, i*90);
+}
+
+function restart() {
+  document.getElementById('card').style.display = '';
+  start();
+}
+
+function confetti() {
+  const colors = ['#c0392b','#2980b9','#d4a017','#27ae60'];
+  const el = document.createElement('div');
+  el.className = 'confetti';
+  el.style.cssText = `left:${Math.random()*100}vw;top:-20px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.4+Math.random()}s`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
+}
+
+start();
+</script>
+</body>
+</html>
