@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imparfait — Entraînement complet</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f9f9f7; color: #1a1a1a; padding: 1.5rem; }
+#app { max-width: 680px; margin: 0 auto; }
+h1 { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+.subtitle { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem; }
+.tab { padding: 6px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; cursor: pointer; background: #f0efea; color: #666; }
+.tab.active { background: #fff; color: #1a1a1a; border-color: #888; font-weight: 500; }
+.progress-wrap { margin-bottom: 1.25rem; }
+.progress { height: 4px; background: #e0e0da; border-radius: 2px; }
+.progress-fill { height: 4px; background: #378ADD; border-radius: 2px; transition: width 0.3s; }
+.progress-label { font-size: 12px; color: #aaa; margin-top: 4px; display: flex; justify-content: space-between; }
+.card { background: #fff; border: 1px solid #e0e0da; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.question-meta { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.question-num { font-size: 12px; color: #999; }
+.question-tag { font-size: 11px; background: #EAF3DE; color: #27500A; padding: 2px 8px; border-radius: 20px; }
+.question { font-size: 20px; font-weight: 500; color: #1a1a1a; margin-bottom: 6px; }
+.hint { font-size: 12px; color: #aaa; margin-bottom: 14px; }
+.answer-row { display: flex; gap: 8px; align-items: center; }
+input[type=text] { flex: 1; height: 38px; border: 1px solid #ccc; border-radius: 8px; padding: 0 12px; font-size: 15px; outline: none; font-family: Arial, sans-serif; }
+input[type=text]:focus { border-color: #378ADD; box-shadow: 0 0 0 2px #E6F1FB; }
+.check-btn { padding: 0 18px; height: 38px; border: 1px solid #ccc; border-radius: 8px; background: #f0efea; color: #1a1a1a; cursor: pointer; font-size: 14px; white-space: nowrap; font-family: Arial, sans-serif; }
+.check-btn:hover { background: #e8e8e0; }
+.feedback { margin-top: 10px; font-size: 14px; min-height: 20px; }
+.feedback.ok { color: #27500A; font-weight: 500; }
+.feedback.err { color: #A32D2D; }
+.explication { font-size: 13px; color: #555; margin-top: 6px; padding: 8px 12px; background: #f9f9f7; border-radius: 8px; border-left: 3px solid #B5D4F4; display: none; }
+.nav { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; }
+.score-wrap { font-size: 13px; color: #888; }
+.score-ok { color: #27500A; font-weight: 500; }
+.score-err { color: #A32D2D; font-weight: 500; }
+.result { text-align: center; padding: 2.5rem 1rem; }
+.result-score { font-size: 52px; font-weight: 500; color: #1a1a1a; }
+.result-pct { font-size: 18px; color: #888; margin: 4px 0; }
+.result-label { font-size: 16px; color: #555; margin: 8px 0 1.5rem; }
+.result-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; max-width: 300px; margin-left: auto; margin-right: auto; }
+.stat-card { background: #f0efea; border-radius: 8px; padding: 12px; }
+.stat-num { font-size: 24px; font-weight: 500; }
+.stat-lbl { font-size: 12px; color: #888; }
+.btn-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.restart { padding: 8px 20px; border: 1px solid #ccc; border-radius: 8px; background: #fff; color: #1a1a1a; cursor: pointer; font-size: 14px; font-family: Arial, sans-serif; }
+.restart:hover { background: #f0efea; }
+.restart.primary { background: #378ADD; color: #fff; border-color: #378ADD; }
+.restart.primary:hover { background: #185FA5; }
+.mode-desc { font-size: 13px; color: #888; margin-bottom: 1rem; padding: 10px 14px; background: #fff; border: 1px solid #e0e0da; border-radius: 8px; }
+.conjugation-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 1rem; }
+.conjugation-table th { background: #E6F1FB; color: #0C447C; padding: 8px 12px; text-align: left; font-weight: 500; }
+.conjugation-table td { padding: 6px 12px; border-bottom: 1px solid #f0efea; }
+.conjugation-table tr:last-child td { border-bottom: none; }
+.ref-toggle { font-size: 13px; color: #378ADD; cursor: pointer; margin-bottom: 1rem; text-decoration: underline; }
+.ref-box { display: none; background: #fff; border: 1px solid #e0e0da; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
+.ref-box.open { display: block; }
+.ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.opt-btn { padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; background: #f0efea; color: #1a1a1a; cursor: pointer; font-size: 14px; text-align: left; font-family: Arial, sans-serif; transition: background 0.15s; }
+.opt-btn:hover:not(:disabled) { background: #e8e8e0; }
+.opt-btn.correct { background: #EAF3DE; border-color: #639922; color: #27500A; }
+.opt-btn.wrong { background: #FCEBEB; border-color: #A32D2D; color: #501313; }
+.opt-btn:disabled { cursor: default; }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>Imparfait — entraînement complet</h1>
+  <p class="subtitle">5 modes d'entraînement · 60+ questions</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('infinitif')">1. Infinitif</button>
+    <button class="tab" onclick="setMode('racine')">2. Racine</button>
+    <button class="tab" onclick="setMode('terminaison')">3. Terminaison</button>
+    <button class="tab" onclick="setMode('conjuguer')">4. Conjuguer</button>
+    <button class="tab" onclick="setMode('qcm')">5. QCM</button>
+  </div>
+
+  <span class="ref-toggle" onclick="toggleRef()">Afficher / cacher la table de référence</span>
+  <div class="ref-box" id="ref-box">
+    <div class="ref-grid">
+      <div>
+        <p style="font-size:13px;font-weight:500;margin-bottom:8px;">Terminaisons</p>
+        <table class="conjugation-table">
+          <tr><th>Pronom</th><th>Terminaison</th></tr>
+          <tr><td>je</td><td>-ais</td></tr>
+          <tr><td>tu</td><td>-ais</td></tr>
+          <tr><td>il/elle/on</td><td>-ait</td></tr>
+          <tr><td>nous</td><td>-ions</td></tr>
+          <tr><td>vous</td><td>-iez</td></tr>
+          <tr><td>ils/elles</td><td>-aient</td></tr>
+        </table>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:500;margin-bottom:8px;">Racines clés</p>
+        <table class="conjugation-table">
+          <tr><th>Verbe</th><th>Racine</th></tr>
+          <tr><td>être</td><td>ét-</td></tr>
+          <tr><td>avoir</td><td>av-</td></tr>
+          <tr><td>faire</td><td>fais-</td></tr>
+          <tr><td>aller</td><td>all-</td></tr>
+          <tr><td>voir</td><td>voy-</td></tr>
+          <tr><td>venir</td><td>ven-</td></tr>
+          <tr><td>prendre</td><td>pren-</td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#888;margin-top:10px;">Règle : racine = nous (présent) - ons. Exemple : nous parl<b>ons</b> → parl- + ais/ais/ait/ions/iez/aient</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress"><div class="progress-fill" id="prog"></div></div>
+    <div class="progress-label"><span id="prog-left"></span><span id="prog-right"></span></div>
+  </div>
+
+  <div id="main"></div>
+</div>
+
+<script>
+const allVerbs = [
+  { inf: "parler", racine: "parl", reg: true },
+  { inf: "manger", racine: "mange", reg: true },
+  { inf: "finir", racine: "finiss", reg: true },
+  { inf: "attendre", racine: "attend", reg: true },
+  { inf: "choisir", racine: "choisiss", reg: true },
+  { inf: "dormir", racine: "dorm", reg: true },
+  { inf: "écrire", racine: "écriv", reg: true },
+  { inf: "lire", racine: "lis", reg: true },
+  { inf: "partir", racine: "part", reg: true },
+  { inf: "sortir", racine: "sort", reg: true },
+  { inf: "répondre", racine: "répond", reg: true },
+  { inf: "vendre", racine: "vend", reg: true },
+  { inf: "entendre", racine: "entend", reg: true },
+  { inf: "chercher", racine: "cherch", reg: true },
+  { inf: "regarder", racine: "regard", reg: true },
+  { inf: "travailler", racine: "travaill", reg: true },
+  { inf: "habiter", racine: "habit", reg: true },
+  { inf: "jouer", racine: "jou", reg: true },
+  { inf: "aimer", racine: "aim", reg: true },
+  { inf: "danser", racine: "dans", reg: true },
+  { inf: "être", racine: "ét", reg: false },
+  { inf: "avoir", racine: "av", reg: false },
+  { inf: "faire", racine: "fais", reg: false },
+  { inf: "aller", racine: "all", reg: false },
+  { inf: "voir", racine: "voy", reg: false },
+  { inf: "venir", racine: "ven", reg: false },
+  { inf: "prendre", racine: "pren", reg: false },
+  { inf: "pouvoir", racine: "pouv", reg: false },
+  { inf: "vouloir", racine: "voul", reg: false },
+  { inf: "savoir", racine: "sav", reg: false },
+];
+
+const pronouns = ["je", "tu", "il/elle", "nous", "vous", "ils/elles"];
+const endings = ["-ais", "-ais", "-ait", "-ions", "-iez", "-aient"];
+const endingsClean = ["ais", "ais", "ait", "ions", "iez", "aient"];
+
+function conjugate(verb, pronIdx) {
+  let r = verb.racine;
+  if (pronIdx === 0 && (r.endsWith("ge"))) r = r; // manger: mange + ais
+  return r + endingsClean[pronIdx];
+}
+
+function getPronom(idx) {
+  return ["je", "tu", "il/elle", "nous", "vous", "ils/elles"][idx];
+}
+
+// Build question sets
+const modes = {
+  infinitif: {
+    desc: "Vous voyez un verbe à l'imparfait — trouvez l'infinitif.",
+    hint: "Quel est l'infinitif ?",
+    build() {
+      const qs = [];
+      allVerbs.forEach(v => {
+        [0,2,3,5].forEach(pi => {
+          qs.push({
+            q: `${getPronom(pi)} ${conjugate(v, pi)}`,
+            a: v.inf,
+            tag: v.reg ? "régulier" : "irrégulier",
+            expl: `${getPronom(pi)} ${conjugate(v, pi)} → infinitif : ${v.inf}`
+          });
+        });
+      });
+      return shuffle(qs).slice(0, 30);
+    }
+  },
+  racine: {
+    desc: "Donnez la racine du verbe à l'imparfait (nous au présent, sans -ons).",
+    hint: "Racine = nous (présent) − ons",
+    build() {
+      return shuffle(allVerbs.map(v => ({
+        q: `${v.inf} → nous... →`,
+        a: v.racine + "-",
+        tag: v.reg ? "régulier" : "irrégulier",
+        expl: `Racine de ${v.inf} : ${v.racine}-`
+      }))).slice(0, 25);
+    }
+  },
+  terminaison: {
+    desc: "Ajoutez la bonne terminaison de l'imparfait.",
+    hint: "-ais / -ais / -ait / -ions / -iez / -aient",
+    build() {
+      const qs = [];
+      allVerbs.slice(0, 15).forEach(v => {
+        pronouns.forEach((pr, pi) => {
+          qs.push({
+            q: `${pr} ${v.racine}________`,
+            a: endings[pi],
+            tag: pronouns[pi],
+            expl: `${pr} → terminaison : ${endings[pi]}`
+          });
+        });
+      });
+      return shuffle(qs).slice(0, 30);
+    }
+  },
+  conjuguer: {
+    desc: "Conjuguez le verbe à l'imparfait avec le pronom donné.",
+    hint: "Racine + terminaison correcte",
+    build() {
+      const qs = [];
+      allVerbs.forEach(v => {
+        pronouns.forEach((pr, pi) => {
+          const form = conjugate(v, pi);
+          qs.push({
+            q: `${pr} ________ (${v.inf})`,
+            a: form,
+            tag: v.reg ? "régulier" : "irrégulier",
+            expl: `${pr} ${v.inf} → ${pr} ${form} (racine: ${v.racine}-, terminaison: ${endings[pi]})`
+          });
+        });
+      });
+      return shuffle(qs).slice(0, 35);
+    }
+  },
+  qcm: {
+    desc: "Choisissez la bonne forme parmi les 4 options.",
+    hint: "Une seule bonne réponse.",
+    build() {
+      const qs = [];
+      allVerbs.forEach(v => {
+        [0, 2, 3, 5].forEach(pi => {
+          const correct = conjugate(v, pi);
+          const wrongs = allVerbs
+            .filter(w => w.inf !== v.inf)
+            .map(w => conjugate(w, pi))
+            .filter(f => f !== correct);
+          const opts = shuffle([correct, ...shuffle(wrongs).slice(0,3)]);
+          qs.push({
+            q: `${getPronom(pi)} ________ (${v.inf})`,
+            correct,
+            opts,
+            tag: v.reg ? "régulier" : "irrégulier",
+            expl: `${getPronom(pi)} ${v.inf} → ${getPronom(pi)} ${correct}`
+          });
+        });
+      });
+      return shuffle(qs).slice(0, 30);
+    }
+  }
+};
+
+let mode = 'infinitif', questions = [], cur = 0, score = 0, errors = 0, checked = false;
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.tab').forEach((t,i) =>
+    t.classList.toggle('active', ['infinitif','racine','terminaison','conjuguer','qcm'][i] === m));
+  restart();
+}
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function restart() {
+  questions = modes[mode].build();
+  cur = 0; score = 0; errors = 0; checked = false;
+  render();
+}
+
+function normalize(s) {
+  return s.trim().toLowerCase()
+    .replace(/[àâä]/g,'a').replace(/[éèêë]/g,'e')
+    .replace(/[îï]/g,'i').replace(/[ôö]/g,'o')
+    .replace(/[ùûü]/g,'u').replace(/ç/g,'c')
+    .replace(/^-/,'').replace(/-$/,'');
+}
+
+function checkText() {
+  if (checked) { advance(); return; }
+  const inp = document.getElementById('inp');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  checked = true;
+  const q = questions[cur];
+  const ok = normalize(val) === normalize(q.a);
+  if (ok) score++; else errors++;
+  const fb = document.getElementById('fb');
+  fb.className = 'feedback ' + (ok ? 'ok' : 'err');
+  fb.textContent = ok ? 'Correct !' : 'Réponse correcte : ' + q.a;
+  const ex = document.getElementById('expl');
+  if (ex) { ex.style.display = 'block'; ex.textContent = q.expl; }
+  inp.disabled = true;
+  document.getElementById('check-btn').textContent = 'Suivant →';
+}
+
+function selectOpt(btn, isCorrect, correct) {
+  if (checked) return;
+  checked = true;
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  if (isCorrect) {
+    btn.classList.add('correct');
+    score++;
+  } else {
+    btn.classList.add('wrong');
+    errors++;
+    document.querySelectorAll('.opt-btn').forEach(b => {
+      if (b.dataset.val === correct) b.classList.add('correct');
+    });
+  }
+  const fb = document.getElementById('fb');
+  fb.className = 'feedback ' + (isCorrect ? 'ok' : 'err');
+  fb.textContent = isCorrect ? 'Correct !' : 'Réponse correcte : ' + correct;
+  const ex = document.getElementById('expl');
+  if (ex) { ex.style.display = 'block'; ex.textContent = questions[cur].expl; }
+  document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+function advance() {
+  cur++;
+  checked = false;
+  render();
+}
+
+function toggleRef() {
+  document.getElementById('ref-box').classList.toggle('open');
+}
+
+function render() {
+  const total = questions.length;
+  const pct = Math.round(cur / total * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('prog-left').textContent = `Question ${Math.min(cur+1, total)} / ${total}`;
+  document.getElementById('prog-right').textContent = `Score : ${score} correct${score>1?'s':''}`;
+
+  if (cur >= total) {
+    const pctScore = Math.round(score / total * 100);
+    let label = pctScore === 100 ? 'Parfait ! Bravo !' : pctScore >= 80 ? 'Très bien !' : pctScore >= 60 ? 'Bien, continue !' : 'Continue à pratiquer !';
+    document.getElementById('main').innerHTML = `
+      <div class="result">
+        <div class="result-score">${score} / ${total}</div>
+        <div class="result-pct">${pctScore}%</div>
+        <div class="result-label">${label}</div>
+        <div class="result-stats">
+          <div class="stat-card"><div class="stat-num score-ok">${score}</div><div class="stat-lbl">Correctes</div></div>
+          <div class="stat-card"><div class="stat-num score-err">${errors}</div><div class="stat-lbl">Erreurs</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="restart" onclick="restart()">Recommencer ce mode</button>
+          <button class="restart primary" onclick="setMode('${['infinitif','racine','terminaison','conjuguer','qcm'][(['infinitif','racine','terminaison','conjuguer','qcm'].indexOf(mode)+1)%5]}')">Mode suivant →</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const q = questions[cur];
+  const m = modes[mode];
+
+  if (mode === 'qcm') {
+    document.getElementById('main').innerHTML = `
+      <div class="card">
+        <div class="question-meta">
+          <span class="question-num">Question ${cur+1} / ${total}</span>
+          <span class="question-tag">${q.tag}</span>
+        </div>
+        <div class="question">${q.q}</div>
+        <div class="hint">${m.hint}</div>
+        <div class="options-grid">
+          ${q.opts.map(o => `<button class="opt-btn" data-val="${o}" onclick="selectOpt(this, ${o===q.correct}, '${q.correct}')">${o}</button>`).join('')}
+        </div>
+        <div class="feedback" id="fb"></div>
+        <div class="explication" id="expl"></div>
+        <div style="margin-top:12px;text-align:right;">
+          <button class="check-btn" id="next-btn" style="display:none;" onclick="advance()">Suivant →</button>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="score-wrap">Correct : <span class="score-ok">${score}</span> &nbsp; Erreurs : <span class="score-err">${errors}</span></div>
+      </div>`;
+  } else {
+    document.getElementById('main').innerHTML = `
+      <div class="card">
+        <div class="question-meta">
+          <span class="question-num">Question ${cur+1} / ${total}</span>
+          <span class="question-tag">${q.tag}</span>
+        </div>
+        <div class="question">${q.q}</div>
+        <div class="hint">${m.hint}</div>
+        <div class="answer-row">
+          <input type="text" id="inp" placeholder="Votre réponse..." onkeydown="if(event.key==='Enter')checkText()" autofocus />
+          <button class="check-btn" id="check-btn" onclick="checkText()">Vérifier</button>
+        </div>
+        <div class="feedback" id="fb"></div>
+        <div class="explication" id="expl"></div>
+      </div>
+      <div class="nav">
+        <div class="score-wrap">Correct : <span class="score-ok">${score}</span> &nbsp; Erreurs : <span class="score-err">${errors}</span></div>
+      </div>`;
+    setTimeout(() => { const i = document.getElementById('inp'); if(i) i.focus(); }, 50);
+  }
+}
+
+restart();
+</script>
+</body>
+</html>
