@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futur Simple</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #f5f4f0;
+  --white:    #ffffff;
+  --ink:      #111110;
+  --ink2:     #3a3a38;
+  --muted:    #8a8a86;
+  --border:   #e2e0da;
+  --border2:  #c8c6be;
+  --accent:   #111110;
+  --ok:       #2a7a4b;
+  --err:      #b83232;
+  --warn:     #8a6a20;
+  --radius:   2px;
+  --serif:    'Playfair Display', Georgia, serif;
+  --sans:     'DM Sans', system-ui, sans-serif;
+  --mono:     'DM Mono', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 400;
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── NAV ─────────────────────────────────────────────────── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-style: italic;
+}
+.nav-logo sup {
+  font-size: 0.55rem;
+  vertical-align: super;
+  font-style: normal;
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+}
+.nav-tabs {
+  display: flex;
+  gap: 0;
+  list-style: none;
+}
+.nav-tab {
+  padding: 0.4rem 1.1rem;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 99px;
+  transition: all 0.15s;
+  background: none;
+  font-family: var(--sans);
+}
+.nav-tab:hover { color: var(--ink); }
+.nav-tab.active {
+  color: var(--white);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── HERO ────────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 2.5rem 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--ink2);
+}
+.hero-desc {
+  font-size: 15px;
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 420px;
+  line-height: 1.7;
+}
+
+/* ── PRACTICE AREA ───────────────────────────────────────── */
+.practice-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2.5rem 4rem;
+}
+
+/* Score strip */
+.score-strip {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+.score-item {
+  flex: 1;
+  padding: 1.25rem 0;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+.score-item:last-child { border-right: none; }
+.score-num {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  display: block;
+}
+.score-num.ok  { color: var(--ok); }
+.score-num.err { color: var(--err); }
+.score-num.str { color: var(--ink); }
+.score-lbl {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: var(--mono);
+  margin-top: 4px;
+  display: block;
+}
+
+/* Progress bar */
+.prog-track {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+.prog-bar {
+  position: absolute;
+  left: 0; top: 0; height: 100%;
+  background: var(--ink);
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* Filter section */
+.filter-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.filter-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.filter-pill {
+  padding: 5px 13px;
+  border: 1px solid var(--border2);
+  border-radius: 99px;
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--muted);
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--ink2); }
+.filter-pill.on {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
+}
+
+/* Exercise card */
+.ex-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 2.5rem;
+  margin-bottom: 0;
+}
+.ex-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+.ex-verb {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ex-cat {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  border: 1px solid var(--border2);
+  border-radius: 99px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.ex-sentence {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+.ex-sentence .blank {
+  color: var(--border2);
+  font-style: italic;
+}
+.ex-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.ex-subject {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--muted);
+  white-space: nowrap;
+  min-width: 2rem;
+}
+.ex-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.ex-input:focus { border-color: var(--ink); background: var(--white); }
+.ex-input.correct { border-color: var(--ok); background: #f0faf4; }
+.ex-input.wrong   { border-color: var(--err); background: #fdf2f2; }
+.ex-btn {
+  padding: 12px 22px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--white);
+  white-space: nowrap;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+}
+.ex-btn:hover:not(:disabled) { background: var(--ink2); border-color: var(--ink2); }
+.ex-btn:disabled { opacity: 0.3; cursor: default; }
+.ex-hint {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--warn);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+.ex-feedback {
+  font-size: 14px;
+  font-family: var(--sans);
+  min-height: 20px;
+  font-weight: 400;
+}
+.ex-feedback.ok  { color: var(--ok); }
+.ex-feedback.err { color: var(--err); }
+.ex-next {
+  display: none;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 13px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+.ex-next:hover { color: var(--ink); border-color: var(--ink); }
+
+/* ── RULES PAGE ──────────────────────────────────────────── */
+.rules-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2.5rem 5rem;
+}
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.rule-card {
+  background: var(--white);
+  padding: 1.75rem 2rem;
+}
+.rule-card-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rule-card-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.rule-card-body {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.8;
+}
+.rule-card-body strong { color: var(--ink); font-weight: 500; }
+.rule-card-body em { font-style: italic; color: var(--muted); }
+.rule-card-body ul { padding-left: 1rem; }
+.rule-card-body li { margin-bottom: 0.25rem; }
+.rule-card-body code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--bg);
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: var(--ink);
+}
+.endings-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 0.75rem;
+}
+.ending-tag {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 4px 10px;
+  border: 1px solid var(--border2);
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+.rules-page-title {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: 2.5rem;
+}
+
+/* ── IRREGULAR PAGE ──────────────────────────────────────── */
+.irreg-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2.5rem 5rem;
+}
+.irreg-page-title {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 2.5rem;
+}
+.irreg-group { margin-bottom: 2.5rem; }
+.irreg-group-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+.irreg-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.irreg-card {
+  background: var(--white);
+  padding: 1rem 1.25rem;
+}
+.irreg-v {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.irreg-f {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.irreg-f span { display: block; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  nav { padding: 1rem 1.25rem; }
+  .hero { padding: 2.5rem 1.25rem 2rem; }
+  .practice-wrap { padding: 0 1.25rem 3rem; }
+  .rules-wrap, .irreg-wrap { padding: 2rem 1.25rem 4rem; }
+  .ex-card { padding: 1.5rem; }
+  .nav-logo { font-size: 1.1rem; }
+  .nav-tab { padding: 0.35rem 0.75rem; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">futur simple<sup>fr</sup></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchPage('practice')">Exercices</button>
+    <button class="nav-tab" onclick="switchPage('rules')">Règles</button>
+    <button class="nav-tab" onclick="switchPage('irreg')">Irréguliers</button>
+  </div>
+</nav>
+
+<!-- ── PRACTICE PAGE ─────────────────────────────── -->
+<div class="page active" id="page-practice">
+  <div class="hero">
+    <p class="hero-eyebrow">( entraîneur · 150 verbes )</p>
+    <h1 class="hero-title">Le futur<br><em>simple.</em></h1>
+    <p class="hero-desc">Conjugue les 150 verbes les plus fréquents du français. Choisis les groupes, entraîne-toi, progresse.</p>
+  </div>
+
+  <div class="practice-wrap">
+    <div class="score-strip">
+      <div class="score-item">
+        <span class="score-num ok" id="sc-ok">0</span>
+        <span class="score-lbl">Correct</span>
+      </div>
+      <div class="score-item">
+        <span class="score-num err" id="sc-ko">0</span>
+        <span class="score-lbl">Erreurs</span>
+      </div>
+      <div class="score-item">
+        <span class="score-num str" id="sc-str">0</span>
+        <span class="score-lbl">Série</span>
+      </div>
+    </div>
+
+    <div class="prog-track"><div class="prog-bar" id="prog"></div></div>
+
+    <div class="filter-section">
+      <span class="filter-label">( groupes à travailler )</span>
+      <div class="filter-pills" id="filter-row"></div>
+    </div>
+
+    <div class="ex-card" id="ex-area">
+      <p style="font-family:var(--mono);font-size:13px;color:var(--muted);">Chargement…</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── RULES PAGE ────────────────────────────────── -->
+<div class="page" id="page-rules">
+  <div class="rules-wrap">
+    <h2 class="rules-page-title">Règles de formation.</h2>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-card-title">Formation générale</div>
+        <div class="rule-card-body">
+          <p>Infinitif + terminaisons :</p>
+          <div class="endings-row">
+            <span class="ending-tag">-ai</span>
+            <span class="ending-tag">-as</span>
+            <span class="ending-tag">-a</span>
+            <span class="ending-tag">-ons</span>
+            <span class="ending-tag">-ez</span>
+            <span class="ending-tag">-ont</span>
+          </div>
+          <p style="margin-top:0.75rem">⚠ « <strong>-ai</strong> » se prononce [é]</p>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-title">Verbes en -RE</div>
+        <div class="rule-card-body">
+          <p>On <strong>supprime le « e »</strong> final avant les terminaisons.</p>
+          <ul style="margin-top:0.6rem">
+            <li><code>mettre</code> → mettr- → il mettra</li>
+            <li><code>lire</code> → lir- → nous lirons</li>
+            <li><code>prendre</code> → prendr- → tu prendras</li>
+            <li><code>suivre</code> → suivr- → je suivrai</li>
+          </ul>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-title">Verbes en -ayer</div>
+        <div class="rule-card-body">
+          <p>Deux formes acceptées :</p>
+          <p style="margin-top:0.5rem"><code>payer</code> → <strong>payerai</strong> <em>ou</em> <strong>paierai</strong></p>
+          <p style="margin-top:0.5rem"><em>Ce site utilise la forme en -ai-.</em></p>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-title">Verbes en -yer (sauf -ayer)</div>
+        <div class="rule-card-body">
+          <p>Le « <strong>y</strong> » devient « <strong>i</strong> » (sauf <code>envoyer</code>).</p>
+          <ul style="margin-top:0.6rem">
+            <li><code>appuyer</code> → appuier- → j'appuierai</li>
+            <li><code>essuyer</code> → essuier- → tu essuieras</li>
+          </ul>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-title">Double consonne — -eler / -eter</div>
+        <div class="rule-card-body">
+          <ul>
+            <li><code>appeler</code> → appell- → j'appellerai</li>
+            <li><code>rappeler</code> → rappell- → je rappellerai</li>
+            <li><code>jeter</code> → jett- → je jetterai</li>
+          </ul>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-title">Accent grave — -e_er</div>
+        <div class="rule-card-body">
+          <p>La 1ʳᵉ pers. du présent s'applique à <strong>toutes</strong> les personnes du futur.</p>
+          <ul style="margin-top:0.6rem">
+            <li><code>acheter</code> → achèter- → j'achèterai</li>
+            <li><code>lever</code> → lèver- → je lèverai</li>
+            <li><code>espérer</code> → espèrer- → j'espèrerai</li>
+            <li><code>répéter</code> → répèter- → je répèterai</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── IRREGULAR PAGE ────────────────────────────── -->
+<div class="page" id="page-irreg">
+  <div class="irreg-wrap">
+    <h2 class="irreg-page-title">Verbes irréguliers.</h2>
+    <div id="irreg-content"></div>
+  </div>
+</div>
+
+<script>
+// ── ENDINGS ──────────────────────────────────────────────────────
+const E = {je:'ai',tu:'as',il:'a',elle:'a',on:'a',nous:'ons',vous:'ez',ils:'ont',elles:'ont'};
+
+// ── FULL CONJUGATIONS (irregular verbs) ──────────────────────────
+const FULL = {
+  être:       ['serai','seras','sera','serons','serez','seront'],
+  avoir:      ['aurai','auras','aura','aurons','aurez','auront'],
+  faire:      ['ferai','feras','fera','ferons','ferez','feront'],
+  aller:      ['irai','iras','ira','irons','irez','iront'],
+  voir:       ['verrai','verras','verra','verrons','verrez','verront'],
+  vouloir:    ['voudrai','voudras','voudra','voudrons','voudrez','voudront'],
+  pouvoir:    ['pourrai','pourras','pourra','pourrons','pourrez','pourront'],
+  savoir:     ['saurai','sauras','saura','saurons','saurez','sauront'],
+  devoir:     ['devrai','devras','devra','devrons','devrez','devront'],
+  falloir:    [null,null,'faudra',null,null,null],
+  pleuvoir:   [null,null,'pleuvra',null,null,null],
+  valoir:     ['vaudrai','vaudras','vaudra','vaudrons','vaudrez','vaudront'],
+  plaire:     ['plairai','plairas','plaira','plairons','plairez','plairont'],
+  venir:      ['viendrai','viendras','viendra','viendrons','viendrez','viendront'],
+  devenir:    ['deviendrai','deviendras','deviendra','deviendrons','deviendrez','deviendront'],
+  revenir:    ['reviendrai','reviendras','reviendra','reviendrons','reviendrez','reviendront'],
+  tenir:      ['tiendrai','tiendras','tiendra','tiendrons','tiendrez','tiendront'],
+  obtenir:    ['obtiendrai','obtiendras','obtiendra','obtiendrons','obtiendrez','obtiendront'],
+  envoyer:    ['enverrai','enverras','enverra','enverrons','enverrez','enverront'],
+  courir:     ['courrai','courras','courra','courrons','courrez','courront'],
+  mourir:     ['mourrai','mourras','mourra','mourrons','mourrez','mourront'],
+  recevoir:   ['recevrai','recevras','recevra','recevrons','recevrez','recevront'],
+  apercevoir: ['apercevrai','apercevras','apercevra','apercevrons','apercevrez','apercevront'],
+  connaître:  ['connaîtrai','connaîtras','connaîtra','connaîtrons','connaîtrez','connaîtront'],
+  reconnaître:['reconnaîtrai','reconnaîtras','reconnaîtra','reconnaîtrons','reconnaîtrez','reconnaîtront'],
+  paraître:   ['paraîtrai','paraîtras','paraîtra','paraîtrons','paraîtrez','paraîtront'],
+  apparaître: ['apparaîtrai','apparaîtras','apparaîtra','apparaîtrons','apparaîtrez','apparaîtront'],
+  disparaître:['disparaîtrai','disparaîtras','disparaîtra','disparaîtrons','disparaîtrez','disparaîtront'],
+  naître:     ['naîtrai','naîtras','naîtra','naîtrons','naîtrez','naîtront'],
+};
+const PIDX = {je:0,tu:1,il:2,elle:2,on:2,nous:3,vous:4,ils:5,elles:5};
+
+const REFL = {
+  souvenir: ["me souviendrai","te souviendras","se souviendra","nous souviendrons","vous souviendrez","se souviendront"],
+  asseoir:  ["m'assoirai","t'assoiras","s'assoira","nous assoirons","vous assoirez","s'assoiront"],
+};
+
+function conjVerb(inf, p) {
+  if (REFL[inf]) return REFL[inf][PIDX[p]];
+  if (FULL[inf]) { const f = FULL[inf][PIDX[p]]; return f || '?'; }
+  if (inf.endsWith('ayer')) return inf.slice(0,-4) + 'aier' + E[p];
+  if (inf.endsWith('oyer') || inf.endsWith('uyer')) return inf.slice(0,-3) + 'ier' + E[p];
+  if (inf.endsWith('eler')) return inf.slice(0,-2) + 'ler' + E[p];
+  if (inf.endsWith('eter') && inf !== 'acheter') return inf.slice(0,-2) + 'ter' + E[p];
+  const accentMap = {acheter:'achèter',lever:'lèver',espérer:'espèrer',répéter:'répèter',mêler:'mêler',céder:'cèder',préférer:'préfèrer',sécher:'sècher',peser:'pèser',mener:'mèner'};
+  if (accentMap[inf]) return accentMap[inf] + E[p];
+  if (inf.endsWith('re')) return inf.slice(0,-1) + E[p];
+  return inf + E[p];
+}
+
+function normP(pronoun) {
+  const special = {'ça':'il','le bébé':'il','les feuilles':'ils','les arbres':'ils','les enfants':'ils','le magasin':'il','le projet':'il','ces problèmes':'ils','les étoiles':'elles','les cours':'ils'};
+  return special[pronoun] || pronoun.toLowerCase();
+}
+
+function getCorrect(ex) { return conjVerb(ex.inf, normP(ex.pronoun)); }
+
+function getHint(ex) {
+  if (REFL[ex.inf] || FULL[ex.inf]) return '⚠ base irrégulière';
+  if (ex.inf.endsWith('ayer')) return '⚠ -ayer : y → i (paier-)';
+  if (ex.inf.endsWith('oyer') || ex.inf.endsWith('uyer')) return '⚠ -yer : y → i';
+  if (ex.inf.endsWith('eler')) return '⚠ -eler : double le « l »';
+  if (ex.inf.endsWith('eter') && ex.inf !== 'acheter') return '⚠ -eter : double le « t »';
+  if (['acheter','lever','espérer','répéter','mêler'].includes(ex.inf)) return '⚠ accent grave à toutes les personnes';
+  if (ex.inf.endsWith('re')) return '⚠ verbe en -re : on supprime le « e »';
+  return '';
+}
+
+function displaySubject(ex) {
+  if (ex.pronoun !== 'je') return ex.pronoun;
+  const ans = getCorrect(ex);
+  return /^[aeiouyéèêëîïôùûh]/i.test(ans) ? "j'" : 'je';
+}
+
+// ── EXERCISES ────────────────────────────────────────────────────
+const EX = [
+  {inf:'être',p:'je',s:'Demain, ___ en pleine forme.',c:'irrég'},
+  {inf:'être',p:'vous',s:'Vous ___ prêts à 8h.',c:'irrég'},
+  {inf:'être',p:'ils',s:'Ils ___ ravis de te voir.',c:'irrég'},
+  {inf:'avoir',p:'tu',s:'Tu ___ le temps de finir.',c:'irrég'},
+  {inf:'avoir',p:'nous',s:'Nous ___ les résultats demain.',c:'irrég'},
+  {inf:'faire',p:'ils',s:'Ils ___ leurs devoirs ce soir.',c:'irrég'},
+  {inf:'faire',p:'on',s:"On ___ une pause dans dix minutes.",c:'irrég'},
+  {inf:'dire',p:'tu',s:'Tu ___ la vérité à tes parents.',c:'RE'},
+  {inf:'dire',p:'je',s:'Je ___ bonjour de ta part.',c:'RE'},
+  {inf:'pouvoir',p:'on',s:'On ___ y aller ensemble.',c:'irrég'},
+  {inf:'pouvoir',p:'vous',s:'Vous ___ partir à midi.',c:'irrég'},
+  {inf:'aller',p:'nous',s:'Nous ___ à Paris la semaine prochaine.',c:'irrég'},
+  {inf:'aller',p:'tu',s:'Tu ___ mieux après quelques jours.',c:'irrég'},
+  {inf:'voir',p:'elle',s:'Elle ___ ses amis ce week-end.',c:'irrég'},
+  {inf:'voir',p:'nous',s:'Nous ___ le film demain soir.',c:'irrég'},
+  {inf:'vouloir',p:'ils',s:'Ils ___ sûrement participer.',c:'irrég'},
+  {inf:'vouloir',p:'tu',s:'Tu ___ du café ou du thé ?',c:'irrég'},
+  {inf:'venir',p:'vous',s:"Vous ___ à ma fête, j'espère.",c:'irrég'},
+  {inf:'venir',p:'elle',s:'Elle ___ me rejoindre au café.',c:'irrég'},
+  {inf:'devoir',p:'nous',s:'Nous ___ partir tôt demain.',c:'irrég'},
+  {inf:'devoir',p:'tu',s:'Tu ___ rendre ce livre à la bibliothèque.',c:'irrég'},
+  {inf:'prendre',p:'tu',s:'Tu ___ le train de 8h demain.',c:'RE'},
+  {inf:'prendre',p:'ils',s:"Ils ___ l'avion samedi matin.",c:'RE'},
+  {inf:'trouver',p:'je',s:'Je ___ sûrement une solution.',c:'ER'},
+  {inf:'trouver',p:'tu',s:'Tu ___ ta réponse dans ce livre.',c:'ER'},
+  {inf:'donner',p:'elle',s:'Elle ___ sa réponse demain.',c:'ER'},
+  {inf:'donner',p:'nous',s:'Nous ___ notre décision en fin de semaine.',c:'ER'},
+  {inf:'falloir',p:'il',s:"Il ___ partir avant la nuit.",c:'irrég'},
+  {inf:'parler',p:'je',s:'Je ___ à mon professeur demain.',c:'ER'},
+  {inf:'parler',p:'vous',s:'Vous ___ français couramment bientôt.',c:'ER'},
+  {inf:'mettre',p:'il',s:'Il ___ son manteau avant de sortir.',c:'RE'},
+  {inf:'mettre',p:'nous',s:'Nous ___ la table pour le dîner.',c:'RE'},
+  {inf:'savoir',p:'tu',s:'Tu ___ la réponse demain.',c:'irrég'},
+  {inf:'savoir',p:'nous',s:'Nous ___ bientôt qui a gagné.',c:'irrég'},
+  {inf:'passer',p:'je',s:"Je ___ te voir en rentrant.",c:'ER'},
+  {inf:'passer',p:'ils',s:'Ils ___ leurs vacances à la mer.',c:'ER'},
+  {inf:'regarder',p:'ils',s:'Ils ___ le match à la télé.',c:'ER'},
+  {inf:'regarder',p:'elle',s:'Elle ___ le ciel étoilé ce soir.',c:'ER'},
+  {inf:'aimer',p:'tu',s:"Tu ___ cette ville, j'en suis sûr.",c:'ER'},
+  {inf:'aimer',p:'nous',s:'Nous ___ toujours la musique.',c:'ER'},
+  {inf:'croire',p:'je',s:'Je ___ en toi.',c:'RE'},
+  {inf:'croire',p:'vous',s:'Vous ___ à cette histoire ?',c:'RE'},
+  {inf:'demander',p:'tu',s:'Tu ___ une explication à ton professeur.',c:'ER'},
+  {inf:'demander',p:'ils',s:'Ils ___ la permission de sortir.',c:'ER'},
+  {inf:'rester',p:'nous',s:"Nous ___ ici jusqu'à demain.",c:'ER'},
+  {inf:'rester',p:'elle',s:'Elle ___ à la maison ce soir.',c:'ER'},
+  {inf:'répondre',p:'vous',s:'Vous ___ à ma question bientôt.',c:'RE'},
+  {inf:'répondre',p:'je',s:'Je ___ à ton message ce soir.',c:'RE'},
+  {inf:'entendre',p:'on',s:'On ___ la musique de loin.',c:'RE'},
+  {inf:'entendre',p:'tu',s:'Tu ___ les oiseaux le matin.',c:'RE'},
+  {inf:'penser',p:'tu',s:'Tu ___ à acheter du pain.',c:'ER'},
+  {inf:'penser',p:'je',s:'Je ___ à toi pendant mon voyage.',c:'ER'},
+  {inf:'arriver',p:'nous',s:"Nous ___ à l'heure, c'est promis.",c:'ER'},
+  {inf:'arriver',p:'il',s:'Il ___ par le train de 18h.',c:'ER'},
+  {inf:'connaître',p:'tu',s:'Tu ___ bientôt la réponse.',c:'irrég'},
+  {inf:'connaître',p:'vous',s:'Vous ___ vite notre nouvelle directrice.',c:'irrég'},
+  {inf:'devenir',p:'elle',s:'Elle ___ médecin dans quelques années.',c:'irrég'},
+  {inf:'devenir',p:'ils',s:'Ils ___ de bons professeurs.',c:'irrég'},
+  {inf:'sentir',p:'ça',s:'Ça ___ bon quand tu cuisines.',c:'IR'},
+  {inf:'sentir',p:'tu',s:"Tu ___ la différence après l'entraînement.",c:'IR'},
+  {inf:'sembler',p:'il',s:'Il ___ plus facile avec de la pratique.',c:'ER'},
+  {inf:'sembler',p:'ça',s:'Ça ___ intéressant comme idée.',c:'ER'},
+  {inf:'tenir',p:'je',s:'Je ___ ma promesse.',c:'irrég'},
+  {inf:'tenir',p:'tu',s:'Tu ___ bon encore quelques minutes.',c:'irrég'},
+  {inf:'comprendre',p:'tu',s:'Tu ___ mieux avec cet exemple.',c:'RE'},
+  {inf:'comprendre',p:'ils',s:'Ils ___ la leçon rapidement.',c:'RE'},
+  {inf:'rendre',p:'je',s:'Je ___ ce livre à la bibliothèque.',c:'RE'},
+  {inf:'rendre',p:'elle',s:'Elle ___ visite à sa grand-mère.',c:'RE'},
+  {inf:'attendre',p:'elles',s:'Elles ___ le bus sous la pluie.',c:'RE'},
+  {inf:'attendre',p:'nous',s:'Nous ___ les résultats avec impatience.',c:'RE'},
+  {inf:'sortir',p:'nous',s:'Nous ___ après le dîner.',c:'IR'},
+  {inf:'sortir',p:'ils',s:'Ils ___ ce soir en ville.',c:'IR'},
+  {inf:'vivre',p:'ils',s:"Ils ___ à la campagne après leur retraite.",c:'RE'},
+  {inf:'vivre',p:'nous',s:'Nous ___ des moments inoubliables.',c:'RE'},
+  {inf:'entrer',p:'on',s:'On ___ par la porte principale.',c:'ER'},
+  {inf:'entrer',p:'vous',s:'Vous ___ dans la salle à 9h.',c:'ER'},
+  {inf:'reprendre',p:'nous',s:'Nous ___ le travail lundi.',c:'RE'},
+  {inf:'reprendre',p:'il',s:"Il ___ ses études l'année prochaine.",c:'RE'},
+  {inf:'porter',p:'tu',s:'Tu ___ ce carton au grenier ?',c:'ER'},
+  {inf:'porter',p:'elle',s:'Elle ___ une robe rouge à la fête.',c:'ER'},
+  {inf:'chercher',p:'je',s:'Je ___ un appartement en centre-ville.',c:'ER'},
+  {inf:'chercher',p:'ils',s:'Ils ___ une solution ensemble.',c:'ER'},
+  {inf:'revenir',p:'il',s:'Il ___ de voyage la semaine prochaine.',c:'irrég'},
+  {inf:'revenir',p:'nous',s:'Nous ___ te voir bientôt.',c:'irrég'},
+  {inf:'appeler',p:'je',s:'Je ___ ma mère ce soir.',c:'-eler'},
+  {inf:'appeler',p:'tu',s:'Tu ___ un taxi pour rentrer.',c:'-eler'},
+  {inf:'appeler',p:'nous',s:'Nous ___ le médecin si nécessaire.',c:'-eler'},
+  {inf:'mourir',p:'elle',s:'Elle ___ de rire tellement !',c:'irrég'},
+  {inf:'mourir',p:'il',s:"Il ___ d'envie de leur dire la vérité.",c:'irrég'},
+  {inf:'partir',p:'nous',s:'Nous ___ en vacances en juillet.',c:'IR'},
+  {inf:'partir',p:'il',s:'Il ___ très tôt demain matin.',c:'IR'},
+  {inf:'jeter',p:'tu',s:'Tu ___ ce papier à la poubelle.',c:'-eter'},
+  {inf:'jeter',p:'je',s:"Je ___ un coup d'œil sur ce document.",c:'-eter'},
+  {inf:'suivre',p:'je',s:'Je ___ ce cours en ligne.',c:'RE'},
+  {inf:'suivre',p:'vous',s:'Vous ___ les consignes à la lettre.',c:'RE'},
+  {inf:'écrire',p:'je',s:'Je ___ une lettre à mes amis.',c:'RE'},
+  {inf:'écrire',p:'tu',s:'Tu ___ un roman un jour.',c:'RE'},
+  {inf:'montrer',p:'je',s:'Je ___ mes photos de voyage.',c:'ER'},
+  {inf:'montrer',p:'il',s:'Il ___ le chemin aux touristes.',c:'ER'},
+  {inf:'tomber',p:'les feuilles',s:'Les feuilles ___ en automne.',c:'ER'},
+  {inf:'tomber',p:'il',s:'Il ___ de la neige demain.',c:'ER'},
+  {inf:'ouvrir',p:'tu',s:"Tu ___ la fenêtre s'il te plaît.",c:'IR'},
+  {inf:'ouvrir',p:'ils',s:'Ils ___ un nouveau restaurant.',c:'IR'},
+  {inf:'arrêter',p:'tu',s:'Tu ___ de fumer bientôt ?',c:'ER'},
+  {inf:'arrêter',p:'nous',s:'Nous ___ le travail à 18h.',c:'ER'},
+  {inf:'perdre',p:'tu',s:"Tu ___ l'habitude avec le temps.",c:'RE'},
+  {inf:'perdre',p:'ils',s:'Ils ne ___ pas espoir.',c:'RE'},
+  {inf:'commencer',p:'nous',s:'Nous ___ à 8h précises.',c:'ER'},
+  {inf:'commencer',p:'les cours',s:'Les cours ___ en septembre.',c:'ER'},
+  {inf:'paraître',p:'il',s:'Il ___ évident que tu as raison.',c:'irrég'},
+  {inf:'paraître',p:'ça',s:"Ça ___ bizarre au premier abord.",c:'irrég'},
+  {inf:'marcher',p:'nous',s:"Nous ___ jusqu'au parc.",c:'ER'},
+  {inf:'marcher',p:'ça',s:'Ça ___ mieux avec une bonne organisation.',c:'ER'},
+  {inf:'lever',p:'tu',s:'Tu ___ la main pour répondre.',c:'-e_er'},
+  {inf:'lever',p:'nous',s:"Nous ___ le camp à l'aube.",c:'-e_er'},
+  {inf:'permettre',p:'ça',s:"Ça ___ d'aller plus vite.",c:'RE'},
+  {inf:'permettre',p:'il',s:'Il ___ à tout le monde de participer.',c:'RE'},
+  {inf:'asseoir',p:'tu',s:'Tu ___ près de la fenêtre.',c:'irrég'},
+  {inf:'écouter',p:'vous',s:'Vous ___ les conseils de votre professeur.',c:'ER'},
+  {inf:'écouter',p:'ils',s:'Ils ___ de la musique ensemble.',c:'ER'},
+  {inf:'monter',p:'nous',s:'Nous ___ au dernier étage.',c:'ER'},
+  {inf:'monter',p:'elle',s:'Elle ___ à cheval ce week-end.',c:'ER'},
+  {inf:'apercevoir',p:'tu',s:'Tu ___ la différence très vite.',c:'irrég'},
+  {inf:'apercevoir',p:'vous',s:'Vous ___ le château au détour du chemin.',c:'irrég'},
+  {inf:'recevoir',p:'vous',s:'Vous ___ la réponse sous peu.',c:'irrég'},
+  {inf:'recevoir',p:'je',s:'Je ___ une récompense pour mon travail.',c:'irrég'},
+  {inf:'servir',p:'on',s:'On ___ le repas à 13h.',c:'IR'},
+  {inf:'servir',p:'ça',s:'Ça ___ à quoi demain ?',c:'IR'},
+  {inf:'finir',p:'je',s:'Je ___ ce projet avant vendredi.',c:'IR'},
+  {inf:'finir',p:'vous',s:"Vous ___ l'exercice en dix minutes.",c:'IR'},
+  {inf:'rire',p:'nous',s:'Nous ___ beaucoup à cette soirée.',c:'RE'},
+  {inf:'rire',p:'tu',s:'Tu ___ quand tu entendras cette blague.',c:'RE'},
+  {inf:'crier',p:'ils',s:'Ils ___ de joie en apprenant la nouvelle.',c:'ER'},
+  {inf:'crier',p:'elle',s:'Elle ___ au scandale.',c:'ER'},
+  {inf:'jouer',p:'nous',s:'Nous ___ au football samedi.',c:'ER'},
+  {inf:'jouer',p:'tu',s:'Tu ___ de la guitare ce soir ?',c:'ER'},
+  {inf:'tourner',p:'tu',s:'Tu ___ à droite après le carrefour.',c:'ER'},
+  {inf:'tourner',p:'ça',s:"Ça ___ mal si on n'agit pas.",c:'ER'},
+  {inf:'garder',p:'je',s:'Je ___ ce souvenir toute ma vie.',c:'ER'},
+  {inf:'garder',p:'tu',s:'Tu ___ les enfants ce soir ?',c:'ER'},
+  {inf:'reconnaître',p:'tu',s:"Tu ___ l'endroit facilement.",c:'irrég'},
+  {inf:'reconnaître',p:'ils',s:'Ils ___ leurs erreurs.',c:'irrég'},
+  {inf:'quitter',p:'nous',s:"Nous ___ la ville en été.",c:'ER'},
+  {inf:'quitter',p:'elle',s:'Elle ___ son emploi le mois prochain.',c:'ER'},
+  {inf:'manger',p:'nous',s:'Nous ___ ensemble ce midi.',c:'ER'},
+  {inf:'manger',p:'tu',s:'Tu ___ au restaurant ce soir ?',c:'ER'},
+  {inf:'courir',p:'tu',s:"Tu ___ le marathon l'année prochaine.",c:'irrég'},
+  {inf:'courir',p:'elle',s:'Elle ___ plus vite que toi.',c:'irrég'},
+  {inf:'continuer',p:'nous',s:'Nous ___ à travailler ensemble.',c:'ER'},
+  {inf:'continuer',p:'il',s:"Il ___ ses études à l'étranger.",c:'ER'},
+  {inf:'oublier',p:'tu',s:'Tu ___ de prendre tes médicaments.',c:'ER'},
+  {inf:'oublier',p:'on',s:'On ___ jamais ces vacances.',c:'ER'},
+  {inf:'descendre',p:'nous',s:'Nous ___ à la prochaine station.',c:'RE'},
+  {inf:'descendre',p:'il',s:'Il ___ chercher le courrier.',c:'RE'},
+  {inf:'cacher',p:'tu',s:'Tu ___ le cadeau avant son arrivée.',c:'ER'},
+  {inf:'cacher',p:'elle',s:'Elle ___ la vérité encore longtemps ?',c:'ER'},
+  {inf:'poser',p:'je',s:'Je ___ une question au professeur.',c:'ER'},
+  {inf:'poser',p:'tu',s:'Tu ___ ton sac sur la chaise.',c:'ER'},
+  {inf:'tirer',p:'il',s:"Il ___ les conclusions de l'expérience.",c:'ER'},
+  {inf:'tirer',p:'tu',s:'Tu ___ les rideaux pour dormir.',c:'ER'},
+  {inf:'présenter',p:'je',s:'Je ___ mon projet devant la classe.',c:'ER'},
+  {inf:'présenter',p:'ils',s:'Ils ___ leurs résultats demain.',c:'ER'},
+  {inf:'ajouter',p:'tu',s:'Tu ___ du sel à la fin.',c:'ER'},
+  {inf:'ajouter',p:'nous',s:'Nous ___ une dernière touche.',c:'ER'},
+  {inf:'agir',p:'il',s:'Il ___ rapidement pour résoudre le problème.',c:'IR'},
+  {inf:'agir',p:'nous',s:'Nous ___ ensemble contre la pollution.',c:'IR'},
+  {inf:'retrouver',p:'nous',s:'Nous ___ nos amis à la gare.',c:'ER'},
+  {inf:'retrouver',p:'tu',s:"Tu ___ ton portefeuille, ne t'inquiète pas.",c:'ER'},
+  {inf:'offrir',p:'je',s:'Je ___ des fleurs à ma mère.',c:'IR'},
+  {inf:'offrir',p:'tu',s:'Tu ___ ce cadeau à ton ami.',c:'IR'},
+  {inf:'apprendre',p:'tu',s:"Tu ___ à conduire l'année prochaine.",c:'RE'},
+  {inf:'apprendre',p:'ils',s:'Ils ___ le japonais ensemble.',c:'RE'},
+  {inf:'tuer',p:'ça',s:"Ça ___ l'ambiance si on part trop tôt.",c:'ER'},
+  {inf:'retourner',p:'nous',s:"Nous ___ en France l'été prochain.",c:'ER'},
+  {inf:'retourner',p:'il',s:"Il ___ chez lui après l'école.",c:'ER'},
+  {inf:'rencontrer',p:'tu',s:'Tu ___ des gens formidables là-bas.',c:'ER'},
+  {inf:'rencontrer',p:'nous',s:"Nous ___ l'équipe vendredi.",c:'ER'},
+  {inf:'envoyer',p:'je',s:'Je ___ un courriel ce soir.',c:'irrég'},
+  {inf:'envoyer',p:'tu',s:'Tu ___ la lettre demain ?',c:'irrég'},
+  {inf:'dormir',p:'vous',s:'Vous ___ bien cette nuit.',c:'IR'},
+  {inf:'dormir',p:'je',s:'Je ___ chez toi si tu veux.',c:'IR'},
+  {inf:'pousser',p:'il',s:'Il ___ la porte doucement.',c:'ER'},
+  {inf:'pousser',p:'les arbres',s:'Les arbres ___ vite avec ce soleil.',c:'ER'},
+  {inf:'rappeler',p:'je',s:'Je ___ demain pour confirmer.',c:'-eler'},
+  {inf:'rappeler',p:'tu',s:'Tu ___ ce souvenir toute ta vie.',c:'-eler'},
+  {inf:'lire',p:'nous',s:'Nous ___ ce livre pendant les vacances.',c:'RE'},
+  {inf:'lire',p:'tu',s:'Tu ___ ce rapport avant la réunion.',c:'RE'},
+  {inf:'changer',p:'ça',s:'Ça ___ tout à notre plan.',c:'ER'},
+  {inf:'changer',p:'tu',s:"Tu ___ d'avis en voyant les résultats.",c:'ER'},
+  {inf:'essayer',p:'il',s:'Il ___ une nouvelle approche.',c:'-ayer'},
+  {inf:'essayer',p:'nous',s:'Nous ___ de faire mieux la prochaine fois.',c:'-ayer'},
+  {inf:'compter',p:'je',s:"Je ___ sur toi pour m'aider.",c:'ER'},
+  {inf:'compter',p:'ça',s:'Ça ___ comme une victoire.',c:'ER'},
+  {inf:'occuper',p:'ils',s:'Ils ___ le bureau du fond.',c:'ER'},
+  {inf:'occuper',p:'ça',s:'Ça ___ les enfants pendant des heures.',c:'ER'},
+  {inf:'expliquer',p:'je',s:'Je ___ la règle une nouvelle fois.',c:'ER'},
+  {inf:'expliquer',p:'il',s:'Il ___ comment ça fonctionne.',c:'ER'},
+  {inf:'frapper',p:'tu',s:"Tu ___ à la porte avant d'entrer.",c:'ER'},
+  {inf:'frapper',p:'ça',s:"Ça ___ les esprits, cette histoire.",c:'ER'},
+  {inf:'travailler',p:'nous',s:"Nous ___ ensemble l'année prochaine.",c:'ER'},
+  {inf:'travailler',p:'tu',s:'Tu ___ plus dur pour réussir.',c:'ER'},
+  {inf:'obtenir',p:'tu',s:'Tu ___ ton permis de conduire bientôt.',c:'irrég'},
+  {inf:'obtenir',p:'ils',s:'Ils ___ les résultats vendredi.',c:'irrég'},
+  {inf:'rentrer',p:'nous',s:'Nous ___ à la maison avant minuit.',c:'ER'},
+  {inf:'rentrer',p:'il',s:'Il ___ de voyage la semaine prochaine.',c:'ER'},
+  {inf:'pleurer',p:'elle',s:'Elle ___ de joie en apprenant la nouvelle.',c:'ER'},
+  {inf:'pleurer',p:'tu',s:"Tu ___ à ce film, c'est sûr.",c:'ER'},
+  {inf:'répéter',p:'tu',s:"Tu ___ cette phrase jusqu'à la maîtriser.",c:'-e_er'},
+  {inf:'répéter',p:'nous',s:'Nous ___ la pièce deux fois par semaine.',c:'-e_er'},
+  {inf:'payer',p:'je',s:"Je ___ l'addition ce soir.",c:'-ayer'},
+  {inf:'payer',p:'tu',s:'Tu ___ ta part demain.',c:'-ayer'},
+  {inf:'payer',p:'nous',s:'Nous ___ en espèces.',c:'-ayer'},
+  {inf:'apporter',p:'tu',s:'Tu ___ du pain en rentrant ?',c:'ER'},
+  {inf:'apporter',p:'ça',s:'Ça ___ beaucoup à notre projet.',c:'ER'},
+  {inf:'exister',p:'ça',s:'Ça ___ toujours dans dix ans.',c:'ER'},
+  {inf:'exister',p:'il',s:'Il ___ forcément une solution.',c:'ER'},
+  {inf:'boire',p:'tu',s:"Tu ___ de l'eau régulièrement.",c:'RE'},
+  {inf:'boire',p:'nous',s:'Nous ___ un café ensemble.',c:'RE'},
+  {inf:'sourire',p:'tu',s:'Tu ___ quand tu entendras cette chanson.',c:'RE'},
+  {inf:'sourire',p:'elle',s:'Elle ___ toujours aux inconnus.',c:'RE'},
+  {inf:'coucher',p:'les enfants',s:'Les enfants ___ tôt ce soir.',c:'ER'},
+  {inf:'coucher',p:'nous',s:'Nous ___ sous les étoiles.',c:'ER'},
+  {inf:'causer',p:'ça',s:'Ça ___ des problèmes si on ne fait rien.',c:'ER'},
+  {inf:'raconter',p:'je',s:"Je ___ mon aventure à tout le monde.",c:'ER'},
+  {inf:'raconter',p:'tu',s:'Tu ___ cette histoire à tes enfants.',c:'ER'},
+  {inf:'serrer',p:'il',s:'Il ___ la main de son adversaire.',c:'ER'},
+  {inf:'serrer',p:'tu',s:'Tu ___ ce nœud bien fort.',c:'ER'},
+  {inf:'songer',p:'tu',s:'Tu ___ à changer de métier ?',c:'ER'},
+  {inf:'songer',p:'je',s:"Je ___ à partir à l'étranger.",c:'ER'},
+  {inf:'manquer',p:'tu',s:'Tu ___ à tes amis.',c:'ER'},
+  {inf:'manquer',p:'ça',s:'Ça ___ de sel, ton plat.',c:'ER'},
+  {inf:'nommer',p:'ils',s:'Ils ___ un nouveau directeur.',c:'ER'},
+  {inf:'nommer',p:'on',s:'On ___ les lauréats la semaine prochaine.',c:'ER'},
+  {inf:'conduire',p:'tu',s:"Tu ___ prudemment sur l'autoroute.",c:'RE'},
+  {inf:'conduire',p:'il',s:"Il ___ sa fille à l'école.",c:'RE'},
+  {inf:'saisir',p:'tu',s:'Tu ___ cette opportunité sans hésiter.',c:'IR'},
+  {inf:'saisir',p:'ils',s:'Ils ___ le sens de cette leçon.',c:'IR'},
+  {inf:'demeurer',p:'il',s:'Il ___ le meilleur dans sa catégorie.',c:'ER'},
+  {inf:'demeurer',p:'ça',s:'Ça ___ un mystère pour longtemps.',c:'ER'},
+  {inf:'remettre',p:'je',s:'Je ___ ce rapport à son destinataire.',c:'RE'},
+  {inf:'remettre',p:'tu',s:'Tu ___ les clés à ton voisin.',c:'RE'},
+  {inf:'disparaître',p:'il',s:'Il ___ dans la foule.',c:'irrég'},
+  {inf:'disparaître',p:'ces problèmes',s:'Ces problèmes ___ avec le temps.',c:'irrég'},
+  {inf:'battre',p:'ils',s:'Ils ___ le record du monde.',c:'RE'},
+  {inf:'battre',p:'tu',s:'Tu ___ ce niveau au prochain essai.',c:'RE'},
+  {inf:'toucher',p:'ça',s:'Ça ___ beaucoup de monde.',c:'ER'},
+  {inf:'toucher',p:'tu',s:'Tu ___ ta prime en janvier.',c:'ER'},
+  {inf:'apparaître',p:'il',s:'Il ___ sur scène à 20h.',c:'irrég'},
+  {inf:'apparaître',p:'les étoiles',s:'Les étoiles ___ à la nuit tombée.',c:'irrég'},
+  {inf:'souffrir',p:'tu',s:'Tu ___ moins après le traitement.',c:'IR'},
+  {inf:'souffrir',p:'il',s:'Il ___ du froid cet hiver.',c:'IR'},
+  {inf:'fermer',p:'tu',s:'Tu ___ la porte en partant.',c:'ER'},
+  {inf:'fermer',p:'le magasin',s:'Le magasin ___ à 19h.',c:'ER'},
+  {inf:'accepter',p:'ils',s:'Ils ___ les nouvelles conditions.',c:'ER'},
+  {inf:'accepter',p:'tu',s:"Tu ___ cette offre, j'en suis sûr.",c:'ER'},
+  {inf:'tendre',p:'il',s:"Il ___ la main pour t'aider.",c:'RE'},
+  {inf:'tendre',p:'tu',s:'Tu ___ ce câble entre les deux poteaux.',c:'RE'},
+  {inf:'naître',p:'le bébé',s:'Le bébé ___ en avril.',c:'irrég'},
+  {inf:'sauver',p:'ça',s:'Ça ___ la situation.',c:'ER'},
+  {inf:'sauver',p:'tu',s:'Tu ___ beaucoup de temps avec cette méthode.',c:'ER'},
+  {inf:'avancer',p:'nous',s:"Nous ___ pas à pas vers l'objectif.",c:'ER'},
+  {inf:'avancer',p:'le projet',s:'Le projet ___ bien grâce à vous.',c:'ER'},
+  {inf:'traverser',p:'nous',s:"Nous ___ la forêt à l'aube.",c:'ER'},
+  {inf:'traverser',p:'tu',s:'Tu ___ la rue au feu vert.',c:'ER'},
+  {inf:'souvenir',p:'tu',s:'Tu ___ de ce voyage toute ta vie.',c:'irrég'},
+  {inf:'couvrir',p:'ils',s:'Ils ___ toute la région.',c:'IR'},
+  {inf:'couvrir',p:'tu',s:"Tu ___ ce livre d'une couverture.",c:'IR'},
+  {inf:'gagner',p:'nous',s:"Nous ___ ce match, j'en suis sûr.",c:'ER'},
+  {inf:'gagner',p:'tu',s:'Tu ___ ta vie avec ce métier.',c:'ER'},
+  {inf:'former',p:'nous',s:'Nous ___ une équipe solide.',c:'ER'},
+  {inf:'former',p:'ils',s:'Ils ___ les nouveaux employés.',c:'ER'},
+  {inf:'plaire',p:'ça',s:'Ça ___ à tout le monde.',c:'irrég'},
+  {inf:'plaire',p:'il',s:"Il ___ à sa nouvelle équipe.",c:'irrég'},
+  {inf:'embrasser',p:'elle',s:'Elle ___ ses enfants avant de partir.',c:'ER'},
+  {inf:'embrasser',p:'tu',s:'Tu ___ cette opportunité des deux mains.',c:'ER'},
+  {inf:'oser',p:'tu',s:'Tu ___ lui dire la vérité enfin.',c:'ER'},
+  {inf:'oser',p:'il',s:'Il ___ se lancer dans ce projet.',c:'ER'},
+  {inf:'empêcher',p:'ça',s:'Ça ___ les problèmes.',c:'ER'},
+  {inf:'empêcher',p:'nous',s:'Nous ___ cela de se reproduire.',c:'ER'},
+  {inf:'refuser',p:'il',s:'Il ___ de se rendre sans conditions.',c:'ER'},
+  {inf:'refuser',p:'tu',s:'Tu ___ cette offre si elle est trop basse.',c:'ER'},
+  {inf:'décider',p:'nous',s:'Nous ___ ensemble de la marche à suivre.',c:'ER'},
+  {inf:'décider',p:'tu',s:'Tu ___ de ton avenir.',c:'ER'},
+  {inf:'produire',p:'ils',s:'Ils ___ davantage cette année.',c:'RE'},
+  {inf:'produire',p:'ça',s:'Ça ___ un effet immédiat.',c:'RE'},
+  {inf:'charger',p:'tu',s:'Tu ___ les valises dans la voiture.',c:'ER'},
+  {inf:'charger',p:'il',s:'Il ___ le téléphone avant de partir.',c:'ER'},
+  {inf:'mêler',p:'tu',s:'Tu ___ les cartes avant de distribuer.',c:'-e_er'},
+  {inf:'espérer',p:'nous',s:'Nous ___ avoir de vos nouvelles bientôt.',c:'-e_er'},
+  {inf:'espérer',p:'tu',s:'Tu ___ réussir cet examen.',c:'-e_er'},
+  {inf:'cesser',p:'il',s:"Il ___ de pleuvoir dans l'après-midi.",c:'ER'},
+  {inf:'cesser',p:'ça',s:"Ça ___ dès qu'on trouvera la solution.",c:'ER'},
+  {inf:'ressembler',p:'tu',s:'Tu ___ à ton père en grandissant.',c:'ER'},
+  {inf:'ressembler',p:'ça',s:'Ça ___ à un accord commercial.',c:'ER'},
+  {inf:'chanter',p:'on',s:'On ___ ensemble à la fête.',c:'ER'},
+  {inf:'chanter',p:'nous',s:'Nous ___ ce refrain tous ensemble.',c:'ER'},
+];
+
+const ALL_EXERCISES = EX.map(e => ({inf:e.inf, pronoun:e.p, ctx:e.s, cat:e.c}));
+
+// ── STATE ─────────────────────────────────────────────────────────
+const CATS = ['ER','IR','RE','-ayer','-yer','-eter','-eler','-e_er','irrég'];
+let activeFilters = new Set(CATS);
+let queue = [], answered = false, current = null;
+let scOk = 0, scKo = 0, streak = 0, total = 0;
+
+function filteredExercises() { return ALL_EXERCISES.filter(e => activeFilters.has(e.cat)); }
+function shuffle(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+function nextEx() {
+  const pool = filteredExercises();
+  if (!pool.length) {
+    document.getElementById('ex-area').innerHTML = '<p style="font-family:var(--mono);font-size:13px;color:var(--muted);">Sélectionne au moins un groupe.</p>';
+    return;
+  }
+  if (!queue.length) queue = shuffle([...pool]);
+  current = queue.pop();
+  answered = false;
+  render();
+}
+
+function render() {
+  const subject = displaySubject(current);
+  const isNounSubj = !['je','tu','il','elle','on','nous','vous','ils','elles'].includes(current.pronoun);
+  const sentence = current.ctx.replace('___', '<span class="blank">___</span>');
+  const hint = getHint(current);
+  document.getElementById('ex-area').innerHTML = `
+    <div class="ex-meta">
+      <span class="ex-verb">${current.inf}</span>
+      <span class="ex-cat">( ${current.cat} )</span>
+    </div>
+    <div class="ex-sentence">${isNounSubj ? current.pronoun+' ' : ''}${sentence}</div>
+    ${hint ? `<div class="ex-hint">${hint}</div>` : ''}
+    <div class="ex-input-row">
+      <span class="ex-subject">${subject}</span>
+      <input class="ex-input" id="ans" type="text" placeholder="conjugaison…" autocomplete="off" autocorrect="off" spellcheck="false" />
+      <button class="ex-btn" id="chk" onclick="check()">Vérifier</button>
+    </div>
+    <div class="ex-feedback" id="fb"></div>
+    <button class="ex-next" id="nxt" onclick="nextEx()">Question suivante →</button>
+  `;
+  const inp = document.getElementById('ans');
+  inp.addEventListener('keydown', e => { if(e.key==='Enter'){ if(!answered) check(); else nextEx(); } });
+  inp.focus();
+  updateProg();
+}
+
+function check() {
+  if(answered) return;
+  answered = true;
+  const correct = getCorrect(current);
+  const inp = document.getElementById('ans');
+  const val = inp.value.trim().toLowerCase().replace(/['']/g,"'");
+  const ok = val === correct.toLowerCase();
+  total++;
+  if(ok){ scOk++; streak++;
+    inp.className='ex-input correct';
+    document.getElementById('fb').className='ex-feedback ok';
+    document.getElementById('fb').textContent='✓ Parfait !';
+  } else { scKo++; streak=0;
+    inp.className='ex-input wrong';
+    document.getElementById('fb').className='ex-feedback err';
+    document.getElementById('fb').innerHTML=`✗ Réponse correcte : <strong>${correct}</strong>`;
+  }
+  document.getElementById('sc-ok').textContent=scOk;
+  document.getElementById('sc-ko').textContent=scKo;
+  document.getElementById('sc-str').textContent=streak;
+  document.getElementById('chk').disabled=true;
+  document.getElementById('nxt').style.display='block';
+  updateProg();
+}
+
+function updateProg() {
+  document.getElementById('prog').style.width=(total===0?0:Math.round(scOk/total*100))+'%';
+}
+
+// ── FILTERS ───────────────────────────────────────────────────────
+function buildFilters() {
+  const row = document.getElementById('filter-row');
+  CATS.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-pill on';
+    btn.textContent = cat;
+    btn.onclick = function() {
+      if(activeFilters.has(cat)){ if(activeFilters.size===1) return; activeFilters.delete(cat); this.classList.remove('on'); }
+      else { activeFilters.add(cat); this.classList.add('on'); }
+      queue = []; nextEx();
+    };
+    row.appendChild(btn);
+  });
+}
+
+// ── IRREGULAR REFERENCE ───────────────────────────────────────────
+const IRREG_DISPLAY = [
+  {g:'Bases entièrement irrégulières', verbs:[
+    {v:'être',    f:['je serai','tu seras','il sera','nous serons','vous serez','ils seront']},
+    {v:'avoir',   f:["j'aurai",'tu auras','il aura','nous aurons','vous aurez','ils auront']},
+    {v:'aller',   f:["j'irai",'tu iras','il ira','nous irons','vous irez','ils iront']},
+    {v:'faire',   f:['je ferai','tu feras','il fera','nous ferons','vous ferez','ils feront']},
+    {v:'voir',    f:['je verrai','tu verras','il verra','nous verrons','vous verrez','ils verront']},
+    {v:'savoir',  f:['je saurai','tu sauras','il saura','nous saurons','vous saurez','ils sauront']},
+    {v:'devoir',  f:['je devrai','tu devras','il devra','nous devrons','vous devrez','ils devront']},
+    {v:'vouloir', f:['je voudrai','tu voudras','il voudra','nous voudrons','vous voudrez','ils voudront']},
+    {v:'pouvoir', f:['je pourrai','tu pourras','il pourra','nous pourrons','vous pourrez','ils pourront']},
+    {v:'falloir', f:['il faudra']},
+    {v:'pleuvoir',f:['il pleuvra']},
+    {v:'valoir',  f:['je vaudrai','tu vaudras','il vaudra','nous vaudrons','vous vaudrez','ils vaudront']},
+    {v:'plaire',  f:['je plairai','tu plairas','il plaira','nous plairons','vous plairez','ils plairont']},
+  ]},
+  {g:'Base en -iendr- (venir / tenir)', verbs:[
+    {v:'venir',   f:['je viendrai','tu viendras','il viendra','nous viendrons','vous viendrez','ils viendront']},
+    {v:'devenir', f:['je deviendrai','tu deviendras','il deviendra','nous deviendrons','vous deviendrez','ils deviendront']},
+    {v:'revenir', f:['je reviendrai','tu reviendras','il reviendra','nous reviendrons','vous reviendrez','ils reviendront']},
+    {v:'souvenir',f:['je me souviendrai','tu te souviendras','il se souviendra','nous nous souviendrons','vous vous souviendrez','ils se souviendront']},
+    {v:'tenir',   f:['je tiendrai','tu tiendras','il tiendra','nous tiendrons','vous tiendrez','ils tiendront']},
+    {v:'obtenir', f:["j'obtiendrai",'tu obtiendras','il obtiendra','nous obtiendrons','vous obtiendrez','ils obtiendront']},
+  ]},
+  {g:'Double -rr-', verbs:[
+    {v:'courir',  f:['je courrai','tu courras','il courra','nous courrons','vous courrez','ils courront']},
+    {v:'mourir',  f:['je mourrai','tu mourras','il mourra','nous mourrons','vous mourrez','ils mourront']},
+    {v:'envoyer', f:["j'enverrai",'tu enverras','il enverra','nous enverrons','vous enverrez','ils enverront']},
+  ]},
+  {g:'Recevoir / apercevoir', verbs:[
+    {v:'recevoir', f:['je recevrai','tu recevras','il recevra','nous recevrons','vous recevrez','ils recevront']},
+    {v:'apercevoir',f:["j'apercevrai",'tu apercevras','il apercevra','nous apercevrons','vous apercevrez','ils apercevront']},
+  ]},
+  {g:'Connaître / paraître et dérivés', verbs:[
+    {v:'connaître',  f:['je connaîtrai','tu connaîtras','il connaîtra','nous connaîtrons','vous connaîtrez','ils connaîtront']},
+    {v:'reconnaître',f:['je reconnaîtrai','tu reconnaîtras','il reconnaîtra','nous reconnaîtrons','vous reconnaîtrez','ils reconnaîtront']},
+    {v:'paraître',   f:['je paraîtrai','tu paraîtras','il paraîtra','nous paraîtrons','vous paraîtrez','ils paraîtront']},
+    {v:'apparaître', f:["j'apparaîtrai",'tu apparaîtras','il apparaîtra','nous apparaîtrons','vous apparaîtrez','ils apparaîtront']},
+    {v:'disparaître',f:['je disparaîtrai','tu disparaîtras','il disparaîtra','nous disparaîtrons','vous disparaîtrez','ils disparaîtront']},
+    {v:'naître',     f:['je naîtrai','tu naîtras','il naîtra','nous naîtrons','vous naîtrez','ils naîtront']},
+  ]},
+  {g:'Verbes en -ayer (y → i)', verbs:[
+    {v:'payer',   f:['je paierai','tu paieras','il paiera','nous paierons','vous paierez','ils paieront']},
+    {v:'essayer', f:["j'essaierai",'tu essaieras','il essaiera','nous essaierons','vous essaierez','ils essaieront']},
+  ]},
+  {g:'Verbes en -yer (y → i)', verbs:[
+    {v:'appuyer', f:["j'appuierai",'tu appuieras','il appuiera','nous appuierons','vous appuierez','ils appuieront']},
+    {v:'essuyer', f:["j'essuierai",'tu essuieras','il essuiera','nous essuierons','vous essuierez','ils essuieront']},
+  ]},
+  {g:'Double consonne -eler / -eter', verbs:[
+    {v:'appeler',  f:["j'appellerai",'tu appelleras','il appellera','nous appellerons','vous appellerez','ils appelleront']},
+    {v:'rappeler', f:['je rappellerai','tu rappelleras','il rappellera','nous rappellerons','vous rappellerez','ils rappelleront']},
+    {v:'jeter',    f:['je jetterai','tu jetteras','il jettera','nous jetterons','vous jetterez','ils jetteront']},
+  ]},
+  {g:'Accent grave (-e_er)', verbs:[
+    {v:'acheter',  f:["j'achèterai",'tu achèteras','il achètera','nous achèterons','vous achèterez','ils achèteront']},
+    {v:'lever',    f:['je lèverai','tu lèveras','il lèvera','nous lèverons','vous lèverez','ils lèveront']},
+    {v:'espérer',  f:["j'espèrerai",'tu espèreras','il espèrera','nous espèrerons','vous espèrerez','ils espèreront']},
+    {v:'répéter',  f:['je répèterai','tu répèteras','il répètera','nous répèterons','vous répèterez','ils répèteront']},
+    {v:'mêler',    f:['je mêlerai','tu mêleras','il mêlera','nous mêlerons','vous mêlerez','ils mêleront']},
+  ]},
+  {g:"S'asseoir", verbs:[
+    {v:"s'asseoir",f:["je m'assoirai","tu t'assoiras","il s'assoira","nous nous assoirons","vous vous assoirez","ils s'assoiront"]},
+  ]},
+];
+
+function buildIrreg() {
+  const cont = document.getElementById('irreg-content');
+  IRREG_DISPLAY.forEach(({g, verbs}) => {
+    const group = document.createElement('div');
+    group.className = 'irreg-group';
+    const cards = document.createElement('div');
+    cards.className = 'irreg-cards';
+    group.innerHTML = `<div class="irreg-group-title">( ${g} )</div>`;
+    group.appendChild(cards);
+    verbs.forEach(({v, f}) => {
+      const card = document.createElement('div');
+      card.className = 'irreg-card';
+      card.innerHTML = `<div class="irreg-v">${v}</div><div class="irreg-f">${f.map(x=>`<span>${x}</span>`).join('')}</div>`;
+      cards.appendChild(card);
+    });
+    cont.appendChild(group);
+  });
+}
+
+function switchPage(id) {
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['practice','rules','irreg'][i]===id));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+}
+
+buildFilters();
+buildIrreg();
+nextEx();
+</script>
+</body>
+</html>
