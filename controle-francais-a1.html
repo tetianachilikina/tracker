@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Контроль знань — Français A1</title>
+<style>
+  :root{
+    --bg:#faf6ef;
+    --card:#ffffff;
+    --ink:#2b2620;
+    --muted:#7a7266;
+    --accent:#c9722f;
+    --accent-dark:#a85a20;
+    --line:#e8e0d2;
+    --good:#3f8f5f;
+    --good-bg:#eaf6ee;
+    --bad:#c14b3f;
+    --bad-bg:#fdeeec;
+    --pill:#f1e8d8;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+    padding-bottom:120px;
+  }
+  header{
+    padding:36px 20px 20px;
+    max-width:760px;
+    margin:0 auto;
+    text-align:center;
+  }
+  header h1{
+    font-size:26px;
+    margin:0 0 8px;
+    letter-spacing:.2px;
+  }
+  header p.sub{
+    color:var(--muted);
+    margin:0 0 18px;
+    font-size:15px;
+  }
+  .name-row{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:8px;
+  }
+  .name-row input{
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    font-size:15px;
+    width:260px;
+    max-width:80vw;
+    background:var(--card);
+  }
+  nav.toc{
+    max-width:760px;
+    margin:0 auto 10px;
+    padding:0 20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    justify-content:center;
+  }
+  nav.toc a{
+    text-decoration:none;
+    color:var(--accent-dark);
+    background:var(--pill);
+    border-radius:999px;
+    padding:5px 12px;
+    font-size:12.5px;
+    white-space:nowrap;
+  }
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 20px;
+  }
+  .progress-wrap{
+    position:sticky;
+    top:0;
+    background:var(--bg);
+    padding:10px 0;
+    z-index:5;
+  }
+  .progress-bar{
+    height:8px;
+    border-radius:999px;
+    background:var(--line);
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    width:0%;
+    transition:width .2s ease;
+  }
+  .progress-label{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px;
+    text-align:right;
+  }
+  section.section{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px 22px 8px;
+    margin:22px 0;
+    scroll-margin-top:60px;
+  }
+  section.section h2{
+    font-size:17px;
+    margin:0 0 16px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+    color:var(--accent-dark);
+  }
+  h1.group-title{
+    font-size:21px;
+    margin:34px 0 4px;
+    padding-top:10px;
+  }
+  h1.group-title:first-child{margin-top:6px;}
+  .question{
+    margin-bottom:18px;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid transparent;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .question.correct{
+    background:var(--good-bg);
+    border-color:#bfe3cc;
+  }
+  .question.wrong{
+    background:var(--bad-bg);
+    border-color:#f2c5bd;
+  }
+  p.prompt{
+    margin:0 0 10px;
+    font-size:15.5px;
+  }
+  .qnum{
+    color:var(--accent-dark);
+    font-weight:600;
+    margin-right:4px;
+  }
+  .answer-input{
+    width:100%;
+    padding:9px 12px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    font-size:15px;
+    background:#fff;
+  }
+  .section-actions{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 0 20px;
+    border-top:1px solid var(--line);
+    margin-top:6px;
+  }
+  .btn-check-section{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    font-weight:600;
+    font-size:14.5px;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .btn-check-section:hover{background:var(--accent-dark);}
+  .section-score{
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+  }
+  .section-score.score-good{color:var(--good);}
+  .section-score.score-bad{color:var(--bad);}
+  .options{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 18px;
+  }
+  .opt{
+    font-size:14.5px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:#fff;
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:9px;
+    cursor:pointer;
+  }
+  .opt input{margin:0;}
+  .feedback{
+    font-size:13.5px;
+    margin-top:8px;
+    min-height:1px;
+  }
+  .question.correct .feedback{color:var(--good);}
+  .question.wrong .feedback{color:var(--bad);}
+  .actions{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    background:linear-gradient(to top, var(--bg) 60%, transparent);
+    padding:18px 20px 22px;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    z-index:10;
+  }
+  button{
+    font-size:15.5px;
+    padding:13px 26px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(201,114,47,.35);
+  }
+  .btn-primary:hover{background:var(--accent-dark);}
+  .btn-secondary{
+    background:#fff;
+    color:var(--ink);
+    border:1px solid var(--line);
+  }
+  #results{
+    display:none;
+    max-width:760px;
+    margin:20px auto;
+    padding:0 20px;
+  }
+  .result-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:24px;
+    text-align:center;
+  }
+  .result-card h2{margin:0 0 4px; font-size:20px;}
+  .score-big{
+    font-size:44px;
+    font-weight:700;
+    color:var(--accent-dark);
+    margin:10px 0 0;
+  }
+  .score-sub{color:var(--muted); font-size:14px; margin-bottom:14px;}
+  .msg{font-size:15px; margin:10px 0 4px; font-weight:600;}
+  table.breakdown{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:16px;
+    font-size:13.5px;
+    text-align:left;
+  }
+  table.breakdown th, table.breakdown td{
+    padding:7px 8px;
+    border-bottom:1px solid var(--line);
+  }
+  table.breakdown td.num{text-align:right; white-space:nowrap;}
+  .wordbank{
+    background:var(--pill);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:16px;
+    font-size:13.5px;
+  }
+  .wordbank strong{color:var(--accent-dark); margin-right:4px;}
+  .wordbank .chip{
+    display:inline-block;
+    background:#fff;
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:13px;
+    margin:3px 4px 0 0;
+  }
+  .cloze-passage{
+    font-size:15.5px;
+    line-height:2.4;
+  }
+  .cloze-blank{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    margin:0 2px;
+    vertical-align:middle;
+  }
+  .cloze-input{
+    width:120px;
+    padding:5px 9px;
+    border-radius:7px;
+    border:1px solid var(--line);
+    font-size:14px;
+    background:#fff;
+  }
+  .cloze-blank.correct .cloze-input{border-color:var(--good); background:var(--good-bg);}
+  .cloze-blank.wrong .cloze-input{border-color:var(--bad); background:var(--bad-bg);}
+  .cloze-fb{
+    font-size:11.5px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .cloze-blank.correct .cloze-fb{color:var(--good);}
+  .cloze-blank.wrong .cloze-fb{color:var(--bad);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🇫🇷 Контроль знань — Français A1</h1>
+  <p class="sub">Граматика та лексика A1: прикметники, дієслова, futur proche, час, сезони, вказівні прикметники...</p>
+  <div class="name-row">
+    <input type="text" id="studentName" placeholder="Ім'я студентки (необов'язково)">
+  </div>
+</header>
+
+<nav class="toc" id="toc"></nav>
+
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 0 відповідей</div>
+</div>
+
+<main id="app"></main>
+
+<div id="results"></div>
+
+<div class="actions">
+  <button class="btn-secondary" id="resetBtn">Скинути</button>
+  <button class="btn-primary" id="checkBtn">Порахувати підсумковий результат</button>
+</div>
+
+<script>
+const DATA = [
+  // ===================== ГРАМАТИКА =====================
+  {
+    group: "Граматика",
+    title: "1. Trop / assez",
+    items: [
+      { type:"text", prompt:"Tu as du travail ? — Oui, j'ai vraiment ___ de travail, c'est fatigant ! (trop de + nom)", answers:["trop"] },
+      { type:"text", prompt:"Le pantalon te va ? — Non, il est ___ petit. (trop + adjectif)", answers:["trop"] },
+      { type:"text", prompt:"Il va acheter ce costume ? — Non, c'est vraiment ___ cher. (trop + adjectif)", answers:["trop"] },
+      { type:"text", prompt:"Tu bois du café ? — Oui, mais je bois ___ de café, ce n'est pas bon pour la santé. (trop de + nom)", answers:["trop"] },
+      { type:"text", prompt:"La veste vous va ? — Oui, elle est ___ longue comme ça. (assez + adjectif)", answers:["assez"] },
+      { type:"text", prompt:"La robe est ___ jolie ! (assez + adjectif)", answers:["assez"] },
+      { type:"text", prompt:"Tu vas acheter des vêtements à ta fille ? — Non, elle a ___ vêtements pour la saison. (assez de + nom)", answers:["assez de","assez"] },
+      { type:"text", prompt:"Il a ___ chaussures, il n'en achète pas d'autres. (assez de + nom)", answers:["assez de","assez"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "2. Adjectifs : accord (choisis la bonne forme)",
+    items: [
+      { type:"mc", prompt:"J'aime le pull ___.", options:["gris","grise","grises"], answer:"gris" },
+      { type:"mc", prompt:"Elle porte une robe ___.", options:["long","longue","longs"], answer:"longue" },
+      { type:"mc", prompt:"Il y a des bottes ___.", options:["noir","noire","noires"], answer:"noires" },
+      { type:"mc", prompt:"C'est une veste ___.", options:["court","courte","courts"], answer:"courte" },
+      { type:"mc", prompt:"J'adore les manteaux ___.", options:["chaud","chaude","chauds"], answer:"chauds" },
+      { type:"text", prompt:"C'est une robe ___ (court)", answers:["courte"] },
+      { type:"text", prompt:"Il porte des chemises ___ (bleu)", answers:["bleues"] },
+      { type:"text", prompt:"Elle a des jupes ___ (long)", answers:["longues"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "3. Formation du féminin et du pluriel des adjectifs",
+    items: [
+      { type:"text", prompt:"En général, on ajoute ___ pour former le féminin de l'adjectif.", answers:["e"] },
+      { type:"text", prompt:"En général, on ajoute ___ pour former le pluriel de l'adjectif.", answers:["s"] },
+      { type:"text", prompt:"noir → féminin singulier :", answers:["noire"] },
+      { type:"text", prompt:"élégant → masculin pluriel :", answers:["élégants","elegants"] },
+      { type:"text", prompt:"gris → féminin pluriel :", answers:["grises"] },
+      { type:"text", prompt:"bleu → féminin pluriel :", answers:["bleues"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "4. Place et forme des adjectifs",
+    items: [
+      { type:"mc", prompt:"En général, les adjectifs se placent ___ le nom.", options:["avant","après"], answer:"après" },
+      { type:"mc", prompt:"Les adjectifs courts (petit, grand, beau, bon, joli) se placent ___ le nom.", options:["avant","après"], answer:"avant" },
+      { type:"text", prompt:"un (nouveau) agenda →", answers:["un nouvel agenda","nouvel agenda"] },
+      { type:"text", prompt:"un (vieux) portefeuille →", answers:["un vieux portefeuille","vieux portefeuille"] },
+      { type:"text", prompt:"une (nouveau) ampoule électrique →", answers:["une nouvelle ampoule électrique","nouvelle ampoule électrique","nouvelle ampoule electrique"] },
+      { type:"text", prompt:"un (beau) stylo →", answers:["un beau stylo","beau stylo"] },
+      { type:"text", prompt:"un (vieux) ami →", answers:["un vieil ami","vieil ami"] },
+      { type:"text", prompt:"un (beau) appartement →", answers:["un bel appartement","bel appartement"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "5. Adjectif démonstratif : ce / cet / cette / ces",
+    items: [
+      { type:"text", prompt:"___ coque de téléphone est originale.", answers:["cette"] },
+      { type:"text", prompt:"___ sac à dos est original.", answers:["ce"] },
+      { type:"text", prompt:"___ étui pour tablette est pratique.", answers:["cet"] },
+      { type:"text", prompt:"___ objets ne sont pas uniques.", answers:["ces"] },
+      { type:"text", prompt:"___ portefeuille est petit et léger.", answers:["ce"] },
+      { type:"text", prompt:"___ valise est lourde.", answers:["cette"] },
+      { type:"text", prompt:"___ enfant a un sac à dos original.", answers:["cet"] },
+      { type:"mc", prompt:"Je voudrais essayer ___ bottes.", options:["ce","cet","ces"], answer:"ces" }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "6. Quel / quelle (adjectif interrogatif)",
+    items: [
+      { type:"text", prompt:"___ âge avez-vous ?", answers:["quel"] },
+      { type:"text", prompt:"___ taille faites-vous ?", answers:["quelle"] },
+      { type:"text", prompt:"___ est votre pointure ?", answers:["quelle"] },
+      { type:"text", prompt:"___ style préférez-vous ?", answers:["quel"] },
+      { type:"text", prompt:"___ couleurs préférez-vous ?", answers:["quelles"] },
+      { type:"text", prompt:"___ vêtements aimez-vous ?", answers:["quels"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "7. Trouve l'infinitif du verbe",
+    items: [
+      { type:"text", prompt:"je parle de Vinted → infinitif :", answers:["parler"] },
+      { type:"text", prompt:"c'est une application → infinitif :", answers:["être","etre"] },
+      { type:"text", prompt:"j'achète beaucoup de vêtements → infinitif :", answers:["acheter"] },
+      { type:"text", prompt:"il adore la mode → infinitif :", answers:["adorer"] },
+      { type:"text", prompt:"il porte un jean bleu → infinitif :", answers:["porter"] },
+      { type:"text", prompt:"il met un costume élégant → infinitif :", answers:["mettre"] },
+      { type:"text", prompt:"nous vendons aussi beaucoup → infinitif :", answers:["vendre"] },
+      { type:"text", prompt:"il y a aussi des accessoires → infinitif :", answers:["avoir"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "8. Aller au présent",
+    items: [
+      { type:"text", prompt:"tu ___ (aller)", answers:["vas"] },
+      { type:"text", prompt:"il / elle / on ___ (aller)", answers:["va"] },
+      { type:"text", prompt:"nous ___ (aller)", answers:["allons"] },
+      { type:"text", prompt:"vous ___ (aller)", answers:["allez"] },
+      { type:"text", prompt:"ils / elles ___ (aller)", answers:["vont"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "9. Le verbe « venir » au présent",
+    items: [
+      { type:"text", prompt:"tu ___ (venir)", answers:["viens"] },
+      { type:"text", prompt:"il / elle / on ___ (venir)", answers:["vient"] },
+      { type:"text", prompt:"nous ___ (venir)", answers:["venons"] },
+      { type:"text", prompt:"ils / elles ___ (venir)", answers:["viennent"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "10. Le verbe « pouvoir » au présent",
+    items: [
+      { type:"text", prompt:"Je ___ vous aider ?", answers:["peux"] },
+      { type:"text", prompt:"Tu ___ essayer cette jupe ?", answers:["peux"] },
+      { type:"text", prompt:"Nous ne ___ pas venir aujourd'hui.", answers:["pouvons"] },
+      { type:"text", prompt:"Ils ___ acheter des vêtements en ligne.", answers:["peuvent"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "11. Avoir + âge",
+    items: [
+      { type:"text", prompt:"J'___ 26 ans. (avoir)", answers:["ai"] },
+      { type:"text", prompt:"Il ___ 30 ans.", answers:["a"] },
+      { type:"text", prompt:"Nous ___ 15 ans.", answers:["avons"] },
+      { type:"text", prompt:"Vous ___ quel âge ?", answers:["avez"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "12. Verbes : vendre et mettre au présent",
+    items: [
+      { type:"text", prompt:"Je ___ une robe noire sur Vinted. (vendre)", answers:["vends"] },
+      { type:"text", prompt:"Tu ___ un jean bleu aujourd'hui ? (mettre)", answers:["mets"] },
+      { type:"text", prompt:"Elle ___ une jupe bleue pour aller au travail. (mettre)", answers:["met"] },
+      { type:"text", prompt:"Nous ___ nos vêtements d'occasion pas cher. (vendre)", answers:["vendons"] },
+      { type:"text", prompt:"Vous ___ combien pour ce costume élégant ? (mettre)", answers:["mettez"] },
+      { type:"text", prompt:"Ils ___ leurs vêtements après 5 ou 6 mois. (vendre)", answers:["vendent"] },
+      { type:"text", prompt:"Il ___ toujours des styles différents. (mettre)", answers:["met"] },
+      { type:"text", prompt:"Tu ___ ta robe noire ou tu la gardes ? (vendre)", answers:["vends"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "13. Le futur proche (aller + infinitif)",
+    items: [
+      { type:"text", prompt:"Le futur proche = verbe ___ au présent + infinitif.", answers:["aller"] },
+      { type:"text", prompt:"Demain soir, je (finir) ___ la robe.", answers:["vais finir"] },
+      { type:"text", prompt:"À l'atelier, tu (tricoter) ___ un pull.", answers:["vas tricoter"] },
+      { type:"text", prompt:"Nous (faire) ___ une jupe.", answers:["allons faire"] },
+      { type:"text", prompt:"Vous (créer) ___ des vêtements sympas.", answers:["allez créer"] },
+      { type:"text", prompt:"L'hiver (être) ___ difficile.", answers:["va être","va etre"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "14. Verbes pronominaux au présent",
+    items: [
+      { type:"text", prompt:"tu ___ (s'habiller)", answers:["t'habilles","t habilles"] },
+      { type:"text", prompt:"il / elle / on ___ (s'habiller)", answers:["s'habille","s habille"] },
+      { type:"text", prompt:"nous ___ (s'habiller)", answers:["nous habillons"] },
+      { type:"text", prompt:"vous ___ (s'habiller)", answers:["vous habillez"] },
+      { type:"text", prompt:"ils / elles ___ (s'habiller)", answers:["s'habillent","s habillent"] },
+      { type:"text", prompt:"tu ___ (se réveiller)", answers:["te réveilles","te reveilles"] },
+      { type:"text", prompt:"il / elle / on ___ (se lever)", answers:["se lève","se leve"] },
+      { type:"text", prompt:"nous ___ (se laver)", answers:["nous lavons"] },
+      { type:"text", prompt:"vous ___ (se doucher)", answers:["vous douchez"] },
+      { type:"text", prompt:"je ___ (se maquiller)", answers:["me maquille"] },
+      { type:"text", prompt:"tu ___ (se raser)", answers:["te rases"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "15. Négation avec les verbes pronominaux",
+    items: [
+      { type:"text", prompt:"Mets à la forme négative : « Je me réveille tôt. »", answers:["je ne me réveille pas tôt","je ne me reveille pas tot"] },
+      { type:"text", prompt:"Mets à la forme négative : « Il se rase le matin. »", answers:["il ne se rase pas le matin"] },
+      { type:"text", prompt:"Mets à la forme négative : « Nous nous couchons tard. »", answers:["nous ne nous couchons pas tard"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "16. Faire + activité (du / de la / des / les)",
+    items: [
+      { type:"text", prompt:"Le samedi, je fais ___ courses au supermarché.", answers:["les"] },
+      { type:"text", prompt:"Le dimanche, Paul fait ___ jardinage dans son jardin.", answers:["du"] },
+      { type:"text", prompt:"Elle fait ___ vaisselle après le dîner.", answers:["la"] },
+      { type:"text", prompt:"Nous faisons ___ bricolage le week-end.", answers:["du"] },
+      { type:"text", prompt:"Tu fais ___ lessive le lundi.", answers:["la"] },
+      { type:"text", prompt:"Mon frère fait ___ sport trois fois par semaine.", answers:["du"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "17. Ça sert à + infinitif / C'est possible de + infinitif",
+    items: [
+      { type:"text", prompt:"Ça sert ___ téléphoner. (préposition)", answers:["à","a"] },
+      { type:"text", prompt:"C'est possible ___ choisir la couleur. (préposition)", answers:["de"] },
+      { type:"text", prompt:"Une montre connectée, ça sert ___ se repérer avec le GPS.", answers:["à","a"] },
+      { type:"text", prompt:"Il est possible ___ changer de prénom sur l'objet.", answers:["de"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "18. En + matière / à + motif",
+    items: [
+      { type:"text", prompt:"un sac ___ cuir (matière)", answers:["en"] },
+      { type:"text", prompt:"une veste ___ laine (matière)", answers:["en"] },
+      { type:"text", prompt:"un pantalon ___ coton (matière)", answers:["en"] },
+      { type:"text", prompt:"des baskets ___ jean (matière)", answers:["en"] },
+      { type:"text", prompt:"une chemise ___ pois (motif)", answers:["à","a"] },
+      { type:"text", prompt:"une jupe ___ rayures (motif)", answers:["à","a"] },
+      { type:"text", prompt:"une robe ___ fleurs (motif)", answers:["à","a"] },
+      { type:"text", prompt:"un pull ___ carreaux (motif)", answers:["à","a"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "19. En / au + saison",
+    items: [
+      { type:"text", prompt:"___ hiver, il fait froid.", answers:["en"] },
+      { type:"text", prompt:"___ été, il fait chaud.", answers:["en"] },
+      { type:"text", prompt:"___ automne, il pleut.", answers:["en"] },
+      { type:"text", prompt:"___ printemps, il fait beau.", answers:["au"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "20. L'heure",
+    items: [
+      { type:"text", prompt:"Écris autrement : 10 h 30", answers:["dix heures trente","dix heures et demie"] },
+      { type:"text", prompt:"Écris autrement : 7 h 45", answers:["sept heures quarante-cinq","huit heures moins le quart","huit heures moins quart"] },
+      { type:"text", prompt:"Écris autrement : 12 h 15", answers:["douze heures quinze","midi et quart"] },
+      { type:"text", prompt:"Écris autrement : 11 h 50", answers:["onze heures cinquante","midi moins dix"] }
+    ]
+  },
+  {
+    group: "Граматика",
+    title: "21. Répondez avec « en » + quantité",
+    items: [
+      { type:"text", prompt:"Est-ce que vous mettez de la crème dans ce plat ?", answers:["j'en mets un peu","oui, j'en mets un peu","oui j'en mets un peu","j en mets un peu"] },
+      { type:"text", prompt:"Est-ce qu'il y a une boulangerie dans cette rue ?", answers:["il y en a une","oui, il y en a une","oui il y en a une"] },
+      { type:"text", prompt:"Est-ce qu'il reste des tartes au citron ?", answers:["il n'en reste plus","non, il n'en reste plus","non il n'en reste plus","il n en reste plus"] },
+      { type:"text", prompt:"Combien de tomates est-ce que vous achetez ?", answers:["j'en achète un kilo","j en achète un kilo","j'en achete un kilo"] },
+      { type:"text", prompt:"(du fromage) Vous en voulez combien ?", answers:["j'en voudrais trois cents grammes","j'en voudrais 300 grammes","j en voudrais trois cents grammes"] }
+    ]
+  },
+  // ===================== ЛЕКСИКА =====================
+  {
+    group: "Лексика",
+    title: "22. Vêtements et accessoires",
+    items: [
+      { type:"text", prompt:"пальто", answers:["un manteau","manteau"] },
+      { type:"text", prompt:"чоботи", answers:["des bottes","bottes"] },
+      { type:"text", prompt:"капелюх", answers:["un chapeau","chapeau"] },
+      { type:"text", prompt:"джинси", answers:["un jean","jean"] },
+      { type:"text", prompt:"светр", answers:["un pull","pull"] },
+      { type:"text", prompt:"сукня", answers:["une robe","robe"] },
+      { type:"text", prompt:"розмір одягу", answers:["la taille","taille"] },
+      { type:"text", prompt:"розмір взуття", answers:["la pointure","pointure"] }
+    ]
+  },
+  {
+    group: "Лексика",
+    title: "23. Couleurs et matières",
+    items: [
+      { type:"text", prompt:"чорний", answers:["noir"] },
+      { type:"text", prompt:"синій", answers:["bleu"] },
+      { type:"text", prompt:"шкіра (матеріал)", answers:["le cuir","cuir"] },
+      { type:"text", prompt:"бавовна", answers:["le coton","coton"] },
+      { type:"text", prompt:"джинсова тканина", answers:["le jean","jean"] },
+      { type:"text", prompt:"шерсть", answers:["la laine","laine"] }
+    ]
+  },
+  {
+    group: "Лексика",
+    title: "24. Expressions d'appréciation",
+    items: [
+      { type:"text", prompt:"Мені дуже подобається (2 варіанти можливі)", answers:["j'adore","jadore","j'aime beaucoup","jaime beaucoup"] },
+      { type:"text", prompt:"Мені подобається", answers:["ça me plaît","ca me plait"] },
+      { type:"text", prompt:"Мені не подобається", answers:["ça ne me plaît pas","ca ne me plait pas"] },
+      { type:"text", prompt:"Я вважаю це гарним", answers:["je trouve ça joli","je trouve ca joli"] },
+      { type:"text", prompt:"Яка гидота! (обурення)", answers:["quelle horreur"] },
+      { type:"text", prompt:"Я ненавиджу", answers:["je déteste","je deteste"] }
+    ]
+  },
+  {
+    group: "Лексика",
+    title: "25. Activités quotidiennes",
+    items: [
+      { type:"text", prompt:"прокидатися", answers:["se réveiller","se reveiller"] },
+      { type:"text", prompt:"лягати спати", answers:["se coucher"] },
+      { type:"text", prompt:"голитися", answers:["se raser"] },
+      { type:"text", prompt:"вдягатися", answers:["s'habiller","s habiller"] },
+      { type:"text", prompt:"чистити зуби", answers:["se brosser les dents"] },
+      { type:"text", prompt:"робити макіяж", answers:["se maquiller"] }
+    ]
+  },
+  {
+    group: "Лексика",
+    title: "26. Saisons et météo",
+    items: [
+      { type:"text", prompt:"зима", answers:["l'hiver","hiver"] },
+      { type:"text", prompt:"весна", answers:["le printemps","printemps"] },
+      { type:"text", prompt:"літо", answers:["l'été","l'ete","ete","été"] },
+      { type:"text", prompt:"осінь", answers:["l'automne","automne"] },
+      { type:"text", prompt:"Il ___. (сніжить)", answers:["neige"] },
+      { type:"text", prompt:"Il ___. (йде дощ)", answers:["pleut"] }
+    ]
+  },
+  {
+    group: "Лексика",
+    title: "27. Cadeaux et anniversaire",
+    items: [
+      { type:"text", prompt:"збір грошей онлайн", answers:["une cagnotte","cagnotte"] },
+      { type:"text", prompt:"брати участь", answers:["participer"] },
+      { type:"text", prompt:"рюкзак", answers:["un sac à dos","sac à dos","sac a dos"] },
+      { type:"text", prompt:"подарунок", answers:["un cadeau","cadeau"] },
+      { type:"text", prompt:"гаманець", answers:["un portefeuille","portefeuille"] },
+      { type:"text", prompt:"валіза", answers:["une valise","valise"] }
+    ]
+  },
+  // ===================== TEXTES À TROUS =====================
+  {
+    group: "Тексти на вставляння",
+    type: "cloze",
+    title: "28. Texte à trous : dans une boutique de vêtements",
+    wordbank: ["cabines","essayer","un haut","regarde","vous aider","ça va","fais","vous"],
+    passageTemplate: "La vendeuse : Bonjour, madame, je peux {{0}} ?<br>Patricia : Non merci, je {{1}}. <em>(Un peu plus tard.)</em> Est-ce que je peux {{2}} cette jupe, s'il vous plaît ?<br>La vendeuse : Oui, madame, les {{3}} sont au fond. <em>(Quelques minutes après.)</em> Alors, ça va ?<br>Patricia : Non, pas vraiment, c'est trop court.<br>La vendeuse : Vous voulez essayer une taille au-dessus ?<br>Patricia : Oui, peut-être. Normalement, je {{4}} du 38, mais apparemment ce n'est pas assez grand.<br>La vendeuse : Je vous apporte un 40. <em>(Quelques minutes plus tard.)</em> Alors, c'est mieux ?<br>Patricia : Oui, je pense que {{5}}.<br>La vendeuse : Oui, ça va bien, c'est assez long comme ça. La couleur {{6}} va très bien. Est-ce que vous voulez essayer {{7}} pour aller avec ?<br>Patricia : Euh... non merci, ça suffit pour aujourd'hui !",
+    items: [
+      { type:"text", answers:["vous aider"] },
+      { type:"text", answers:["regarde"] },
+      { type:"text", answers:["essayer"] },
+      { type:"text", answers:["cabines"] },
+      { type:"text", answers:["fais"] },
+      { type:"text", answers:["ça va","ca va"] },
+      { type:"text", answers:["vous"] },
+      { type:"text", answers:["un haut"] }
+    ]
+  },
+  {
+    group: "Тексти на вставляння",
+    type: "cloze",
+    title: "29. Texte à trous : Vinted",
+    wordbank: ["styles","cher","cuir","vêtements","robe","mode","élégants","acheter"],
+    passageTemplate: "Vinted, c'est une application pour {{0}} ou vendre des {{1}} et des accessoires d'occasion. Le prix de ma {{2}} noire est 5 €. Ce n'est pas {{3}} ! Mes vêtements sont simples, mais ils sont {{4}}. Ma veste en {{5}} coûte 50 €. Mon frère adore la {{6}} et les {{7}} différents.",
+    items: [
+      { type:"text", answers:["acheter"] },
+      { type:"text", answers:["vêtements","vetements"] },
+      { type:"text", answers:["robe"] },
+      { type:"text", answers:["cher"] },
+      { type:"text", answers:["élégants","elegants"] },
+      { type:"text", answers:["cuir"] },
+      { type:"text", answers:["mode"] },
+      { type:"text", answers:["styles"] }
+    ]
+  }
+];
+
+function normalize(s){
+  return (s||"").toString()
+    .normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .toLowerCase()
+    .replace(/[’]/g,"'")
+    .replace(/[.,!?;:]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+function looseNorm(s){ return normalize(s).replace(/\s+/g,"").replace(/'/g,""); }
+function matches(userInput, accepted){
+  return accepted.some(a => normalize(a) === normalize(userInput) || looseNorm(a) === looseNorm(userInput));
+}
+
+function renderApp(){
+  const app = document.getElementById("app");
+  const toc = document.getElementById("toc");
+  let html = "";
+  let tocHtml = "";
+  let lastGroup = null;
+  DATA.forEach((section, si) => {
+    if(section.group !== lastGroup){
+      lastGroup = section.group;
+      const icons = { "Граматика":"📘", "Лексика":"📗", "Тексти на вставляння":"✏️" };
+      const icon = icons[lastGroup] || "📙";
+      html += `<h1 class="group-title">${icon} ${lastGroup}</h1>`;
+    }
+    tocHtml += `<a href="#sec-${si}">${si+1}</a>`;
+    html += `<section class="section" id="sec-${si}"><h2>${section.title}</h2>`;
+    if(section.type === "cloze"){
+      html += `<div class="wordbank"><strong>Banque de mots :</strong> ` + section.wordbank.map(w => `<span class="chip">${w}</span>`).join(" ") + `</div>`;
+      let passageHtml = section.passageTemplate;
+      section.items.forEach((item, qi) => {
+        const qid = `q-${si}-${qi}`;
+        const blankHtml = `<span class="cloze-blank" id="wrap-${qid}"><input type="text" id="${qid}" class="cloze-input" autocomplete="off"><span class="feedback cloze-fb" id="fb-${qid}"></span></span>`;
+        passageHtml = passageHtml.split(`{{${qi}}}`).join(blankHtml);
+      });
+      html += `<p class="cloze-passage">${passageHtml}</p>`;
+      html += `<div class="section-actions"><button type="button" class="btn-check-section" onclick="checkSection(${si})">Перевірити блок</button><span class="section-score" id="secscore-${si}"></span></div>`;
+      html += `</section>`;
+      return;
+    }
+    section.items.forEach((item, qi) => {
+      const qid = `q-${si}-${qi}`;
+      html += `<div class="question" id="wrap-${qid}"><p class="prompt"><span class="qnum">${qi+1}.</span> ${item.prompt}</p>`;
+      if(item.type === "text"){
+        html += `<input type="text" id="${qid}" class="answer-input" autocomplete="off" placeholder="Твоя відповідь">`;
+      } else if(item.type === "mc"){
+        html += `<div class="options">` + item.options.map(opt => `<label class="opt"><input type="radio" name="${qid}" value="${opt}"> ${opt}</label>`).join("") + `</div>`;
+      } else if(item.type === "tf"){
+        html += `<div class="options"><label class="opt"><input type="radio" name="${qid}" value="Vrai"> Vrai</label><label class="opt"><input type="radio" name="${qid}" value="Faux"> Faux</label></div>`;
+      }
+      html += `<div class="feedback" id="fb-${qid}"></div></div>`;
+    });
+    html += `<div class="section-actions"><button type="button" class="btn-check-section" onclick="checkSection(${si})">Перевірити блок</button><span class="section-score" id="secscore-${si}"></span></div>`;
+    html += `</section>`;
+  });
+  app.innerHTML = html;
+  toc.innerHTML = tocHtml;
+}
+
+function countTotalQuestions(){
+  return DATA.reduce((sum, s) => sum + s.items.length, 0);
+}
+
+function countAnswered(){
+  let n = 0;
+  DATA.forEach((section, si) => {
+    section.items.forEach((item, qi) => {
+      const qid = `q-${si}-${qi}`;
+      if(item.type === "text"){
+        const el = document.getElementById(qid);
+        if(el && el.value.trim() !== "") n++;
+      } else {
+        const radios = document.getElementsByName(qid);
+        for(const r of radios){ if(r.checked){ n++; break; } }
+      }
+    });
+  });
+  return n;
+}
+
+function updateProgress(){
+  const total = countTotalQuestions();
+  const answered = countAnswered();
+  const pct = total ? Math.round((answered/total)*100) : 0;
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressLabel").textContent = `${answered} / ${total} відповідей`;
+}
+
+function checkOne(si, qi){
+  const section = DATA[si];
+  const item = section.items[qi];
+  const qid = `q-${si}-${qi}`;
+  let isCorrect = false;
+  let correctText = "";
+  if(item.type === "text"){
+    const el = document.getElementById(qid);
+    isCorrect = matches(el.value, item.answers);
+    correctText = item.answers[0];
+  } else {
+    const radios = document.getElementsByName(qid);
+    let selected = null;
+    radios.forEach(r => { if(r.checked) selected = r.value; });
+    const correctAns = item.type === "mc" ? item.answer : (item.answer ? "Vrai" : "Faux");
+    isCorrect = selected !== null && normalize(selected) === normalize(correctAns);
+    correctText = correctAns;
+  }
+  const wrap = document.getElementById(`wrap-${qid}`);
+  const fb = document.getElementById(`fb-${qid}`);
+  wrap.classList.remove("correct","wrong");
+  wrap.classList.add(isCorrect ? "correct" : "wrong");
+  fb.innerHTML = isCorrect ? "✓ Правильно" : `✗ Правильна відповідь: <strong>${correctText}</strong>`;
+  updateProgress();
+  return isCorrect;
+}
+
+function checkSection(si){
+  const section = DATA[si];
+  let secCorrect = 0;
+  section.items.forEach((item, qi) => {
+    if(checkOne(si, qi)) secCorrect++;
+  });
+  const secTotal = section.items.length;
+  const scoreEl = document.getElementById(`secscore-${si}`);
+  const pct = Math.round((secCorrect/secTotal)*100);
+  scoreEl.textContent = `${secCorrect} / ${secTotal} (${pct}%)`;
+  scoreEl.classList.toggle("score-good", pct === 100);
+  scoreEl.classList.toggle("score-bad", pct < 100);
+  return { correct: secCorrect, total: secTotal };
+}
+
+function gradeTest(){
+  let total = 0, correct = 0;
+  const sectionResults = [];
+  DATA.forEach((section, si) => {
+    const { correct: secCorrect, total: secTotal } = checkSection(si);
+    total += secTotal; correct += secCorrect;
+    sectionResults.push({ title: section.title, correct: secCorrect, total: secTotal });
+  });
+  showResults(correct, total, sectionResults);
+}
+
+function showResults(correct, total, sectionResults){
+  const pct = Math.round((correct/total)*100);
+  let msg, emoji;
+  if(pct >= 90){ msg = "Чудово! Матеріал засвоєно дуже добре."; emoji = "🌟"; }
+  else if(pct >= 75){ msg = "Добре! Ще трохи практики — і буде відмінно."; emoji = "👍"; }
+  else if(pct >= 50){ msg = "Непогано, але варто повторити деякі теми."; emoji = "📚"; }
+  else { msg = "Треба ще попрацювати над матеріалом. Не хвилюйся, повторення — це нормально!"; emoji = "💪"; }
+
+  const name = document.getElementById("studentName").value.trim();
+  const nameLine = name ? `Результат — ${name}` : "Результат тесту";
+
+  let rows = "";
+  sectionResults.forEach(r => {
+    const p = Math.round((r.correct/r.total)*100);
+    rows += `<tr><td>${r.title}</td><td class="num">${r.correct}/${r.total} (${p}%)</td></tr>`;
+  });
+
+  const results = document.getElementById("results");
+  results.style.display = "block";
+  results.innerHTML = `
+    <div class="result-card">
+      <h2>${emoji} ${nameLine}</h2>
+      <div class="score-big">${correct} / ${total}</div>
+      <div class="score-sub">${pct}% правильних відповідей</div>
+      <div class="msg">${msg}</div>
+      <table class="breakdown"><tbody>${rows}</tbody></table>
+    </div>
+  `;
+  results.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function resetTest(){
+  document.querySelectorAll(".answer-input").forEach(el => el.value = "");
+  document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+  document.querySelectorAll(".question").forEach(el => el.classList.remove("correct","wrong"));
+  document.querySelectorAll(".feedback").forEach(el => el.innerHTML = "");
+  document.getElementById("results").style.display = "none";
+  document.getElementById("results").innerHTML = "";
+  updateProgress();
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+
+renderApp();
+updateProgress();
+document.getElementById("app").addEventListener("input", updateProgress);
+document.getElementById("app").addEventListener("change", updateProgress);
+document.getElementById("checkBtn").addEventListener("click", gradeTest);
+document.getElementById("resetBtn").addEventListener("click", resetTest);
+</script>
+</body>
+</html>
