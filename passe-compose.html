@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Passé Composé — Entraîneur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Literata:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2A4A;
+    --ink-soft:#5B6472;
+    --paper:#F3EEE2;
+    --paper2:#FCFAF4;
+    --card:#FFFFFF;
+    --wine:#8B2A3B;
+    --wine-soft:#f2dfe1;
+    --ochre:#B8792C;
+    --ochre-soft:#f4e6cf;
+    --sage:#3F6E56;
+    --sage-soft2:#dceade;
+    --gold:#a8862f;
+    --gold-soft:#f7ecc9;
+    --line:#dfd6c1;
+    --good:#3F6E56;
+    --bad:#8B2A3B;
+    --radius:14px;
+    --shadow:0 2px 10px rgba(27,42,74,0.06), 0 8px 30px rgba(27,42,74,0.05);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
+  body{
+    margin:0;
+    background-color:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(27,42,74,0.035) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);
+    font-family:'Literata', Georgia, serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:'Fraunces', serif; margin:0 0 .4em 0; color:var(--ink); font-weight:600;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit;}
+  :focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  /* ===== Top bar ===== */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background:rgba(243,238,226,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    box-shadow:0 1px 0 0 rgba(27,42,74,0.03);
+  }
+  .topbar::after{
+    content:''; display:block; height:3px;
+    background:linear-gradient(90deg, var(--ochre) 0%, var(--ochre) 49%, var(--sage) 51%, var(--sage) 100%);
+    opacity:.6;
+  }
+  .topbar-inner{
+    max-width:900px; margin:0 auto; padding:14px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:11px;}
+  .brand-badge{
+    width:38px; height:38px; border-radius:11px;
+    background:linear-gradient(135deg, var(--ochre) 0%, var(--ochre) 49%, var(--sage) 51%, var(--sage) 100%);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; box-shadow:0 2px 6px rgba(27,42,74,0.18);
+  }
+  .brand-badge svg{width:20px; height:20px;}
+  .brand-title{font-family:'Fraunces'; font-weight:700; font-size:19px; letter-spacing:-0.01em;}
+  .brand-sub{font-family:'JetBrains Mono'; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft);}
+
+  .score-pill{
+    font-family:'JetBrains Mono'; font-size:12px; color:var(--ink-soft);
+    background:var(--paper2); border:1px solid var(--line); border-radius:999px; padding:8px 14px 8px 10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .score-pill b{color:var(--ink);}
+  .score-pill .dot{width:7px; height:7px; border-radius:50%; background:linear-gradient(135deg, var(--ochre), var(--sage)); display:inline-block;}
+
+  /* ===== Layout ===== */
+  .page{max-width:900px; margin:0 auto; padding:34px 20px 100px;}
+
+  .global-score-bar{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px 20px; display:flex; align-items:center; gap:18px; margin-bottom:26px; box-shadow:var(--shadow); flex-wrap:wrap;}
+  .gsb-label{font-family:'JetBrains Mono'; font-size:12.5px; color:var(--ink-soft); white-space:nowrap; display:flex; align-items:center; gap:7px;}
+  .gsb-track{flex:1; min-width:160px; height:8px; background:var(--paper); border-radius:99px; overflow:hidden;}
+  .gsb-fill{height:100%; background:linear-gradient(90deg, var(--ochre), var(--sage)); width:0%; transition:width .4s ease; border-radius:99px;}
+
+  /* Level filter */
+  .level-filter{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:26px;}
+  .level-filter-label{font-family:'JetBrains Mono'; font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin-right:2px;}
+  .level-btn{
+    font-family:'JetBrains Mono'; font-size:12.5px; letter-spacing:.03em;
+    padding:9px 18px; border-radius:999px; border:1.5px solid var(--line); background:var(--card); color:var(--ink-soft); cursor:pointer;
+    transition:all .15s ease; display:inline-flex; align-items:center; gap:8px;
+  }
+  .level-btn::before{content:''; width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.5;}
+  .level-btn:hover{border-color:var(--ink); color:var(--ink); transform:translateY(-1px);}
+  .level-btn.active{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .level-btn.active::before{opacity:1; background:#fff;}
+  .level-btn[data-level="A1A2"].active{background:var(--sage); border-color:var(--sage);}
+  .level-btn[data-level="A2B1"].active{background:var(--ochre); border-color:var(--ochre);}
+
+  .level-badge{
+    font-family:'JetBrains Mono'; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em;
+    padding:3px 10px; border-radius:999px; font-weight:700; color:#fff; white-space:nowrap;
+  }
+  .level-badge.A1A2{background:var(--sage);}
+  .level-badge.A2B1{background:var(--ochre);}
+
+  .ex-block.level-hidden{display:none;}
+
+  /* Exercises */
+  .ex-block{
+    background:var(--card); border:1px solid var(--line); border-top:4px solid var(--line);
+    border-radius:var(--radius); padding:24px; margin-bottom:26px; box-shadow:var(--shadow);
+    transition:box-shadow .2s ease, transform .2s ease;
+  }
+  .ex-block[data-level="A1A2"]{border-top-color:var(--sage);}
+  .ex-block[data-level="A2B1"]{border-top-color:var(--ochre);}
+  .ex-block:hover{box-shadow:0 4px 16px rgba(27,42,74,0.08), 0 14px 34px rgba(27,42,74,0.07);}
+  .ex-block{animation:fadeUp .5s ease both;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+  .ex-head{display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:2px; flex-wrap:wrap;}
+  .ex-head h3{font-size:19px; margin-bottom:2px; display:flex; align-items:center; gap:9px;}
+  .ex-num{
+    font-family:'JetBrains Mono'; font-size:12px; color:#fff; background:var(--ink);
+    padding:3px 8px; border-radius:6px; letter-spacing:.02em;
+  }
+  .ex-desc{color:var(--ink-soft); font-size:14.5px; margin-bottom:4px;}
+
+  /* mini aide-mémoire per exercise */
+  .mini-memo{margin:10px 0 18px;}
+  .mini-memo summary{
+    cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:7px;
+    font-family:'JetBrains Mono'; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--wine);
+    background:var(--wine-soft); border:1.5px solid var(--wine); border-radius:999px; padding:8px 16px;
+    transition:all .15s ease;
+  }
+  .mini-memo summary:hover{background:var(--wine); color:#fff;}
+  .mini-memo summary::-webkit-details-marker{display:none;}
+  .mini-memo summary::before{content:'💡'; font-size:11px;}
+  .mini-memo[open] summary{border-radius:9px 9px 0 0;}
+  .mini-memo-body{
+    margin-top:0; font-size:13.5px; color:var(--ink); background:var(--paper);
+    border:1px solid var(--line); border-radius:0 9px 9px 9px; padding:12px 15px; line-height:1.55;
+  }
+  .mini-memo-body b{color:var(--wine);}
+  .mini-memo-body .ex{color:var(--ink-soft); font-style:italic;}
+  .mini-memo-body table{width:100%; border-collapse:collapse; margin-top:6px; font-size:13px;}
+  .mini-memo-body td{padding:3px 8px 3px 0; border-bottom:1px dashed var(--line);}
+  .mini-memo-body tr:last-child td{border-bottom:none;}
+
+  .q{padding:16px 0; border-top:1px dashed var(--line);}
+  .q:first-of-type{border-top:none;}
+  .group-title{
+    font-family:'JetBrains Mono'; font-size:12px; text-transform:uppercase; letter-spacing:.05em;
+    color:#fff; background:var(--ink); margin:22px 0 4px; padding:9px 14px; border-radius:9px;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .group-title:first-child{margin-top:0;}
+  .group-title .model{
+    background:var(--sage-soft2); color:var(--sage); padding:2px 10px; border-radius:99px;
+    font-family:'Fraunces'; font-style:italic; font-weight:500; text-transform:none; letter-spacing:0; font-size:12.5px;
+  }
+  .group-title .rule{color:#e8e2d2; text-transform:none; font-weight:400; letter-spacing:0; font-size:12px;}
+  .subgroup-title{
+    font-family:'JetBrains Mono'; font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--wine); margin:14px 0 2px; opacity:.85; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+  }
+  .subgroup-desc{
+    font-family:'Literata', serif; font-style:italic; text-transform:none; letter-spacing:0;
+    color:var(--ink-soft); font-size:12.5px; opacity:1;
+  }
+  .attention-box{
+    background:var(--gold-soft); border-left:3px solid var(--gold); border-radius:8px;
+    padding:12px 15px; margin-top:18px; font-size:13.5px; color:#5c4a17;
+  }
+  .attention-box b{color:#8a6a10;}
+  .q-text{margin-bottom:10px; font-size:15.5px;}
+  .q-text b{color:var(--ink);}
+  .opts{display:flex; gap:8px; flex-wrap:wrap;}
+  .opt-btn{
+    font-family:'JetBrains Mono'; font-size:13px; padding:8px 14px; border-radius:8px;
+    border:1.5px solid var(--line); background:var(--paper2); cursor:pointer; transition:all .15s ease; color:var(--ink);
+  }
+  .opt-btn:hover{border-color:var(--ink); transform:translateY(-1px);}
+  .opt-btn.selected{border-color:var(--ink); background:var(--ink); color:#fff;}
+  .opt-btn.correct{border-color:var(--good); background:var(--sage-soft2); color:var(--sage);}
+  .opt-btn.correct::after{content:' ✓'; font-weight:700;}
+  .opt-btn.incorrect{border-color:var(--bad); background:var(--wine-soft); color:var(--wine);}
+  .opt-btn.incorrect::after{content:' ✗'; font-weight:700;}
+  .opt-btn[disabled]{cursor:default;}
+  .opt-btn[disabled]:hover{transform:none;}
+
+  .text-input{
+    font-family:'JetBrains Mono'; font-size:14.5px; padding:9px 12px; border-radius:8px;
+    border:1.5px solid var(--line); width:min(320px,100%); background:var(--paper2); color:var(--ink);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .text-input:focus{outline:none; border-color:var(--ink);}
+  .text-input.correct{border-color:var(--good); background:var(--sage-soft2);}
+  .text-input.incorrect{border-color:var(--bad); background:var(--wine-soft);}
+
+  .feedback{margin-top:8px; font-size:13.5px; display:none; padding:8px 12px; border-radius:8px;}
+  .feedback.show{display:block;}
+  .feedback.good{background:var(--sage-soft2); color:var(--sage);}
+  .feedback.bad{background:var(--wine-soft); color:var(--wine);}
+
+  .ex-footer{display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding-top:16px; border-top:1px solid var(--line); flex-wrap:wrap;}
+  .btn{
+    font-family:'JetBrains Mono'; font-size:12.5px; text-transform:uppercase; letter-spacing:.05em;
+    padding:11px 20px; border-radius:9px; border:none; cursor:pointer; background:var(--ink); color:#fff;
+    transition:all .15s ease; display:inline-flex; align-items:center; gap:7px;
+  }
+  .btn:hover{opacity:.9; transform:translateY(-1px); box-shadow:0 4px 10px rgba(27,42,74,0.18);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{background:transparent; color:var(--ink); border:1.5px solid var(--line); box-shadow:none;}
+  .btn.secondary:hover{border-color:var(--ink); box-shadow:none;}
+  .ex-result{font-family:'JetBrains Mono'; font-size:13px; color:var(--ink-soft);}
+  .ex-result b{color:var(--ink); font-size:15px;}
+
+  .cloze-text{font-size:16.5px; line-height:2.1;}
+  .cloze-input{
+    font-family:'JetBrains Mono'; font-size:14px; width:110px; padding:4px 8px; border-radius:6px;
+    border:1.5px solid var(--line); background:var(--paper2); color:var(--ink); text-align:center; margin:0 2px;
+  }
+  .cloze-input.correct{border-color:var(--good); background:var(--sage-soft2);}
+  .cloze-input.incorrect{border-color:var(--bad); background:var(--wine-soft);}
+
+  footer.page-footer{
+    max-width:900px; margin:0 auto; padding:30px 20px 60px; color:var(--ink-soft); font-size:13px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-badge">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 20L14.5 9.5M14.5 9.5L20 4L20 9L15 14M14.5 9.5L18 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 20L6.5 19.2C7.1 19 7.6 18.6 8 18.1L14 12" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">Le Passé Composé</div>
+        <div class="brand-sub">Entraîneur de grammaire française</div>
+      </div>
+    </div>
+    <div class="score-pill"><span class="dot"></span>Score total : <b id="global-score">0</b> / <b id="global-total">0</b></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="level-filter" id="level-filter">
+    <span class="level-filter-label">Niveau :</span>
+    <button class="level-btn active" data-level="A1A2">A1 · A2</button>
+    <button class="level-btn" data-level="A2B1">A2 · B1</button>
+  </div>
+
+  <div class="global-score-bar">
+    <div class="gsb-label">📊 Progression globale</div>
+    <div class="gsb-track"><div class="gsb-fill" id="gsb-fill"></div></div>
+    <div class="gsb-label"><b id="gsb-text">0 / 0 corrigé</b></div>
+  </div>
+
+  <!-- EX 1: structure du passé composé -->
+  <div class="ex-block" data-ex="1" data-level="A1A2">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">01</span>De quoi est composé le passé composé ?<span class="level-badge A1A2">A1-A2</span></h3><div class="ex-desc">Dans chaque phrase, repérez l'auxiliaire et le participe passé.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Le passé composé se construit toujours en deux mots : <b>auxiliaire (avoir ou être) au présent</b> + <b>participe passé</b>.<br><span class="ex">j'ai mangé → « ai » = auxiliaire, « mangé » = participe passé.</span></div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 2: avoir et être au présent -->
+  <div class="ex-block" data-ex="2" data-level="A1A2">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">02</span>Avoir et être au présent<span class="level-badge A1A2">A1-A2</span></h3><div class="ex-desc">Avant de conjuguer au passé composé, il faut savoir conjuguer les deux auxiliaires au présent.<br>Exemple : <span class="mono">je suis</span>, <span class="mono">tu as</span>, <span class="mono">il a</span> — écrivez le pronom + le verbe conjugué.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">
+        <table>
+          <tr><td><b>avoir</b></td><td>j'ai · tu as · il/elle/on a · nous avons · vous avez · ils/elles ont</td></tr>
+          <tr><td><b>être</b></td><td>je suis · tu es · il/elle/on est · nous sommes · vous êtes · ils/elles sont</td></tr>
+        </table>
+      </div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 3: choisir la forme correcte de l'auxiliaire -->
+  <div class="ex-block" data-ex="3" data-level="A1A2">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">03</span>Choisissez la forme correcte de l'auxiliaire<span class="level-badge A1A2">A1-A2</span></h3><div class="ex-desc">Le participe passé est déjà écrit — à vous de trouver la bonne forme de avoir ou être selon le sujet.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Chaque sujet (je, tu, il, nous, vous, ils…) a sa propre forme d'auxiliaire au présent. Pensez d'abord à l'auxiliaire (avoir ou être), puis à la bonne personne.</div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 4: formation du participe passé -->
+  <div class="ex-block" data-ex="4" data-level="A1A2">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">04</span>Formez le participe passé<span class="level-badge A1A2">A1-A2</span></h3><div class="ex-desc">Écrivez seulement le participe passé, sans auxiliaire.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">
+        <table>
+          <tr><td><b>1er groupe</b></td><td>comme <i>aimer</i> → terminaison <b>-é</b></td></tr>
+          <tr><td><b>2e groupe</b></td><td>comme <i>finir</i> → terminaison <b>-i</b></td></tr>
+          <tr><td><b>3e groupe</b></td><td>irrégulier → <b>-i</b>, <b>-u</b>, <b>-s</b> ou <b>-t</b></td></tr>
+        </table>
+      </div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 5: avoir ou être -->
+  <div class="ex-block" data-ex="5" data-level="A1A2">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">05</span>Avoir ou être ?<span class="level-badge A1A2">A1-A2</span></h3><div class="ex-desc">Choisissez le bon auxiliaire pour chaque verbe.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">La majorité des verbes se conjuguent avec <b>avoir</b>. Les verbes de mouvement/état (aller, venir, partir, arriver, entrer, sortir, monter, descendre, naître, mourir, rester, tomber, retourner…) et <b>tous les verbes pronominaux</b> se conjuguent avec <b>être</b>.</div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 6: conjuguer -->
+  <div class="ex-block" data-ex="6" data-level="A1A2">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">06</span>Conjuguez au passé composé<span class="level-badge A1A2">A1-A2</span></h3><div class="ex-desc">Écrivez la forme complète (auxiliaire + participe passé), accents compris.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Combinez ce que vous avez appris : le bon auxiliaire, correctement conjugué, + le participe passé.<br>Format attendu : <b>pronom + auxiliaire + participe passé</b>, ex. <span class="mono">j'ai mangé</span>, <span class="mono">elle est partie</span>.</div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 7: accord avec être -->
+  <div class="ex-block" data-ex="7" data-level="A1A2">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">07</span>Accord avec être<span class="level-badge A1A2">A1-A2</span></h3><div class="ex-desc">Choisissez la forme du participe passé qui s'accorde avec le sujet.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Avec l'auxiliaire <b>être</b>, le participe passé s'accorde <b>toujours</b> en genre et en nombre avec le sujet.<br><span class="ex">elle est partie · ils sont partis · elles sont parties</span></div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 8: accord avec avoir + COD -->
+  <div class="ex-block" data-ex="8" data-level="A2B1">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">08</span>Accord avec avoir : le piège du COD<span class="level-badge A2B1">A2-B1</span></h3><div class="ex-desc">Le participe s'accorde-t-il ? Repérez si le COD est placé avant le verbe.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Avec l'auxiliaire <b>avoir</b>, le participe passé est <b>invariable</b> — sauf si le COD est placé <b>avant</b> le verbe (pronom, ou relatif « que »).<br><span class="ex">j'ai mangé des pommes (pas d'accord) · les pommes que j'ai mangées (accord)</span></div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 9: pronominaux — accord -->
+  <div class="ex-block" data-ex="9" data-level="A2B1">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">09</span>Verbes pronominaux — accord<span class="level-badge A2B1">A2-B1</span></h3><div class="ex-desc">Le participe passé s'accorde-t-il avec le sujet ? Repérez si « se » est COD ou COI.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Accord si « se » est <b>COD</b> (elle s'est lavée). Pas d'accord si « se » est <b>COI</b>, quand un autre COD suit (elle s'est lavé les mains).</div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 10: pronominaux — conjuguez -->
+  <div class="ex-block" data-ex="10" data-level="A2B1">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">10</span>Verbes pronominaux — conjuguez<span class="level-badge A2B1">A2-B1</span></h3><div class="ex-desc">Écrivez la forme complète au passé composé (pronom + auxiliaire + participe).</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Tous les verbes pronominaux se conjuguent avec <b>être</b> : pronom réfléchi + être + participe passé (accordé si « se » est COD).</div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 11: négation -->
+  <div class="ex-block" data-ex="11" data-level="A1A2">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">11</span>La négation au passé composé<span class="level-badge A1A2">A1-A2</span></h3><div class="ex-desc">Choisissez la phrase négative correctement construite.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body"><span class="mono">ne + auxiliaire + pas + participe passé</span> — « ne » et « pas » encadrent l'<b>auxiliaire</b>, jamais le participe.<br><span class="ex">je n'ai pas mangé</span></div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 12: texte à trous -->
+  <div class="ex-block" data-ex="12" data-level="A2B1">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">12</span>Texte à trous<span class="level-badge A2B1">A2-B1</span></h3><div class="ex-desc">Complétez le récit avec les verbes proposés, au passé composé.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Cet exercice combine tout : auxiliaire, accord, groupe du participe. Relisez chaque phrase en entier avant de répondre.</div>
+    </details>
+    <div class="ex-body cloze-text"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+  <!-- EX 13: double auxiliaire -->
+  <div class="ex-block" data-ex="13" data-level="A2B1">
+    <div class="ex-head">
+      <div><h3><span class="ex-num">13</span>Les verbes à double auxiliaire<span class="level-badge A2B1">A2-B1</span></h3><div class="ex-desc">Monter, sortir, descendre, passer, retourner, rentrer, entrer… avoir ou être selon qu'il y a un COD ou non.</div></div>
+      <span class="ex-result" data-result>—</span>
+    </div>
+    <details class="mini-memo">
+      <summary>Rappel</summary>
+      <div class="mini-memo-body">Ces verbes prennent <b>avoir</b> quand ils ont un COD (sens transitif), et <b>être</b> quand il n'y a pas de COD (simple déplacement).<br><span class="ex">il a sorti le chien (COD) · il est sorti (pas de COD)</span></div>
+    </details>
+    <div class="ex-body"></div>
+    <div class="ex-footer">
+      <button class="btn" data-action="check"><span>✓</span> Corriger</button>
+      <button class="btn secondary" data-action="reset"><span>↻</span> Recommencer</button>
+    </div>
+  </div>
+
+</div>
+
+<footer class="page-footer">
+  <span>Entraîneur de grammaire — Le Passé Composé</span>
+  <span>Règles conformes aux usages de référence (type Bescherelle) · niveau A2–B1</span>
+</footer>
+
+<script>
+/* ============================= HELPERS ============================= */
+function norm(s){
+  return (s||'').toString().trim().toLowerCase().replace(/\s+/g,' ').replace(/’/g,"'");
+}
+function normLoose(s){
+  return norm(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+function el(tag, cls, html){
+  const e=document.createElement(tag);
+  if(cls) e.className=cls;
+  if(html!==undefined) e.innerHTML=html;
+  return e;
+}
+function acceptableAnswer(given, answer){
+  const g = norm(given).replace(/[().]/g,'');
+  const base = norm(answer).replace(/[().]/g,'');
+  if(g===base) return true;
+  const alt = base.replace(/\(e\)/g,'').replace(/\(s\)/g,'');
+  return g===norm(alt);
+}
+function acceptableAny(given, answers){
+  const g = normLoose(given);
+  return answers.some(a=> g===normLoose(a));
+}
+
+const globalState = {};
+function updateGlobalScore(){
+  let correct=0, checkedTotal=0, checkedCount=0;
+  Object.values(globalState).forEach(s=>{
+    if(s.checked){ correct+=s.correct; checkedTotal+=s.total; checkedCount++; }
+  });
+  document.getElementById('global-score').textContent=correct;
+  document.getElementById('global-total').textContent=checkedTotal;
+  const gsbFill=document.getElementById('gsb-fill');
+  const gsbText=document.getElementById('gsb-text');
+  const exCount = document.querySelectorAll('.ex-block').length;
+  gsbText.textContent = checkedCount+' / '+exCount+' exercices corrigés';
+  gsbFill.style.width = (exCount? (checkedCount/exCount*100):0)+'%';
+}
+
+function shuffleArr(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+const mcqOrderStore = {};
+function buildMCQ(exId, data, optionsFor){
+  const wrap = document.querySelector(`[data-ex="${exId}"] .ex-body`);
+  wrap.innerHTML='';
+  const order = shuffleArr(data);
+  mcqOrderStore[exId] = order;
+  order.forEach((item,i)=>{
+    const q=el('div','q');
+    q.appendChild(el('div','q-text', `<b>${i+1}.</b> ${item.sentence || item.v}`));
+    const opts=el('div','opts');
+    shuffleArr(optionsFor(item)).forEach(o=>{
+      const b=el('button','opt-btn', o.label);
+      b.dataset.choice=o.value;
+      b.addEventListener('click', ()=>{
+        if(q.dataset.locked) return;
+        opts.querySelectorAll('.opt-btn').forEach(x=>x.classList.remove('selected'));
+        b.classList.add('selected');
+        q.dataset.answer=o.value;
+      });
+      opts.appendChild(b);
+    });
+    q.appendChild(opts);
+    q.appendChild(el('div','feedback'));
+    wrap.appendChild(q);
+  });
+}
+function checkMCQ(exId, data, rightFn, explainFn){
+  const block=document.querySelector(`[data-ex="${exId}"]`);
+  const order = mcqOrderStore[exId] || data;
+  const qs=block.querySelectorAll('.q');
+  let correct=0;
+  qs.forEach((q,i)=>{
+    q.dataset.locked='1';
+    const chosen=q.dataset.answer;
+    const right=rightFn(order[i]);
+    const fb=q.querySelector('.feedback');
+    q.querySelectorAll('.opt-btn').forEach(o=>{
+      o.disabled=true;
+      if(o.dataset.choice===right) o.classList.add('correct');
+      if(o.dataset.choice===chosen && chosen!==right) o.classList.add('incorrect');
+    });
+    if(chosen===right){ correct++; fb.classList.add('good','show'); fb.textContent='Correct.'+(explainFn?(' '+explainFn(order[i],true)):''); }
+    else{ fb.classList.add('bad','show'); fb.textContent=explainFn?explainFn(order[i],false):'Réponse incorrecte.'; }
+  });
+  block.querySelector('[data-result]').innerHTML=`<b>${correct}/${order.length}</b>`;
+  globalState[exId]={correct, total:order.length, checked:true};
+  updateGlobalScore();
+}
+
+/* ============================= EX 1 — Structure du passé composé ============================= */
+const ex1Data = [
+  {sentence:"J'ai mangé une pomme.", aux:'ai', pp:'mangé', ask:'aux'},
+  {sentence:"Elle est partie tôt.", aux:'est', pp:'partie', ask:'pp'},
+  {sentence:"Nous avons fini le travail.", aux:'avons', pp:'fini', ask:'aux'},
+  {sentence:"Ils sont arrivés en retard.", aux:'sont', pp:'arrivés', ask:'pp'},
+  {sentence:"Tu as vu ce film ?", aux:'as', pp:'vu', ask:'aux'},
+  {sentence:"Vous êtes venus nombreux.", aux:'êtes', pp:'venus', ask:'pp'},
+  {sentence:"Elles ont pris le bus.", aux:'ont', pp:'pris', ask:'aux'},
+  {sentence:"Il est resté à la maison.", aux:'est', pp:'resté', ask:'pp'},
+  {sentence:"J'ai choisi ce livre.", aux:'ai', pp:'choisi', ask:'aux'},
+  {sentence:"Nous sommes sortis hier soir.", aux:'sommes', pp:'sortis', ask:'pp'},
+  {sentence:"Tu es tombé dans l'escalier.", aux:'es', pp:'tombé', ask:'aux'},
+  {sentence:"Elles ont écrit une lettre.", aux:'ont', pp:'écrit', ask:'pp'}
+];
+function buildEx1(){
+  const wrap = document.querySelector('[data-ex="1"] .ex-body');
+  wrap.innerHTML='';
+  ex1Data.forEach((item,i)=>{
+    const q=el('div','q');
+    const question = item.ask==='aux' ? "Quel mot est l'auxiliaire ?" : "Quel mot est le participe passé ?";
+    q.appendChild(el('div','q-text', `<b>${i+1}.</b> « ${item.sentence} »<br><span style="color:var(--ink-soft); font-size:13.5px;">${question}</span>`));
+    const opts=el('div','opts');
+    const choices = Math.random()<0.5 ? [item.aux, item.pp] : [item.pp, item.aux];
+    choices.forEach(word=>{
+      const b=el('button','opt-btn', word);
+      b.dataset.choice=word;
+      b.addEventListener('click', ()=>{
+        if(q.dataset.locked) return;
+        opts.querySelectorAll('.opt-btn').forEach(x=>x.classList.remove('selected'));
+        b.classList.add('selected');
+        q.dataset.answer=word;
+      });
+      opts.appendChild(b);
+    });
+    q.appendChild(opts);
+    q.appendChild(el('div','feedback'));
+    wrap.appendChild(q);
+  });
+}
+function checkEx1(){
+  const block=document.querySelector('[data-ex="1"]');
+  const qs=block.querySelectorAll('.q');
+  let correct=0;
+  qs.forEach((q,i)=>{
+    q.dataset.locked='1';
+    const chosen=q.dataset.answer;
+    const right= ex1Data[i].ask==='aux' ? ex1Data[i].aux : ex1Data[i].pp;
+    const roleLabel = ex1Data[i].ask==='aux' ? 'auxiliaire' : 'participe passé';
+    const fb=q.querySelector('.feedback');
+    q.querySelectorAll('.opt-btn').forEach(o=>{
+      o.disabled=true;
+      if(o.dataset.choice===right) o.classList.add('correct');
+      if(o.dataset.choice===chosen && chosen!==right) o.classList.add('incorrect');
+    });
+    if(chosen===right){ correct++; fb.classList.add('good','show'); fb.textContent=`Correct — « ${right} » est bien le ${roleLabel}.`; }
+    else{ fb.classList.add('bad','show'); fb.textContent=`Le ${roleLabel} est « ${right} ».`; }
+  });
+  block.querySelector('[data-result]').innerHTML=`<b>${correct}/${ex1Data.length}</b>`;
+  globalState[1]={correct, total:ex1Data.length, checked:true};
+  updateGlobalScore();
+}
+
+/* ============================= EX 2 — Avoir et être au présent ============================= */
+const exPresGroups = [
+  {
+    title:'Avoir',
+    items:[
+      {subject:'je', answers:["j'ai"]},
+      {subject:'tu', answers:['tu as']},
+      {subject:'il / elle / on', answers:['il a','elle a','on a']},
+      {subject:'nous', answers:['nous avons']},
+      {subject:'vous', answers:['vous avez']},
+      {subject:'ils / elles', answers:['ils ont','elles ont']}
+    ]
+  },
+  {
+    title:'Être',
+    items:[
+      {subject:'je', answers:['je suis']},
+      {subject:'tu', answers:['tu es']},
+      {subject:'il / elle / on', answers:['il est','elle est','on est']},
+      {subject:'nous', answers:['nous sommes']},
+      {subject:'vous', answers:['vous êtes']},
+      {subject:'ils / elles', answers:['ils sont','elles sont']}
+    ]
+  }
+];
+function exPresFlat(){
+  const flat=[];
+  exPresGroups.forEach(g=> g.items.forEach(it=> flat.push({...it, group:g.title})));
+  return flat;
+}
+function buildEx2(){
+  const wrap = document.querySelector('[data-ex="2"] .ex-body');
+  wrap.innerHTML='';
+  let idx=0;
+  exPresGroups.forEach(g=>{
+    wrap.appendChild(el('div','group-title', g.title));
+    g.items.forEach(item=>{
+      const q=el('div','q');
+      q.appendChild(el('div','q-text', `<b>${idx+1}.</b> ${item.subject} (${g.title.toLowerCase()})`));
+      const inp=el('input','text-input');
+      inp.type='text'; inp.placeholder='ex. je suis'; inp.dataset.idx=idx;
+      q.appendChild(inp);
+      q.appendChild(el('div','feedback'));
+      wrap.appendChild(q);
+      idx++;
+    });
+  });
+}
+function checkEx2(){
+  const block = document.querySelector('[data-ex="2"]');
+  const flat = exPresFlat();
+  const qs = block.querySelectorAll('.q');
+  let correct=0;
+  qs.forEach((q,i)=>{
+    const inp=q.querySelector('input');
+    inp.disabled=true;
+    const fb=q.querySelector('.feedback');
+    const ok = acceptableAny(inp.value, flat[i].answers);
+    if(ok){ correct++; inp.classList.add('correct'); fb.classList.add('good','show'); fb.textContent='Correct.'; }
+    else{ inp.classList.add('incorrect'); fb.classList.add('bad','show'); fb.textContent=`Réponse attendue : ${flat[i].answers.join(' / ')}`; }
+  });
+  block.querySelector('[data-result]').innerHTML = `<b>${correct}/${flat.length}</b>`;
+  globalState[2]={correct, total:flat.length, checked:true};
+  updateGlobalScore();
+}
+
+/* ============================= EX 3 — Choisir la forme correcte de l'auxiliaire ============================= */
+const ex3Data = [
+  {sentence:"Je ___ mangé une pomme.", answer:'ai', opts:['ai','es','a','suis']},
+  {sentence:"Tu ___ fini tes devoirs.", answer:'as', opts:['as','es','a','est']},
+  {sentence:"Il ___ pris le bus.", answer:'a', opts:['a','est','as','ai']},
+  {sentence:"Elle ___ partie tôt.", answer:'est', opts:['est','a','es','sont']},
+  {sentence:"Nous ___ fini le travail.", answer:'avons', opts:['avons','sommes','avez','êtes']},
+  {sentence:"Nous ___ arrivés en retard.", answer:'sommes', opts:['sommes','avons','êtes','avez']},
+  {sentence:"Vous ___ compris la leçon.", answer:'avez', opts:['avez','êtes','avons','sommes']},
+  {sentence:"Vous ___ venus nombreux.", answer:'êtes', opts:['êtes','avez','sont','ont']},
+  {sentence:"Ils ___ vu ce film.", answer:'ont', opts:['ont','sont','avez','êtes']},
+  {sentence:"Elles ___ sorties hier soir.", answer:'sont', opts:['sont','ont','est','a']},
+  {sentence:"On ___ bien mangé.", answer:'a', opts:['a','est','avons','sommes']},
+  {sentence:"Je ___ resté à la maison.", answer:'suis', opts:['suis','ai','es','est']},
+  {sentence:"Tu ___ tombé dans l'escalier.", answer:'es', opts:['es','as','est','a']},
+  {sentence:"Elles ___ écrit une lettre.", answer:'ont', opts:['ont','sont','avez','êtes']}
+];
+function buildEx3(){
+  buildMCQ(3, ex3Data, item=> item.opts.map(o=>({label:o,value:o})));
+}
+function checkEx3(){
+  checkMCQ(3, ex3Data, d=>d.answer, (d,ok)=> ok? '' : `La bonne forme est « ${d.answer} ».`);
+}
+
+/* ============================= EX 4 — Formation du participe passé ============================= */
+const exPGroups = [
+  {
+    title:'1er groupe', model:'comme AIMER', rule:'-er → -é',
+    items:[
+      {inf:'parler', answer:'parlé'}, {inf:'manger', answer:'mangé'}, {inf:'aimer', answer:'aimé'},
+      {inf:'travailler', answer:'travaillé'}, {inf:'arriver', answer:'arrivé'}, {inf:'chercher', answer:'cherché'},
+      {inf:'jouer', answer:'joué'}, {inf:'donner', answer:'donné'}
+    ]
+  },
+  {
+    title:'2e groupe', model:'comme FINIR', rule:'-ir (régulier) → -i',
+    items:[
+      {inf:'finir', answer:'fini'}, {inf:'choisir', answer:'choisi'}, {inf:'grandir', answer:'grandi'},
+      {inf:'réussir', answer:'réussi'}, {inf:'obéir', answer:'obéi'}, {inf:'remplir', answer:'rempli'}
+    ]
+  },
+  {
+    title:'3e groupe', model:'irrégulier', rule:'plusieurs terminaisons possibles',
+    items:[
+      {inf:'dormir', answer:'dormi', sub:'-i'}, {inf:'sentir', answer:'senti', sub:'-i'},
+      {inf:'servir', answer:'servi', sub:'-i'}, {inf:'sortir', answer:'sorti', sub:'-i'}, {inf:'partir', answer:'parti', sub:'-i'},
+
+      {inf:'vendre', answer:'vendu', sub:'-u'}, {inf:'voir', answer:'vu', sub:'-u'}, {inf:'boire', answer:'bu', sub:'-u'},
+      {inf:'savoir', answer:'su', sub:'-u'}, {inf:'pouvoir', answer:'pu', sub:'-u'}, {inf:'vouloir', answer:'voulu', sub:'-u'},
+      {inf:'connaître', answer:'connu', sub:'-u'}, {inf:'courir', answer:'couru', sub:'-u'}, {inf:'lire', answer:'lu', sub:'-u'},
+      {inf:'devoir', answer:'dû', sub:'-u'}, {inf:'venir', answer:'venu', sub:'-u'}, {inf:'tenir', answer:'tenu', sub:'-u'},
+      {inf:'recevoir', answer:'reçu', sub:'-u'},
+
+      {inf:'prendre', answer:'pris', sub:'-is'}, {inf:'apprendre', answer:'appris', sub:'-is'},
+      {inf:'comprendre', answer:'compris', sub:'-is'}, {inf:'mettre', answer:'mis', sub:'-is'},
+
+      {inf:'dire', answer:'dit', sub:'-it'}, {inf:'écrire', answer:'écrit', sub:'-it'},
+      {inf:'faire', answer:'fait', sub:'-it'}, {inf:'conduire', answer:'conduit', sub:'-it'},
+
+      {inf:'ouvrir', answer:'ouvert', sub:'-ert'}, {inf:'offrir', answer:'offert', sub:'-ert'},
+      {inf:'souffrir', answer:'souffert', sub:'-ert'}, {inf:'découvrir', answer:'découvert', sub:'-ert'},
+
+      {inf:'être', answer:'été', sub:'isolés'}, {inf:'avoir', answer:'eu', sub:'isolés'},
+      {inf:'naître', answer:'né', sub:'isolés'}, {inf:'mourir', answer:'mort', sub:'isolés'}
+    ]
+  }
+];
+function exPFlatItems(){
+  const flat=[];
+  exPGroups.forEach(g=> g.items.forEach(it=> flat.push({...it, group:g.title})));
+  return flat;
+}
+function exSubDescriptions(){
+  return {
+    '-i': 'verbes comme dormir, sentir, partir, sortir',
+    '-u': 'verbes en -oir et -re, très fréquent',
+    '-is': 'du verbe prendre et de ses composés, et mettre',
+    '-it': 'du verbe dire, écrire, faire',
+    '-ert': 'verbes en -vrir et -frir',
+    'isolés': 'formes à mémoriser par cœur, sans règle'
+  };
+}
+function buildEx4(){
+  const wrap = document.querySelector('[data-ex="4"] .ex-body');
+  wrap.innerHTML='';
+  let idx=0;
+  exPGroups.forEach(g=>{
+    wrap.appendChild(el('div','group-title', `${g.title}<span class="model">${g.model}</span><span class="rule">${g.rule}</span>`));
+    let lastSub=null;
+    g.items.forEach(item=>{
+      if(item.sub && item.sub!==lastSub){
+        const desc = exSubDescriptions()[item.sub] || '';
+        wrap.appendChild(el('div','subgroup-title', `terminaison ${item.sub}<span class="subgroup-desc">${desc}</span>`));
+        lastSub=item.sub;
+      }
+      const q=el('div','q');
+      q.appendChild(el('div','q-text', `<b>${idx+1}.</b> ${item.inf}`));
+      const inp=el('input','text-input');
+      inp.type='text'; inp.placeholder='participe passé…'; inp.dataset.idx=idx;
+      q.appendChild(inp);
+      q.appendChild(el('div','feedback'));
+      wrap.appendChild(q);
+      idx++;
+    });
+  });
+  wrap.appendChild(el('div','attention-box', `<b>⚠️ Radicaux particuliers</b> — certains participes du 3e groupe ne suivent pas leur infinitif de façon évidente : <b>ouvert</b> (ouvrir), <b>pu</b> (pouvoir), <b>reçu</b> (recevoir), <b>su</b> (savoir)…`));
+}
+function checkEx4(){
+  const block = document.querySelector('[data-ex="4"]');
+  const flat = exPFlatItems();
+  const qs = block.querySelectorAll('.q');
+  let correct=0;
+  qs.forEach((q,i)=>{
+    const inp=q.querySelector('input');
+    inp.disabled=true;
+    const fb=q.querySelector('.feedback');
+    const ok = normLoose(inp.value)===normLoose(flat[i].answer);
+    if(ok){ correct++; inp.classList.add('correct'); fb.classList.add('good','show'); fb.textContent='Correct.'; }
+    else{ inp.classList.add('incorrect'); fb.classList.add('bad','show'); fb.textContent=`Réponse attendue : ${flat[i].answer}`; }
+  });
+  block.querySelector('[data-result]').innerHTML = `<b>${correct}/${flat.length}</b>`;
+  globalState[4]={correct, total:flat.length, checked:true};
+  updateGlobalScore();
+}
+
+/* ============================= EX 5 — Avoir ou être ============================= */
+const ex5Data = [
+  {v:'manger', a:'avoir'}, {v:'aller', a:'être'}, {v:'finir', a:'avoir'},
+  {v:'partir', a:'être'}, {v:'prendre', a:'avoir'}, {v:'naître', a:'être'},
+  {v:'vouloir', a:'avoir'}, {v:'tomber', a:'être'}, {v:'écrire', a:'avoir'},
+  {v:'venir', a:'être'}, {v:'se lever', a:'être'}, {v:'voir', a:'avoir'},
+  {v:'parler', a:'avoir'}, {v:'entrer', a:'être'}, {v:'écouter', a:'avoir'},
+  {v:'sortir', a:'être'}, {v:'lire', a:'avoir'}, {v:'monter', a:'être'},
+  {v:'boire', a:'avoir'}, {v:'descendre', a:'être'}, {v:'ouvrir', a:'avoir'},
+  {v:'rester', a:'être'}, {v:'comprendre', a:'avoir'}, {v:'devenir', a:'être'},
+  {v:'mettre', a:'avoir'}, {v:'revenir', a:'être'}, {v:'connaître', a:'avoir'},
+  {v:'mourir', a:'être'}, {v:'choisir', a:'avoir'}, {v:'retourner', a:'être'}
+];
+function buildEx5(){
+  buildMCQ(5, ex5Data, item=>[{label:'avoir',value:'avoir'},{label:'être',value:'être'}]);
+}
+function checkEx5(){
+  checkMCQ(5, ex5Data, d=>d.a, (d,ok)=> ok? '' : `"${d.v}" se conjugue avec ${d.a}.`);
+}
+
+/* ============================= EX 6 — Conjuguer ============================= */
+const ex6Data = [
+  {subject:'je', verb:'manger', answer:"j'ai mangé"},
+  {subject:'elle', verb:'aller', answer:'elle est allée'},
+  {subject:'nous', verb:'finir', answer:'nous avons fini'},
+  {subject:'ils', verb:'partir', answer:'ils sont partis'},
+  {subject:'tu', verb:'prendre', answer:'tu as pris'},
+  {subject:'vous', verb:'venir', answer:'vous êtes venu(e)(s)'},
+  {subject:'elles', verb:'naître', answer:'elles sont nées'},
+  {subject:'il', verb:'faire', answer:'il a fait'},
+  {subject:'nous', verb:'voir', answer:'nous avons vu'},
+  {subject:'je', verb:'écrire', answer:"j'ai écrit"},
+  {subject:'elle', verb:'sortir', answer:'elle est sortie'},
+  {subject:'ils', verb:'boire', answer:'ils ont bu'},
+  {subject:'nous', verb:'descendre', answer:'nous sommes descendus'},
+  {subject:'tu', verb:'lire', answer:'tu as lu'},
+  {subject:'elles', verb:'devenir', answer:'elles sont devenues'},
+  {subject:'vous', verb:'comprendre', answer:'vous avez compris'}
+];
+function buildEx6(){
+  const wrap = document.querySelector('[data-ex="6"] .ex-body');
+  wrap.innerHTML='';
+  ex6Data.forEach((item,i)=>{
+    const q=el('div','q');
+    q.appendChild(el('div','q-text', `<b>${i+1}.</b> ${item.subject} — (${item.verb})`));
+    const inp=el('input','text-input');
+    inp.type='text'; inp.placeholder='ex. j\'ai parlé'; inp.dataset.idx=i;
+    q.appendChild(inp);
+    q.appendChild(el('div','feedback'));
+    wrap.appendChild(q);
+  });
+}
+function checkEx6(){
+  const block = document.querySelector('[data-ex="6"]');
+  const qs = block.querySelectorAll('.q');
+  let correct=0;
+  qs.forEach((q,i)=>{
+    const inp=q.querySelector('input');
+    inp.disabled=true;
+    const fb=q.querySelector('.feedback');
+    const ok = acceptableAnswer(inp.value, ex6Data[i].answer);
+    if(ok){ correct++; inp.classList.add('correct'); fb.classList.add('good','show'); fb.textContent='Correct.'; }
+    else{ inp.classList.add('incorrect'); fb.classList.add('bad','show'); fb.textContent=`Réponse attendue : ${ex6Data[i].answer}`; }
+  });
+  block.querySelector('[data-result]').innerHTML = `<b>${correct}/${ex6Data.length}</b>`;
+  globalState[6]={correct, total:ex6Data.length, checked:true};
+  updateGlobalScore();
+}
+
+/* ============================= EX 7 — Accord avec être ============================= */
+const ex7Data = [
+  {sentence:'Marie est ___ (arriver) en retard.', answer:'arrivée', opts:['arrivé','arrivée','arrivés','arrivées']},
+  {sentence:'Les garçons sont ___ (partir) tôt.', answer:'partis', opts:['parti','partie','partis','parties']},
+  {sentence:'Nos sœurs sont ___ (rentrer) hier soir.', answer:'rentrées', opts:['rentré','rentrée','rentrés','rentrées']},
+  {sentence:'Paul est ___ (rester) chez lui.', answer:'resté', opts:['resté','restée','restés','restées']},
+  {sentence:'Elles sont ___ (naître) en 1999.', answer:'nées', opts:['né','née','nés','nées']},
+  {sentence:'Il est ___ (tomber) dans l\'escalier.', answer:'tombé', opts:['tombé','tombée','tombés','tombées']},
+  {sentence:'Vous (fém. plur.) êtes ___ (monter) trop vite.', answer:'montées', opts:['monté','montée','montés','montées']},
+  {sentence:'Les enfants sont ___ (descendre) au jardin.', answer:'descendus', opts:['descendu','descendue','descendus','descendues']},
+  {sentence:'Il est ___ (revenir) hier soir.', answer:'revenu', opts:['revenu','revenue','revenus','revenues']},
+  {sentence:'Elles sont ___ (devenir) célèbres.', answer:'devenues', opts:['devenu','devenue','devenus','devenues']},
+  {sentence:'Tu (fém.) es ___ (rester) longtemps.', answer:'restée', opts:['resté','restée','restés','restées']},
+  {sentence:'Ils sont ___ (mourir) le même jour.', answer:'morts', opts:['mort','morte','morts','mortes']},
+  {sentence:'Nous (masc. plur.) sommes ___ (venir) en retard.', answer:'venus', opts:['venu','venue','venus','venues']},
+  {sentence:'Elle est ___ (retourner) chercher ses clés.', answer:'retournée', opts:['retourné','retournée','retournés','retournées']}
+];
+function buildEx7(){
+  buildMCQ(7, ex7Data, item=>item.opts.map(o=>({label:o,value:o})));
+}
+function checkEx7(){
+  checkMCQ(7, ex7Data, d=>d.answer, (d,ok)=> ok? 'Accord avec le sujet.' : `La bonne forme est "${d.answer}".`);
+}
+
+/* ============================= EX 8 — Accord avec avoir (COD) ============================= */
+const ex8Data = [
+  {sentence:"J'ai ___ (manger) des pommes.", answer:'invariable', form:'mangé', explain:'le COD "des pommes" est placé après le verbe → pas d\'accord.'},
+  {sentence:"Les pommes que j'ai ___ (manger) étaient délicieuses.", answer:'accord', form:'mangées', explain:'le COD "que" (= les pommes) est placé avant le verbe → accord.'},
+  {sentence:"Il a ___ (écrire) une lettre.", answer:'invariable', form:'écrit', explain:'COD "une lettre" après le verbe → pas d\'accord.'},
+  {sentence:"La lettre qu'il a ___ (écrire) est arrivée.", answer:'accord', form:'écrite', explain:'COD "que" (= la lettre) avant le verbe → accord.'},
+  {sentence:"Je les ai ___ (voir) hier.", answer:'accord', form:'vus / vues', explain:'"les" (COD) est placé avant le verbe → accord.'},
+  {sentence:"Nous avons ___ (finir) nos devoirs.", answer:'invariable', form:'fini', explain:'COD "nos devoirs" après le verbe → pas d\'accord.'},
+  {sentence:"Combien de fautes as-tu ___ (faire) ?", answer:'accord', form:'faites', explain:'"combien de fautes" (COD) est placé avant le verbe → accord.'},
+  {sentence:"Des pommes, j'en ai ___ (manger).", answer:'invariable', form:'mangé', explain:'avec le pronom "en", pas d\'accord (règle traditionnelle).'},
+  {sentence:"Elle a ___ (acheter) une robe.", answer:'invariable', form:'acheté', explain:'COD "une robe" après le verbe → pas d\'accord.'},
+  {sentence:"La robe qu'elle a ___ (acheter) est rouge.", answer:'accord', form:'achetée', explain:'COD "que" (= la robe) avant le verbe → accord.'},
+  {sentence:"Il a ___ (perdre) ses clés.", answer:'invariable', form:'perdu', explain:'COD "ses clés" après le verbe → pas d\'accord.'},
+  {sentence:"Les clés qu'il a ___ (perdre) sont retrouvées.", answer:'accord', form:'perdues', explain:'COD "que" (= les clés) avant le verbe → accord.'}
+];
+function buildEx8(){
+  buildMCQ(8, ex8Data, item=>[{label:"Pas d'accord",value:'invariable'},{label:'Accord avec le COD',value:'accord'}]);
+}
+function checkEx8(){
+  checkMCQ(8, ex8Data, d=>d.answer, (d)=> `Forme : "${d.form}" — ${d.explain}`);
+}
+
+/* ============================= EX 9 — Pronominaux : accord ============================= */
+const ex9Data = [
+  {sentence:"Elle s'est ___ (laver).", answer:'accord', form:'lavée', explain:'"se" est COD (elle a lavé elle-même) → accord.'},
+  {sentence:"Ils se sont ___ (parler) toute la soirée.", answer:'invariable', form:'parlé', explain:'"parler à quelqu\'un" — "se" est COI → pas d\'accord.'},
+  {sentence:"Elles se sont ___ (souvenir) de ce jour.", answer:'accord', form:'souvenues', explain:'verbe essentiellement pronominal → accord avec le sujet, toujours.'},
+  {sentence:"Elle s'est ___ (laver) les mains.", answer:'invariable', form:'lavé', explain:'"les mains" est le COD (après le verbe) ; "se" est COI → pas d\'accord.'},
+  {sentence:"Nous nous sommes ___ (rencontrer) au parc.", answer:'accord', form:'rencontré(e)s', explain:'"se" est COD (se rencontrer l\'un l\'autre) → accord.'},
+  {sentence:"Ils se sont ___ (téléphoner) hier.", answer:'invariable', form:'téléphoné', explain:'"téléphoner à quelqu\'un" — "se" est COI → pas d\'accord.'},
+  {sentence:"Elle s'est ___ (évanouir) dans le couloir.", answer:'accord', form:'évanouie', explain:'verbe essentiellement pronominal → accord avec le sujet, toujours.'},
+  {sentence:"Elle s'est ___ (offrir) un cadeau.", answer:'invariable', form:'offert', explain:'"un cadeau" est le COD (après le verbe) ; "se" est COI (à elle-même) → pas d\'accord.'},
+  {sentence:"Ils se sont ___ (disputer) hier soir.", answer:'accord', form:'disputés', explain:'"se" est COD (ils ont disputé l\'un l\'autre) → accord.'},
+  {sentence:"Ils se sont ___ (rendre compte) de leur erreur.", answer:'invariable', form:'rendu compte', explain:'"se rendre compte" est une locution figée, toujours invariable.'},
+  {sentence:"Elle s'est ___ (regarder) dans le miroir.", answer:'accord', form:'regardée', explain:'"se" est COD (elle a regardé elle-même) → accord.'},
+  {sentence:"Elle s'est ___ (brosser) les dents.", answer:'invariable', form:'brossé', explain:'"les dents" est le COD (après le verbe) ; "se" est COI → pas d\'accord.'}
+];
+function buildEx9(){
+  buildMCQ(9, ex9Data, item=>[{label:"Pas d'accord",value:'invariable'},{label:'Accord avec le sujet',value:'accord'}]);
+}
+function checkEx9(){
+  checkMCQ(9, ex9Data, d=>d.answer, (d)=> `Forme : "${d.form}" — ${d.explain}`);
+}
+
+/* ============================= EX 10 — Pronominaux : conjuguez ============================= */
+const ex10Data = [
+  {subject:'je (fém.)', verb:'se réveiller', answer:'je me suis réveillée'},
+  {subject:'il', verb:'se lever', answer:'il s\'est levé'},
+  {subject:'elles', verb:'se dépêcher', answer:'elles se sont dépêchées'},
+  {subject:'nous (masc.)', verb:'se promener', answer:'nous nous sommes promenés'},
+  {subject:'tu (fém.)', verb:'se souvenir', answer:'tu t\'es souvenue'},
+  {subject:'ils', verb:'se rencontrer', answer:'ils se sont rencontrés'},
+  {subject:'vous (masc. sing.)', verb:'s\'habiller', answer:'vous vous êtes habillé'},
+  {subject:'elle', verb:'se maquiller', answer:'elle s\'est maquillée'},
+  {subject:'ils', verb:'se disputer', answer:'ils se sont disputés'},
+  {subject:'je (masc.)', verb:'s\'endormir', answer:'je me suis endormi'},
+  {subject:'nous (fém.)', verb:'se regarder', answer:'nous nous sommes regardées'},
+  {subject:'elles', verb:'s\'appeler', answer:'elles se sont appelées'}
+];
+function buildEx10(){
+  const wrap = document.querySelector('[data-ex="10"] .ex-body');
+  wrap.innerHTML='';
+  ex10Data.forEach((item,i)=>{
+    const q=el('div','q');
+    q.appendChild(el('div','q-text', `<b>${i+1}.</b> ${item.subject} — (${item.verb})`));
+    const inp=el('input','text-input');
+    inp.type='text'; inp.placeholder='ex. je me suis levé(e)'; inp.dataset.idx=i;
+    q.appendChild(inp);
+    q.appendChild(el('div','feedback'));
+    wrap.appendChild(q);
+  });
+}
+function checkEx10(){
+  const block = document.querySelector('[data-ex="10"]');
+  const qs = block.querySelectorAll('.q');
+  let correct=0;
+  qs.forEach((q,i)=>{
+    const inp=q.querySelector('input');
+    inp.disabled=true;
+    const fb=q.querySelector('.feedback');
+    const ok = acceptableAnswer(inp.value, ex10Data[i].answer);
+    if(ok){ correct++; inp.classList.add('correct'); fb.classList.add('good','show'); fb.textContent='Correct.'; }
+    else{ inp.classList.add('incorrect'); fb.classList.add('bad','show'); fb.textContent=`Réponse attendue : ${ex10Data[i].answer}`; }
+  });
+  block.querySelector('[data-result]').innerHTML = `<b>${correct}/${ex10Data.length}</b>`;
+  globalState[10]={correct, total:ex10Data.length, checked:true};
+  updateGlobalScore();
+}
+
+/* ============================= EX 11 — Négation ============================= */
+const ex11Data = [
+  {sentence:"J'ai mangé.", opts:["Je n'ai pas mangé.","Je ai pas mangé.","Je n'ai mangé pas."], right:0},
+  {sentence:"Elle est partie.", opts:["Elle est pas partie.","Elle n'est pas partie.","Elle n'est partie pas."], right:1},
+  {sentence:"Nous avons fini.", opts:["Nous n'avons pas fini.","Nous avons pas fini.","Nous ne avons pas fini."], right:0},
+  {sentence:"Ils se sont levés.", opts:["Ils se ne sont pas levés.","Ils se sont pas levés.","Ils ne se sont pas levés."], right:2},
+  {sentence:"Tu as vu le film.", opts:["Tu n'as pas vu le film.","Tu as pas vu le film.","Tu n'as vu pas le film."], right:0},
+  {sentence:"Vous êtes arrivés.", opts:["Vous n'êtes arrivés pas.","Vous êtes pas arrivés.","Vous n'êtes pas arrivés."], right:2},
+  {sentence:"Elles ont pris le train.", opts:["Elles n'ont pas pris le train.","Elles ont pas pris le train.","Elles n'ont pris pas le train."], right:0},
+  {sentence:"Je me suis réveillé.", opts:["Je me ne suis pas réveillé.","Je ne me suis pas réveillé.","Je me suis pas réveillé."], right:1},
+  {sentence:"Il a fini son travail.", opts:["Il n'a pas fini son travail.","Il a pas fini son travail.","Il n'a fini pas son travail."], right:0},
+  {sentence:"Nous sommes rentrés tard.", opts:["Nous ne sommes pas rentrés tard.","Nous sommes pas rentrés tard.","Nous ne sommes rentrés pas tard."], right:0},
+  {sentence:"Elle a compris la leçon.", opts:["Elle n'a compris pas la leçon.","Elle n'a pas compris la leçon.","Elle a pas compris la leçon."], right:1},
+  {sentence:"Ils se sont rencontrés hier.", opts:["Ils ne se sont pas rencontrés hier.","Ils se ne sont pas rencontrés hier.","Ils se sont pas rencontrés hier."], right:0}
+];
+function buildEx11(){
+  const wrap = document.querySelector('[data-ex="11"] .ex-body');
+  wrap.innerHTML='';
+  ex11Data.forEach((item,i)=>{
+    const q=el('div','q');
+    q.appendChild(el('div','q-text', `<b>${i+1}.</b> Mettez à la forme négative : <i>« ${item.sentence} »</i>`));
+    const opts=el('div','opts');
+    item.opts.forEach((label,idx)=>{
+      const b=el('button','opt-btn', label);
+      b.dataset.choice=idx;
+      b.addEventListener('click', ()=>{
+        if(q.dataset.locked) return;
+        opts.querySelectorAll('.opt-btn').forEach(x=>x.classList.remove('selected'));
+        b.classList.add('selected');
+        q.dataset.answer=idx;
+      });
+      opts.appendChild(b);
+    });
+    q.appendChild(opts);
+    q.appendChild(el('div','feedback'));
+    wrap.appendChild(q);
+  });
+}
+function checkEx11(){
+  const block=document.querySelector('[data-ex="11"]');
+  const qs=block.querySelectorAll('.q');
+  let correct=0;
+  qs.forEach((q,i)=>{
+    q.dataset.locked='1';
+    const chosen=q.dataset.answer;
+    const right=String(ex11Data[i].right);
+    const fb=q.querySelector('.feedback');
+    q.querySelectorAll('.opt-btn').forEach(o=>{
+      o.disabled=true;
+      if(o.dataset.choice===right) o.classList.add('correct');
+      if(o.dataset.choice===chosen && chosen!==right) o.classList.add('incorrect');
+    });
+    if(chosen===right){ correct++; fb.classList.add('good','show'); fb.textContent='Correct — « ne » et « pas » encadrent l\'auxiliaire.'; }
+    else{ fb.classList.add('bad','show'); fb.textContent=`La bonne réponse est : « ${ex11Data[i].opts[ex11Data[i].right]} »`; }
+  });
+  block.querySelector('[data-result]').innerHTML=`<b>${correct}/${ex11Data.length}</b>`;
+  globalState[11]={correct, total:ex11Data.length, checked:true};
+  updateGlobalScore();
+}
+
+/* ============================= EX 12 — Texte à trous ============================= */
+const ex12Story = [
+  {text:"Hier, je "},
+  {blank:true, verb:'se réveiller', answer:['je me suis réveillé','je me suis réveillée']},
+  {text:" tard. Je "},
+  {blank:true, verb:'prendre', answer:['j\'ai pris']},
+  {text:" mon petit-déjeuner, puis je "},
+  {blank:true, verb:'sortir', answer:['je suis sorti','je suis sortie']},
+  {text:" de la maison. Mes amis "},
+  {blank:true, verb:'arriver', answer:['sont arrivés','sont arrivées']},
+  {text:" une heure plus tard et nous "},
+  {blank:true, verb:'aller', answer:['sommes allés','sommes allées']},
+  {text:" au marché. Là-bas, nous "},
+  {blank:true, verb:'acheter', answer:['avons acheté']},
+  {text:" des fruits, puis nous "},
+  {blank:true, verb:'rentrer', answer:['sommes rentrés','sommes rentrées']},
+  {text:" à la maison très fatigués. Le soir, nous "},
+  {blank:true, verb:'voir', answer:['avons vu']},
+  {text:" un film ensemble, puis j'"},
+  {blank:true, verb:'dire', answer:["ai dit"]},
+  {text:" au revoir à mes amis."}
+];
+function buildEx12(){
+  const wrap=document.querySelector('[data-ex="12"] .ex-body');
+  wrap.innerHTML='';
+  let blankIdx=0;
+  ex12Story.forEach(part=>{
+    if(part.text){ wrap.appendChild(document.createTextNode(part.text)); }
+    if(part.blank){
+      const inp=el('input','cloze-input');
+      inp.type='text'; inp.placeholder=`(${part.verb})`; inp.dataset.idx=blankIdx;
+      wrap.appendChild(inp);
+      blankIdx++;
+    }
+  });
+  wrap.appendChild(el('div','feedback', ''));
+}
+function ex12Blanks(){ return ex12Story.filter(p=>p.blank); }
+function checkEx12(){
+  const block=document.querySelector('[data-ex="12"]');
+  const inputs=block.querySelectorAll('.cloze-input');
+  const blanks=ex12Blanks();
+  let correct=0;
+  inputs.forEach((inp,i)=>{
+    inp.disabled=true;
+    const given=norm(inp.value);
+    const accepted = blanks[i].answer.map(norm);
+    const ok = accepted.includes(given);
+    if(ok){ correct++; inp.classList.add('correct'); }
+    else{ inp.classList.add('incorrect'); inp.title='Réponse : '+blanks[i].answer.join(' / '); }
+  });
+  const fb = block.querySelector('.ex-body .feedback');
+  fb.classList.add('show', correct===blanks.length?'good':'bad');
+  fb.innerHTML = correct===blanks.length
+    ? 'Parfait ! Tous les verbes sont corrects.'
+    : 'Réponses attendues : '+ blanks.map((b,i)=>`${i+1}. ${b.verb} → ${b.answer.join(' / ')}`).join(' · ');
+  block.querySelector('[data-result]').innerHTML=`<b>${correct}/${blanks.length}</b>`;
+  globalState[12]={correct, total:blanks.length, checked:true};
+  updateGlobalScore();
+}
+
+/* ============================= EX 13 — Verbes à double auxiliaire ============================= */
+const ex13Data = [
+  {sentence:"Elle ___ (monter) l'escalier en courant.", answer:'avoir', form:'a monté', explain:'"l\'escalier" est un COD (monter quelque chose) → avoir.'},
+  {sentence:"Il ___ (sortir) très tôt ce matin.", answer:'être', form:'est sorti', explain:'pas de COD, simple déplacement → être.'},
+  {sentence:"Nous ___ (descendre) les valises.", answer:'avoir', form:'avons descendu', explain:'"les valises" est un COD → avoir.'},
+  {sentence:"Il ___ (entrer) dans la salle.", answer:'être', form:'est entré', explain:'pas de COD, simple déplacement → être.'},
+  {sentence:"Elle ___ (passer) l'examen hier.", answer:'avoir', form:'a passé', explain:'"l\'examen" est un COD (passer un examen) → avoir.'},
+  {sentence:"Il ___ (rentrer) tard hier soir.", answer:'être', form:'est rentré', explain:'pas de COD, simple déplacement → être.'},
+  {sentence:"Elle ___ (retourner) la crêpe.", answer:'avoir', form:'a retourné', explain:'"la crêpe" est un COD (retourner quelque chose) → avoir.'},
+  {sentence:"Elle ___ (monter) au premier étage.", answer:'être', form:'est montée', explain:'pas de COD, simple déplacement → être.'},
+  {sentence:"Il ___ (entrer) les données dans l'ordinateur.", answer:'avoir', form:'a entré', explain:'"les données" est un COD (entrer quelque chose) → avoir.'},
+  {sentence:"Nous ___ (descendre) au rez-de-chaussée.", answer:'être', form:'sommes descendus', explain:'pas de COD, simple déplacement → être.'},
+  {sentence:"Il ___ (sortir) le chien ce matin.", answer:'avoir', form:'a sorti', explain:'"le chien" est un COD (sortir quelqu\'un/quelque chose) → avoir.'},
+  {sentence:"Elle ___ (passer) par Paris.", answer:'être', form:'est passée', explain:'pas de COD, simple déplacement → être.'},
+  {sentence:"Il ___ (rentrer) la voiture au garage.", answer:'avoir', form:'a rentré', explain:'"la voiture" est un COD (rentrer quelque chose) → avoir.'},
+  {sentence:"Elle ___ (retourner) chez elle.", answer:'être', form:'est retournée', explain:'pas de COD, simple déplacement → être.'}
+];
+function buildEx13(){
+  buildMCQ(13, ex13Data, item=>[{label:'avoir',value:'avoir'},{label:'être',value:'être'}]);
+}
+function checkEx13(){
+  checkMCQ(13, ex13Data, d=>d.answer, (d)=> `Forme : "${d.form}" — ${d.explain}`);
+}
+
+/* ============================= LEVEL FILTER ============================= */
+const levelBtns = document.querySelectorAll('.level-btn');
+function applyLevelFilter(level){
+  document.querySelectorAll('.ex-block').forEach(block=>{
+    block.classList.toggle('level-hidden', block.dataset.level!==level);
+  });
+}
+levelBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    levelBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    applyLevelFilter(btn.dataset.level);
+  });
+});
+applyLevelFilter('A1A2');
+
+/* ============================= WIRE UP ============================= */
+const builders = {1:buildEx1, 2:buildEx2, 3:buildEx3, 4:buildEx4, 5:buildEx5, 6:buildEx6, 7:buildEx7, 8:buildEx8, 9:buildEx9, 10:buildEx10, 11:buildEx11, 12:buildEx12, 13:buildEx13};
+const checkers  = {1:checkEx1, 2:checkEx2, 3:checkEx3, 4:checkEx4, 5:checkEx5, 6:checkEx6, 7:checkEx7, 8:checkEx8, 9:checkEx9, 10:checkEx10, 11:checkEx11, 12:checkEx12, 13:checkEx13};
+
+document.querySelectorAll('.ex-block').forEach(block=>{
+  const exId = block.dataset.ex;
+  builders[exId]();
+  const qCount = block.querySelectorAll('.q').length || ex12Blanks().length;
+  globalState[exId] = {correct:0, total:qCount, checked:false};
+  block.querySelector('[data-action="check"]').addEventListener('click', ()=> checkers[exId]());
+  block.querySelector('[data-action="reset"]').addEventListener('click', ()=>{
+    builders[exId]();
+    block.querySelector('[data-result]').textContent='—';
+    globalState[exId].checked=false;
+    updateGlobalScore();
+  });
+});
+updateGlobalScore();
+</script>
+
+</body>
+</html>
